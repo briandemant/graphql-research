@@ -1,0 +1,36 @@
+{
+	"extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier", "tslint-react-hooks"],
+	"rulesDirectory": ["node_modules/vrsource-tslint-rules/rules"],
+	"rules": {
+		"jsx-boolean-value": false,
+		"interface-name": [true, "never-prefix"],
+		"no-var-requires": false,
+		"ordered-imports": false,
+		"object-literal-sort-keys": false,
+		"member-access": [false, "check-accessor"],
+		"curly": [true, "ignore-same-line"],
+		"no-return-await": true,
+		"no-string-throw": true,
+		"no-var-keyword": true,
+		"prefer-object-spread": true,
+		"max-file-line-count": [true, 300],
+		"no-unnecessary-initializer": true,
+		"no-angle-bracket-type-assertion": true,
+		"prefer-const": [
+			true,
+			{
+				"destructuring": "all"
+			}
+		],
+		"class-name": true,
+		"variable-name": [true, "ban-keywords", "allow-leading-underscore", "allow-pascal-case"],
+		"max-classes-per-file": [true, 5, "exclude-class-expressions"],
+		"array-type": [true, "array"],
+		"arrow-return-shorthand": true,
+		"member-ordering": false,
+		"jsx-no-lambda": false
+	},
+	"linterOptions": {
+		"exclude": ["**/node_modules/**", "node_modules/**"]
+	}
+}

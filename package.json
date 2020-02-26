@@ -1,0 +1,35 @@
+{
+	"name": "gg-demo-template",
+	"version": "1.0.0",
+	"author": "Brian Demant <brian.demant@gmail.com>",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"start": "nodemon -r source-map-support/register src/server",
+		"build": "tsc --build tsconfig.json  --pretty",
+		"lint": "tslint -c ./tslint.json **/src/**/*.{ts,tsx}",
+		"pretty": "prettier --config ./.prettierrc.json --loglevel error --write **/src/**/*.{json,ts,tsx,js}",
+		"pretty-lint": "yarn pretty:src && yarn lint:src"
+	},
+	"engines": {
+		"node": "^10.16.0",
+		"yarn": "^1.15.2"
+	},
+	"workspaces": [
+		"src/**/*"
+	],
+	"dependencies": {
+		"@types/node": "^10.0.0",
+		"esm": "^3.2.25",
+		"nodemon": "^2.0.2",
+		"prettier": "^1.17.1",
+		"source-map-support": "^0.5.16",
+		"ts-node": "8.5.4",
+		"tslint": "^5.12.1",
+		"tslint-config-prettier": "^1.18.0",
+		"tslint-loader": "^3.5.4",
+		"tslint-react": "^3.6.0",
+		"tslint-react-hooks": "^2.2.1",
+		"typescript": "^3.6.3"
+	}
+}

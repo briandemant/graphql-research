@@ -1,0 +1,11 @@
+{
+	"name": "@demo/server",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"license": "MIT",
+	"scripts": {
+		"build": "tsc --pretty",
+		"dev": "nodemon -e ts -x \"ts-node src/index.ts\""
+	},
+	"dependencies": {}
+}
