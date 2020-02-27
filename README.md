@@ -19,6 +19,7 @@ src/api/src/_gen/server-types.ts
 ## Changelog:
 
 1. [Add graphql to typescript code generation](https://github.com/briandemant/graphql-research/tree/01-graphql-to-ts-types)
+2. [implement the basic api server](https://github.com/briandemant/graphql-research/tree/02-basic-api)
 
 
 
