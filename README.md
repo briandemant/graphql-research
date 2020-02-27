@@ -22,4 +22,4 @@ src/api/src/_gen/server-types.ts
 
 
 
-* [Go back to master](master)
+* [Go back to master](https://github.com/briandemant/graphql-research/)
