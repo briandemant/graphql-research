@@ -28,9 +28,10 @@
 		"array-type": [true, "array"],
 		"arrow-return-shorthand": true,
 		"member-ordering": false,
-		"jsx-no-lambda": false
+		"jsx-no-lambda": false,
+		"no-console": false
 	},
 	"linterOptions": {
-		"exclude": ["**/node_modules/**", "node_modules/**"]
+		"exclude": ["**/node_modules/**", "node_modules/**", "**/_gen/**", "**/dist/**", "dist/**"]
 	}
 }

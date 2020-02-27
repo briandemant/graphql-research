@@ -22,7 +22,7 @@ export enum Pong {
 
 export type GQLQuery = {
 	readonly ping: Maybe<Pong>
-	readonly user: Maybe<GQLUser></GQLUser>
+	readonly user: Maybe<GQLUser>
 	readonly users: ReadonlyArray<GQLUser>
 }
 

@@ -9,6 +9,6 @@
 		"dev": "nodemon -e ts -x \"ts-node src/index.ts\""
 	},
 	"dependencies": {
-		"uuid":"7.0.1"
+		"uuid": "7.0.1"
 	}
 }

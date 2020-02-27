@@ -1,4 +1,4 @@
-export type Context = {
+export interface Context {
 	auth: {
 		authenticated: boolean
 		userId: string
