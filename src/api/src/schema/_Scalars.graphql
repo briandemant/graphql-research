@@ -1,0 +1,14 @@
+scalar DateTime
+scalar TrimmedNonEmptyString
+
+enum PONG {
+	PONG
+}
+
+type Query {
+	ping: PONG
+}
+
+schema {
+	query: Query
+}

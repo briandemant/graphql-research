@@ -1,0 +1,11 @@
+# type Listing {
+# 	id: ID!
+# 	title: TrimmedNonEmptyString!
+# 	slug: TrimmedNonEmptyString!
+# 	owner: User!
+# }
+
+# extend type Query {
+# 	listings: [Listing!]!
+# 	frontPageListings(After: Int = 0): [Listing!]!
+# }

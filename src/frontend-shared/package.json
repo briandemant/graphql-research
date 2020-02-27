@@ -1,11 +1,14 @@
 {
-	"name": "@demo/server",
+	"name": "@demo/frontend-shared",
 	"version": "1.0.0",
-	"main": "dist/index.js",
 	"license": "MIT",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc --pretty",
 		"dev": "nodemon -e ts -x \"ts-node src/index.ts\""
 	},
-	"dependencies": {}
+	"dependencies": {
+		"uuid":"7.0.1"
+	}
 }

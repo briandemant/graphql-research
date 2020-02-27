@@ -1,5 +1,5 @@
 {
-	"name": "@demo/hello",
+	"name": "@demo/lib",
 	"version": "1.0.0",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -9,6 +9,10 @@
 		"dev": "nodemon -e ts -x \"ts-node src/index.ts\""
 	},
 	"dependencies": {
-		"uuid":"7.0.1"
+		"@types/md5": "^2.1.33",
+		"@types/uuid": "^7.0.0",
+		"is-uuid": "^1.0.2",
+		"md5": "^2.2.1",
+		"uuid": "^7.0.1"
 	}
 }

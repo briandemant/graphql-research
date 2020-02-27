@@ -1,0 +1,18 @@
+type User {
+	id: ID!
+	name: TrimmedNonEmptyString!
+	# description: String!
+	# createdAt: DateTime!
+	# listings: [Listing!]!
+}
+
+extend type Query {
+	users: [User!]!
+	user(id: ID!): User
+}
+
+## not generated
+# fragment SmallUser on User {
+# 	id
+# 	name
+# }

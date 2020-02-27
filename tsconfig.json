@@ -31,7 +31,7 @@
 	},
 	"files": [],
 	"references": [
-		{ "path": "./src/hello/tsconfig.json" },
-		{ "path": "./src/server/tsconfig.json" }
+		{ "path": "./src/api/tsconfig.json" },
+		{ "path": "./src/lib/tsconfig.json" }
 	]
 }
