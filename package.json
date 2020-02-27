@@ -10,6 +10,8 @@
 		"lint": "tslint -c ./tslint.json **/src/**/*.{ts,tsx}",
 		"pretty": "prettier --config ./.prettierrc.json --loglevel error --write **/src/**/*.{json,ts,tsx,js}",
 		"pretty-lint": "yarn pretty:src && yarn lint:src"
+		,"clean":"rm -rf ./*/*/dist"
+		,"clean:packages":"rm -rf node_modules/ ./*/*/node_modules ./*/*/dist"
 	},
 	"engines": {
 		"node": "^10.16.0",
