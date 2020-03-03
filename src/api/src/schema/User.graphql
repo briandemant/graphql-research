@@ -1,18 +1,22 @@
-type User {
-	id: ID!
-	name: TrimmedNonEmptyString!
-	# description: String!
-	# createdAt: DateTime!
-	# listings: [Listing!]!
-}
+scalar UserXXX
 
-extend type Query {
-	users: [User!]!
-	user(id: ID!): User
-}
-
-## not generated
-# fragment SmallUser on User {
-# 	id
-# 	name
+# type User {
+# 	id: ID!
+# 	# id: SimpleID!
+# 	name: NonEmptyString!
+# 	# description: String!
+# 	# createdAt: ValidDate!
+# 	# listings: [Listing!]!
 # }
+
+# extend type Query {
+# # 	users: [User!]!
+# 	# user(id: SimpleID!): User
+# 	user(id: ID!): User
+# }
+
+# # ## not generated
+# # fragment SmallUser on User {
+# # 	id
+# # 	name
+# # }

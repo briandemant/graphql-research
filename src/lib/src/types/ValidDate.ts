@@ -1,5 +1,8 @@
+import { GraphQLScalarType } from 'graphql'
+import { UuidV4 } from './UuidV4'
+
 export class ValidDate {
-	private static readonly ERR_INVALID_DATE = 'Invalid Date'
+	public static readonly ERR_INVALID_DATE = 'Invalid Date'
 
 	private readonly date: Date
 
@@ -34,6 +37,7 @@ export class ValidDate {
 			throw new Error(ValidDate.ERR_INVALID_DATE)
 		}
 		this.date = d
+		console.log(this.date.toISOString())
 	}
 
 	isLargerThan(date: ValidDate) {
@@ -55,4 +59,39 @@ export class ValidDate {
 	toDate(): Date {
 		return new Date(this.date.getTime())
 	}
+
+	serialize() {
+		return this.date.toISOString()
+	}
 }
+
+export const DateTimeScalarType = new GraphQLScalarType({
+	name: 'DateTime',
+	description: 'DateTime is a ISO8601 date',
+	serialize(value) {
+		console.log('serialize', value)
+		try {
+			return value.serialize()
+		} catch (e) {
+			console.log(e.message)
+		}
+	},
+	parseValue(value) {
+		console.log('parseValue', value)
+		// try {
+		return new ValidDate(value)
+		// } catch (e) {
+		// 	return 'blah!'
+		// }
+	},
+	parseLiteral(ast) {
+		console.log('ast', ast)
+		if (ast.kind === 'StringValue') {
+			return new ValidDate(ast.value)
+		} else if (ast.kind === 'IntValue') {
+			return new ValidDate(parseInt(ast.value, 10))
+		} else {
+			throw ValidDate.ERR_INVALID_DATE
+		}
+	},
+})

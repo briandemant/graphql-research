@@ -6,11 +6,12 @@
 	"private": true,
 	"scripts": {
 		"start": "nodemon -r source-map-support/register src/server",
-		"build": "tsc --build tsconfig.json  --pretty",
+		"build:src": "tsc --build tsconfig.json  --pretty",
+		"build:api-gen": "cd src/api;graphql-codegen --config codegen.yaml",
 		"lint": "tslint -c ./tslint.json **/src/**/*.{ts,tsx}",
 		"pretty": "prettier --config ./.prettierrc.json --loglevel error --write **/src/**/*.{json,ts,tsx,js}",
 		"pretty-lint": "yarn pretty && yarn lint",
-		"clean": "rm -rf ./*/*/dist",
+		"clean": "rm -rf ./src/*/dist",
 		"clean:packages": "rm -rf node_modules/ ./*/*/node_modules ./*/*/dist"
 	},
 	"engines": {
@@ -32,7 +33,7 @@
 		"tslint-loader": "^3.5.4",
 		"tslint-react": "^3.6.0",
 		"tslint-react-hooks": "^2.2.1",
-		"typescript": "^3.6.3"
+		"typescript": "^3.8.3"
 	},
 	"devDependencies": {
 		"vrsource-tslint-rules": "^6.0.0"

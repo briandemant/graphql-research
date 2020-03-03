@@ -1,4 +1,4 @@
-export class TrimmedNotEmptyString {
+export class NonEmptyString {
 	private static readonly ERR_EMPTY_STRING = 'empty string'
 
 	private readonly s: string
@@ -6,7 +6,7 @@ export class TrimmedNotEmptyString {
 	constructor(s: string) {
 		const trimmed = s.trim()
 		if (trimmed.length < 1) {
-			throw new Error(TrimmedNotEmptyString.ERR_EMPTY_STRING)
+			throw new Error(NonEmptyString.ERR_EMPTY_STRING)
 		}
 
 		this.s = trimmed

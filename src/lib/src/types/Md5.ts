@@ -1,5 +1,6 @@
 const md5 = require('md5')
 
+
 export class Md5 {
 	private static readonly ERR_INVALID_HASH = 'invalid md5'
 

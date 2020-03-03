@@ -1,12 +1,15 @@
 scalar DateTime
-scalar TrimmedNonEmptyString
+# scalar NonEmptyString
+# scalar Slug
+scalar UuidV4
+# scalar Md5
+# scalar SimpleID
 
-enum PONG {
-	PONG
-}
 
 type Query {
-	ping: PONG
+	uuid: UuidV4
+	validUuid(id: String): Boolean
+	echoUuid(id: UuidV4): UuidV4
 }
 
 schema {
