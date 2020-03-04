@@ -1,6 +1,7 @@
 /* eslint-disable */
 // PLEASE DO NOT EDIT
-export type ResolverType<TObj, TProp extends keyof TObj> = TObj[TProp]
+export * from './manual-server-types'
+// import { GQLRole } from './manual-server-types'
 
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
 import { ValidDate, SimpleID, NonEmptyString, UuidV4, Md5 } from '@demo/lib'
@@ -17,19 +18,26 @@ export type Scalars = {
 	Int: number
 	Float: number
 	DateTime: ValidDate
-	/**
-	 * scalar NonEmptyString
-	 * scalar Slug
-	 */
+	/** scalar Md5 */
+	SimpleID: SimpleID
+	NonEmptyString: NonEmptyString
+	/** scalar Slug */
 	UuidV4: UuidV4
-	ListingXXX: any
-	UserXXX: any
+}
+
+export type GQLListing = {
+	readonly id: Scalars['SimpleID']
+	readonly title: Scalars['NonEmptyString']
+	/** slug: Slug! */
+	readonly owner: GQLUser
 }
 
 export type GQLQuery = {
 	readonly isFuture: Maybe<Scalars['Boolean']>
 	readonly isPast: Maybe<Scalars['Boolean']>
+	readonly listing: Maybe<GQLListing>
 	readonly now: Maybe<Scalars['DateTime']>
+	readonly user: Maybe<GQLUser>
 	readonly utils: Maybe<GQLUtil>
 	readonly welcome: Scalars['String']
 }
@@ -42,14 +50,34 @@ export type GQLQueryIsPastArgs = {
 	date: Maybe<Scalars['DateTime']>
 }
 
+export type GQLQueryListingArgs = {
+	id: Scalars['SimpleID']
+}
+
+export type GQLQueryUserArgs = {
+	id: Scalars['SimpleID']
+}
+
 export type GQLQueryWelcomeArgs = {
 	name: Maybe<Scalars['String']>
+}
+
+export enum GQLRole {
+	Admin = 'ADMIN',
+	User = 'USER',
+}
+
+export type GQLUser = {
+	readonly id: Scalars['SimpleID']
+	readonly name: Scalars['NonEmptyString']
 }
 
 export type GQLUtil = {
 	readonly uuid: Maybe<Scalars['UuidV4']>
 	readonly validUuid: Maybe<Scalars['Boolean']>
 	readonly echoUuid: Maybe<Scalars['UuidV4']>
+	readonly newField: Maybe<Scalars['String']>
+	readonly oldField: Maybe<Scalars['String']>
 }
 
 export type GQLUtilValidUuidArgs = {
@@ -126,11 +154,14 @@ export type GQLResolversTypes = {
 	Query: ResolverTypeWrapper<{}>
 	DateTime: ResolverTypeWrapper<ValidDate>
 	Boolean: ResolverTypeWrapper<any>
+	SimpleID: ResolverTypeWrapper<SimpleID>
+	Listing: ResolverTypeWrapper<any>
+	NonEmptyString: ResolverTypeWrapper<NonEmptyString>
+	User: ResolverTypeWrapper<any>
 	Util: ResolverTypeWrapper<any>
 	UuidV4: ResolverTypeWrapper<UuidV4>
 	String: ResolverTypeWrapper<string>
-	ListingXXX: ResolverTypeWrapper<any>
-	UserXXX: ResolverTypeWrapper<any>
+	Role: ResolverTypeWrapper<any>
 }
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -138,19 +169,42 @@ export type GQLResolversParentTypes = {
 	Query: {}
 	DateTime: ValidDate
 	Boolean: any
+	SimpleID: SimpleID
+	Listing: any
+	NonEmptyString: NonEmptyString
+	User: any
 	Util: any
 	UuidV4: UuidV4
 	String: string
-	ListingXXX: any
-	UserXXX: any
+	Role: any
 }
+
+export type GQLAuthDirectiveArgs = { requires?: Maybe<GQLRole> }
+
+export type GQLAuthDirectiveResolver<
+	Result,
+	Parent,
+	ContextType = Context,
+	Args = GQLAuthDirectiveArgs
+> = DirectiveResolverFn<Result, Parent, ContextType, Args>
 
 export interface GQLDateTimeScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['DateTime'], any> {
 	name: 'DateTime'
 }
 
-export interface GQLListingXxxScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['ListingXXX'], any> {
-	name: 'ListingXXX'
+export type GQLListingResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['Listing'] = GQLResolversParentTypes['Listing']
+> = {
+	id: Resolver<GQLResolversTypes['SimpleID'], ParentType, ContextType>
+	title: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	owner: Resolver<GQLResolversTypes['User'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export interface GQLNonEmptyStringScalarConfig
+	extends GraphQLScalarTypeConfig<GQLResolversTypes['NonEmptyString'], any> {
+	name: 'NonEmptyString'
 }
 
 export type GQLQueryResolvers<
@@ -159,13 +213,29 @@ export type GQLQueryResolvers<
 > = {
 	isFuture: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, GQLQueryIsFutureArgs>
 	isPast: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, GQLQueryIsPastArgs>
+	listing: Resolver<
+		Maybe<GQLResolversTypes['Listing']>,
+		ParentType,
+		ContextType,
+		RequireFields<GQLQueryListingArgs, 'id'>
+	>
 	now: Resolver<Maybe<GQLResolversTypes['DateTime']>, ParentType, ContextType>
+	user: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryUserArgs, 'id'>>
 	utils: Resolver<Maybe<GQLResolversTypes['Util']>, ParentType, ContextType>
 	welcome: Resolver<GQLResolversTypes['String'], ParentType, ContextType, GQLQueryWelcomeArgs>
 }
 
-export interface GQLUserXxxScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['UserXXX'], any> {
-	name: 'UserXXX'
+export interface GQLSimpleIdScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['SimpleID'], any> {
+	name: 'SimpleID'
+}
+
+export type GQLUserResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['User'] = GQLResolversParentTypes['User']
+> = {
+	id: Resolver<GQLResolversTypes['SimpleID'], ParentType, ContextType>
+	name: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
 export type GQLUtilResolvers<
@@ -185,6 +255,8 @@ export type GQLUtilResolvers<
 		ContextType,
 		RequireFields<GQLUtilEchoUuidArgs, 'id'>
 	>
+	newField: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
+	oldField: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
@@ -194,9 +266,15 @@ export interface GQLUuidV4ScalarConfig extends GraphQLScalarTypeConfig<GQLResolv
 
 export type GQLResolvers<ContextType = Context> = {
 	DateTime: GraphQLScalarType
-	ListingXXX: GraphQLScalarType
+	Listing: GQLListingResolvers<ContextType>
+	NonEmptyString: GraphQLScalarType
 	Query: GQLQueryResolvers<ContextType>
-	UserXXX: GraphQLScalarType
+	SimpleID: GraphQLScalarType
+	User: GQLUserResolvers<ContextType>
 	Util: GQLUtilResolvers<ContextType>
 	UuidV4: GraphQLScalarType
+}
+
+export type GQLDirectiveResolvers<ContextType = Context> = {
+	auth: GQLAuthDirectiveResolver<any, any, ContextType>
 }

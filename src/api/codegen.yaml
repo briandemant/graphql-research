@@ -11,15 +11,9 @@ generates:
     #   afterOneFileWrite:
     #     - prettier --config ../../.prettierrc.json --write
     config:
-      scalars:
-        DateTime: ValidDate
-        NonEmptyString: string
-        Md5: string
-        SimpleID: string
-        UuidV4: UuidV4
       defaultMapper: any
       typesPrefix: GQL
-      enumPrefix: false
+      enumPrefix: GQL
       immutableTypes: true
       skipTypename: true
       avoidOptionals: true
@@ -27,6 +21,12 @@ generates:
       noSchemaStitching: true
       # useIndexSignature: true
       contextType: ../schema/context#Context
+      scalars:
+        DateTime: ValidDate
+        NonEmptyString: NonEmptyString
+        Md5: Md5
+        SimpleID: SimpleID
+        UuidV4: UuidV4
       mappers:
         DateTime: "@demo/lib#ValidDate"
         ID: "@demo/lib#SimpleID"
@@ -39,7 +39,8 @@ generates:
       - add: |
           /* eslint-disable */
           // PLEASE DO NOT EDIT
-          export type ResolverType<TObj, TProp extends keyof TObj> = TObj[TProp]
+          export * from './manual-server-types'
+          // import { GQLRole } from './manual-server-types'
       - typescript
       - typescript-resolvers
 

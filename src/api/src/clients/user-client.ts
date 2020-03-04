@@ -28,8 +28,8 @@ function fail<E>(error: E): ResultError<E> {
 }
 
 const users: JsonUser[] = [
-	{ id: SimpleID.generate(), name: 'John' },
-	{ id: SimpleID.generate(), name: 'Ringo' },
+	{ id: SimpleID.fromInt(1).toString(), name: 'John' },
+	{ id: SimpleID.fromInt(2).toString(), name: 'Ringo' },
 ]
 
 const fromJsonToUser = (user: JsonUser): Result<Readonly<DataUser>> => {
@@ -45,7 +45,7 @@ const fromJsonToUser = (user: JsonUser): Result<Readonly<DataUser>> => {
 
 export class UserClient {
 	async findById(id: SimpleID) {
-		return fromJsonToUser(users[0])
+		return fromJsonToUser(users.filter(u => u.id == id.toString())[0])
 	}
 
 	async findOne(query: any) {

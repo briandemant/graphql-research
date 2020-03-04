@@ -14,11 +14,11 @@ export const UuidV4ScalarType = new GraphQLScalarType({
 	},
 	parseValue(value) {
 		console.log('parseValue', value)
-		try {
+		// try {
 			return new UuidV4(value)
-		} catch (e) {
-			return null
-		}
+		// } catch (e) {
+		// 	return null
+		// }
 	}
 })
 

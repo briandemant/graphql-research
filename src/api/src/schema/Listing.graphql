@@ -1,14 +1,12 @@
-scalar ListingXXX
+type Listing {
+	id: SimpleID!
+	title: NonEmptyString!
+	# 	slug: Slug!
+	owner: User!
+}
 
-# type Listing {
-# 	id: SimpleID!
-# 	title: NonEmptyString!
-# 	slug: Slug!
-# 	# owner: User!
-# }
-
-# extend type Query {
-#     listing(id: SimpleID!): Listing
-# # 	listings: [Listing!]!
-# # 	frontPageListings(After: Int = 0): [Listing!]!
-# }
+extend type Query {
+	listing(id: SimpleID!): Listing
+	# 	listings: [Listing!]!
+	# 	frontPageListings(After: Int = 0): [Listing!]!
+}
