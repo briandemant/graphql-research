@@ -1,24 +1,28 @@
 import { UuidV4 } from '@demo/lib'
-import { GQLQueryResolvers } from '../_gen/server-types'
+import { GQLUtilResolvers, ResolverType } from '../_gen/server-types'
 
-type UuidQueryResolver = GQLQueryResolvers['uuid']
-type ValidUuidQueryResolver = GQLQueryResolvers['validUuid']
-type EchoUuidQueryResolver = GQLQueryResolvers['echoUuid']
+type UuidResolverType = ResolverType<GQLUtilResolvers, 'uuid'>
+type ValidUuidResolverType = ResolverType<GQLUtilResolvers, 'validUuid'>
+type EchoUuidResolverType = ResolverType<GQLUtilResolvers, 'echoUuid'>
 
-const uuid: UuidQueryResolver = (parent, args, context, info) => {
+export const uuid: UuidResolverType = (parent, args, ctx, info) => {
 	return UuidV4.generate()
 }
 
-const validUuid: ValidUuidQueryResolver = (parent, { id }, context, info) => {
-	console.log('validUuid', id)
-	return id ? UuidV4.validate(id) : false
-}
-const echoUuid: EchoUuidQueryResolver = (parent, { id }, context, info) => {
-	console.log('echoUuid', id)
-	if (id) {
-		return id
-	}
-	throw UuidV4.ERR_INVALID_UUID
+export const validUuid: ValidUuidResolverType = (parent, { idOrNot }, ctx, info) => {
+	return UuidV4.validate(idOrNot)
 }
 
-export const resolvers = { Query: { uuid, validUuid, echoUuid } }
+export const echoUuid: EchoUuidResolverType = (parent, { id }, ctx, info) => {
+	console.log('parent', parent)
+	return id
+}
+
+let utilResolvers: GQLUtilResolvers = { uuid, validUuid, echoUuid }
+
+export const resolvers = {
+	Util: utilResolvers,
+	Query: {
+		utils: () => ({ parent: true }),
+	},
+}

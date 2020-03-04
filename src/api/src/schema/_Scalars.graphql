@@ -5,11 +5,20 @@ scalar UuidV4
 # scalar Md5
 # scalar SimpleID
 
+#type UUID {
+#	uuid: UuidV4
+#	validUuid(id: String!): Boolean
+#	echoUuid(id: UuidV4!): UuidV4
+#}
+
+type Util {
+		uuid: UuidV4
+		validUuid(idOrNot: String!): Boolean
+		echoUuid(id: UuidV4!): UuidV4
+}
 
 type Query {
-	uuid: UuidV4
-	validUuid(id: String): Boolean
-	echoUuid(id: UuidV4): UuidV4
+	utils:Util
 }
 
 schema {

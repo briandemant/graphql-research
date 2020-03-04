@@ -16,17 +16,21 @@
 
 // console.log(user.name)
 
-import { GraphQLServer } from 'graphql-yoga'
+import { ApolloServer } from 'apollo-server'
 import { default as typeDefs } from './schema'
 import { default as resolvers } from './resolvers'
 
 const options = { port: 2300 }
 
-const server = new GraphQLServer({
+const server = new ApolloServer({
 	typeDefs,
 	resolvers,
 })
 
-server
-	.start(options, () => console.log(`Server is running ⚡ on localhost:${options.port}`))
-	.catch(err => console.error('connection Error', err))
+server.listen(options).then(({ url }: any) => {
+	console.log(`🚀 Server ready at ${url}`)
+})
+
+// server
+// 	.start(options, () => console.log(`Server is running ⚡ on localhost:${options.port}`))
+// 	.catch(err => console.error('connection Error', err))

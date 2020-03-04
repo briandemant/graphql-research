@@ -39,6 +39,7 @@ generates:
       - add: |
           /* eslint-disable */
           // PLEASE DO NOT EDIT
+          export type ResolverType<TObj, TProp extends keyof TObj> = TObj[TProp]
       - typescript
       - typescript-resolvers
 

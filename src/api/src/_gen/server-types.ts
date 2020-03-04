@@ -1,10 +1,13 @@
 /* eslint-disable */
 // PLEASE DO NOT EDIT
+export type ResolverType<TObj, TProp extends keyof TObj> = TObj[TProp]
 
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
 import { ValidDate, SimpleID, NonEmptyString, UuidV4, Md5 } from '@demo/lib'
 import { Context } from '../schema/context'
 export type Maybe<T> = T | null
+export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } &
+	{ [P in K]-?: NonNullable<T[P]> }
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -13,28 +16,22 @@ export type Scalars = {
 	Boolean: boolean
 	Int: number
 	Float: number
+	DateTime: ValidDate
 	/**
 	 * scalar NonEmptyString
 	 * scalar Slug
 	 */
 	UuidV4: UuidV4
-	DateTime: ValidDate
 	ListingXXX: any
 	UserXXX: any
 }
 
 export type GQLQuery = {
-	readonly echoUuid: Maybe<Scalars['UuidV4']>
 	readonly isFuture: Maybe<Scalars['Boolean']>
 	readonly isPast: Maybe<Scalars['Boolean']>
 	readonly now: Maybe<Scalars['DateTime']>
-	readonly uuid: Maybe<Scalars['UuidV4']>
-	readonly validUuid: Maybe<Scalars['Boolean']>
+	readonly utils: Maybe<GQLUtil>
 	readonly welcome: Scalars['String']
-}
-
-export type GQLQueryEchoUuidArgs = {
-	id: Maybe<Scalars['UuidV4']>
 }
 
 export type GQLQueryIsFutureArgs = {
@@ -45,12 +42,22 @@ export type GQLQueryIsPastArgs = {
 	date: Maybe<Scalars['DateTime']>
 }
 
-export type GQLQueryValidUuidArgs = {
-	id: Maybe<Scalars['String']>
-}
-
 export type GQLQueryWelcomeArgs = {
 	name: Maybe<Scalars['String']>
+}
+
+export type GQLUtil = {
+	readonly uuid: Maybe<Scalars['UuidV4']>
+	readonly validUuid: Maybe<Scalars['Boolean']>
+	readonly echoUuid: Maybe<Scalars['UuidV4']>
+}
+
+export type GQLUtilValidUuidArgs = {
+	idOrNot: Scalars['String']
+}
+
+export type GQLUtilEchoUuidArgs = {
+	id: Scalars['UuidV4']
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T
@@ -117,9 +124,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type GQLResolversTypes = {
 	Query: ResolverTypeWrapper<{}>
-	UuidV4: ResolverTypeWrapper<UuidV4>
 	DateTime: ResolverTypeWrapper<ValidDate>
 	Boolean: ResolverTypeWrapper<any>
+	Util: ResolverTypeWrapper<any>
+	UuidV4: ResolverTypeWrapper<UuidV4>
 	String: ResolverTypeWrapper<string>
 	ListingXXX: ResolverTypeWrapper<any>
 	UserXXX: ResolverTypeWrapper<any>
@@ -128,9 +136,10 @@ export type GQLResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type GQLResolversParentTypes = {
 	Query: {}
-	UuidV4: UuidV4
 	DateTime: ValidDate
 	Boolean: any
+	Util: any
+	UuidV4: UuidV4
 	String: string
 	ListingXXX: any
 	UserXXX: any
@@ -148,17 +157,35 @@ export type GQLQueryResolvers<
 	ContextType = Context,
 	ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']
 > = {
-	echoUuid: Resolver<Maybe<GQLResolversTypes['UuidV4']>, ParentType, ContextType, GQLQueryEchoUuidArgs>
 	isFuture: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, GQLQueryIsFutureArgs>
 	isPast: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, GQLQueryIsPastArgs>
 	now: Resolver<Maybe<GQLResolversTypes['DateTime']>, ParentType, ContextType>
-	uuid: Resolver<Maybe<GQLResolversTypes['UuidV4']>, ParentType, ContextType>
-	validUuid: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, GQLQueryValidUuidArgs>
+	utils: Resolver<Maybe<GQLResolversTypes['Util']>, ParentType, ContextType>
 	welcome: Resolver<GQLResolversTypes['String'], ParentType, ContextType, GQLQueryWelcomeArgs>
 }
 
 export interface GQLUserXxxScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['UserXXX'], any> {
 	name: 'UserXXX'
+}
+
+export type GQLUtilResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['Util'] = GQLResolversParentTypes['Util']
+> = {
+	uuid: Resolver<Maybe<GQLResolversTypes['UuidV4']>, ParentType, ContextType>
+	validUuid: Resolver<
+		Maybe<GQLResolversTypes['Boolean']>,
+		ParentType,
+		ContextType,
+		RequireFields<GQLUtilValidUuidArgs, 'idOrNot'>
+	>
+	echoUuid: Resolver<
+		Maybe<GQLResolversTypes['UuidV4']>,
+		ParentType,
+		ContextType,
+		RequireFields<GQLUtilEchoUuidArgs, 'id'>
+	>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
 export interface GQLUuidV4ScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['UuidV4'], any> {
@@ -170,5 +197,6 @@ export type GQLResolvers<ContextType = Context> = {
 	ListingXXX: GraphQLScalarType
 	Query: GQLQueryResolvers<ContextType>
 	UserXXX: GraphQLScalarType
+	Util: GQLUtilResolvers<ContextType>
 	UuidV4: GraphQLScalarType
 }

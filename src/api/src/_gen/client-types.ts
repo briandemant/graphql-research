@@ -10,28 +10,22 @@ export type Scalars = {
 	Boolean: boolean
 	Int: number
 	Float: number
+	DateTime: Date
 	/**
 	 * scalar NonEmptyString
 	 * scalar Slug
 	 */
 	UuidV4: string
-	DateTime: Date
 	ListingXXX: any
 	UserXXX: any
 }
 
 export type Query = {
-	readonly echoUuid: Maybe<Scalars['UuidV4']>
 	readonly isFuture: Maybe<Scalars['Boolean']>
 	readonly isPast: Maybe<Scalars['Boolean']>
 	readonly now: Maybe<Scalars['DateTime']>
-	readonly uuid: Maybe<Scalars['UuidV4']>
-	readonly validUuid: Maybe<Scalars['Boolean']>
+	readonly utils: Maybe<Util>
 	readonly welcome: Scalars['String']
-}
-
-export type QueryEchoUuidArgs = {
-	id: Maybe<Scalars['UuidV4']>
 }
 
 export type QueryIsFutureArgs = {
@@ -42,10 +36,20 @@ export type QueryIsPastArgs = {
 	date: Maybe<Scalars['DateTime']>
 }
 
-export type QueryValidUuidArgs = {
-	id: Maybe<Scalars['String']>
-}
-
 export type QueryWelcomeArgs = {
 	name: Maybe<Scalars['String']>
+}
+
+export type Util = {
+	readonly uuid: Maybe<Scalars['UuidV4']>
+	readonly validUuid: Maybe<Scalars['Boolean']>
+	readonly echoUuid: Maybe<Scalars['UuidV4']>
+}
+
+export type UtilValidUuidArgs = {
+	idOrNot: Scalars['String']
+}
+
+export type UtilEchoUuidArgs = {
+	id: Scalars['UuidV4']
 }

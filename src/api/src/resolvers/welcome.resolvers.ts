@@ -9,4 +9,4 @@ const welcome: WelcomeQueryResolver = (parent, { name }, context, info) => {
 	return `hello, 'stranger'`
 }
 
-export const resolvers = { Query: { welcome } }
+export const resolvers = { Query: { welcome  } }

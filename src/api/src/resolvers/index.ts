@@ -5,11 +5,12 @@ import { resolvers as uuidResolvers } from './uuid.resolvers'
 import { resolvers as nowResolvers } from './now.resolvers'
 import { merge } from 'lodash'
 
-console.log('welcome', welcomeResolvers)
+// console.log('welcome', welcomeResolvers)
 console.log('uuid', uuidResolvers)
 console.log('combined', merge([welcomeResolvers, uuidResolvers, nowResolvers]))
 
-let allResolvers: GQLResolvers = merge(welcomeResolvers, uuidResolvers, nowResolvers, {
+let allResolvers = merge(welcomeResolvers, uuidResolvers, nowResolvers, {
+// let allResolvers: GQLResolvers = merge(welcomeResolvers, uuidResolvers, nowResolvers, {
 	ListingXXX: UuidV4ScalarType,
 	UserXXX: UuidV4ScalarType,
 	UuidV4: UuidV4ScalarType,

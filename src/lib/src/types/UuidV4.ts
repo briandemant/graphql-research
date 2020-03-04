@@ -19,15 +19,7 @@ export const UuidV4ScalarType = new GraphQLScalarType({
 		} catch (e) {
 			return null
 		}
-	},
-	// parseLiteral(ast) {
-	// 	console.log('ast', ast)
-	// 	if (ast.kind === "StringValue")  {
-	// 		return new UuidV4(ast.value)
-	// 	} else {
-	// 		throw UuidV4.ERR_INVALID_UUID
-	// 	}
-	// },
+	}
 })
 
 export class UuidV4 {

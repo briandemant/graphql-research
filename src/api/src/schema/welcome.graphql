@@ -1,16 +1,13 @@
+
+
 extend type Query {
 	welcome(name: String): String!
 
 	now: DateTime
 
-		isPast(date: DateTime): Boolean
-		isFuture(date: DateTime): Boolean
+	isPast(date: DateTime): Boolean
+	isFuture(date: DateTime): Boolean
 }
-
-
-
-
-
 
 #interface MutationResponse {
 #	code: String!
