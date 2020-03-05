@@ -1,7 +1,7 @@
 import { ListingClient } from './../clients/'
 import { UserClient } from './../clients/'
 
-import { GQLQueryResolvers } from '../_gen/server-types'
+import { GQLListingResolvers, GQLQueryResolvers, GQLUserResolvers } from '../_gen/server-types'
 
 type ListingQueryResolver = GQLQueryResolvers['listing']
 
@@ -11,6 +11,8 @@ const listing: ListingQueryResolver = async (parent, { id }, context, info) => {
 	let listing = await new ListingClient().findById(id)
 	if (listing.ok) {
 		return listing.value
+
+		// DONT DO THIS!!! LET USERRESOLVER DO THE WORK
 		// let owner = await new UserClient().findById(listing.value.owner)
 		// return {
 		// 	...listing.value,
@@ -21,4 +23,41 @@ const listing: ListingQueryResolver = async (parent, { id }, context, info) => {
 	return null
 }
 
-export const resolvers = { Query: { listing } }
+const baseResolvers: GQLListingResolvers = {
+	id: async (parent, args, context, info) => {
+		return parent.id
+	},
+	title: async (parent, args, context, info) => {
+		if (parent.name) {
+			console.log('name used')
+			return parent.name
+		} else if (parent.id) {
+			console.log('name : id used')
+			let listing = await new ListingClient().findById(parent.id)
+			if (listing.ok) {
+				return listing.value.title
+			}
+		}
+	},
+	owner: async (parent, args, context, info) => {
+		if (parent.owner) {
+			let user = await new UserClient().findById(parent.owner)
+			if (user.ok) {
+				return user.value
+			}
+		} else if (parent.id) {
+			let listing = await new ListingClient().findById(parent.id)
+			if (listing.ok) {
+				let user = await new UserClient().findById(listing.value.owner)
+				if (user.ok) {
+					return user.value
+				}
+			}
+		}
+	},
+}
+
+export const resolvers = {
+	Query: { listing },
+	Listing: baseResolvers,
+}

@@ -51,11 +51,27 @@ export class ListingClient {
 		return fromJsonToListing(listings.filter(u => u.id == id.toString())[0])
 	}
 
-	async findOne(query: any) {
-		return fromJsonToListing(listings[0])
+	async findOne(filter: (item: Readonly<DataListing>) => boolean): Promise<Result<Readonly<DataListing>>> {
+		const list = await this.findAll(filter)
+		if (list.ok) {
+			if (list.value.length > 0) return ok(list.value[0])
+			else return ok({} as Readonly<DataListing>)
+		}
+		return list
 	}
 
-	async findAll(query: any) {
-		return listings.map(fromJsonToListing)
+	async findAll(filter: (item: Readonly<DataListing>) => boolean): Promise<Result<Readonly<DataListing>[]>> {
+		const list = listings.map(fromJsonToListing)
+		console.log('list', list)
+
+		const error = list.reduce((prev, i) => prev || !i.ok, false)
+		if (!error) {
+			let mapped = list.map(l => (l.ok ? l.value : null)) as Readonly<DataListing>[]
+			console.log('mapped', mapped)
+			console.log('filter', mapped.filter(filter))
+			return ok((mapped ).filter(filter))
+		}
+
+		return fail("i can't do that")
 	}
 }

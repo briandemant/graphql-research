@@ -1,9 +1,9 @@
 type User {
 	id: SimpleID!
 	name: NonEmptyString!
+	listings: [Listing!]!
 	# description: String!
 	# createdAt: ValidDate!
-	# listings: [Listing!]!
 }
 
 extend type Query {

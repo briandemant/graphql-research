@@ -1,7 +1,9 @@
-import { ApolloServer, gql } from 'apollo-server'
+import { ApolloServer } from 'apollo-server'
+import express from 'express'
 import { DeprecatedDirective } from './directives'
 import { default as typeDefs } from './schema'
 import { default as resolvers } from './resolvers'
+import { contextFn } from './schema/context'
 
 // const typeDefs = `
 // 	directive @key(fields: String|[String]) on OBJECT | FIELD_DEFINITION
@@ -35,6 +37,7 @@ import { default as resolvers } from './resolvers'
 // 	},
 // }
 
+
 const { buildFederatedSchema } = require('@apollo/federation')
 
 const options = { port: 2300 }
@@ -46,6 +49,7 @@ const server = new ApolloServer({
 		deprecated: DeprecatedDirective,
 	},
 	tracing: true,
+	context: contextFn,
 })
 
 server.listen(options).then(({ url }: any) => {

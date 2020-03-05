@@ -70,6 +70,7 @@ export enum GQLRole {
 export type GQLUser = {
 	readonly id: Scalars['SimpleID']
 	readonly name: Scalars['NonEmptyString']
+	readonly listings: ReadonlyArray<GQLListing>
 }
 
 export type GQLUtil = {
@@ -235,6 +236,7 @@ export type GQLUserResolvers<
 > = {
 	id: Resolver<GQLResolversTypes['SimpleID'], ParentType, ContextType>
 	name: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	listings: Resolver<ReadonlyArray<GQLResolversTypes['Listing']>, ParentType, ContextType>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 

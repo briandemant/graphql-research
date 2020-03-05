@@ -63,6 +63,7 @@ export enum Role {
 export type User = {
 	readonly id: Scalars['SimpleID']
 	readonly name: Scalars['NonEmptyString']
+	readonly listings: ReadonlyArray<Listing>
 }
 
 export type Util = {
