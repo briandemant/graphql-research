@@ -6,8 +6,6 @@ import { GQLListingResolvers, GQLQueryResolvers, GQLUserResolvers } from '../_ge
 type ListingQueryResolver = GQLQueryResolvers['listing']
 
 const listing: ListingQueryResolver = async (parent, { id }, context, info) => {
-	console.log(`looking for listing by id : ${id}`)
-
 	let listing = await new ListingClient().findById(id)
 	if (listing.ok) {
 		return listing.value
@@ -29,10 +27,8 @@ const baseResolvers: GQLListingResolvers = {
 	},
 	title: async (parent, args, context, info) => {
 		if (parent.name) {
-			console.log('name used')
 			return parent.name
 		} else if (parent.id) {
-			console.log('name : id used')
 			let listing = await new ListingClient().findById(parent.id)
 			if (listing.ok) {
 				return listing.value.title

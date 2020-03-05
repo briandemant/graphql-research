@@ -1,5 +1,6 @@
-const md5 = require('md5')
+import { GraphQLScalarType } from 'graphql'
 
+const md5 = require('md5')
 
 export class Md5 {
 	private static readonly ERR_INVALID_HASH = 'invalid md5'
@@ -15,4 +16,23 @@ export class Md5 {
 	toString() {
 		return this.hash
 	}
+
+	serialize() {
+		return this.hash
+	}
 }
+
+export const Md5StringType = new GraphQLScalarType({
+	name: 'Md5',
+	description: 'Just a string represents a MD5 Sum',
+	serialize(value) {
+		if (value instanceof Md5) {
+			return value.serialize()
+		} else {
+			return new Md5(value).serialize()
+		}
+	},
+	parseValue(value) {
+		return new Md5(value)
+	},
+})

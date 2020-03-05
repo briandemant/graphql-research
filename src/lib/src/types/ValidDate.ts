@@ -1,4 +1,4 @@
-import { GraphQLScalarType } from 'graphql'
+import { GraphQLScalarType, ValueNode } from 'graphql'
 import { UuidV4 } from './UuidV4'
 
 export class ValidDate {
@@ -37,7 +37,6 @@ export class ValidDate {
 			throw new Error(ValidDate.ERR_INVALID_DATE)
 		}
 		this.date = d
-		console.log(this.date.toISOString())
 	}
 
 	isLargerThan(date: ValidDate) {
@@ -48,16 +47,12 @@ export class ValidDate {
 		return this.date.getTime()
 	}
 
-	toISOString() {
-		return this.date.toISOString()
+	toDate(): Date {
+		return new Date(this.date.getTime())
 	}
 
 	toString() {
-		return this.date.toString()
-	}
-
-	toDate(): Date {
-		return new Date(this.date.getTime())
+		return this.date.toISOString()
 	}
 
 	serialize() {
@@ -69,29 +64,13 @@ export const DateTimeScalarType = new GraphQLScalarType({
 	name: 'DateTime',
 	description: 'DateTime is a ISO8601 date',
 	serialize(value) {
-		console.log('serialize', value)
-		try {
+		if (value instanceof ValidDate) {
 			return value.serialize()
-		} catch (e) {
-			console.log(e.message)
+		} else {
+			return new ValidDate(value).serialize()
 		}
 	},
 	parseValue(value) {
-		console.log('parseValue', value)
-		// try {
 		return new ValidDate(value)
-		// } catch (e) {
-		// 	return 'blah!'
-		// }
-	},
-	parseLiteral(ast) {
-		console.log('ast', ast)
-		if (ast.kind === 'StringValue') {
-			return new ValidDate(ast.value)
-		} else if (ast.kind === 'IntValue') {
-			return new ValidDate(parseInt(ast.value, 10))
-		} else {
-			throw ValidDate.ERR_INVALID_DATE
-		}
 	},
 })
