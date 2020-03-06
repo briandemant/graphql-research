@@ -1,7 +1,7 @@
 import { GraphQLScalarType } from 'graphql'
 
 export class NonEmptyString {
-	private static readonly ERR_EMPTY_STRING = 'empty string'
+	private static readonly ERR_EMPTY_STRING = 'Empty String'
 
 	private readonly str: string
 

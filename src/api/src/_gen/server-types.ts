@@ -28,7 +28,7 @@ export type Scalars = {
 export type GQLListing = {
 	readonly id: Scalars['SimpleID']
 	readonly title: Scalars['NonEmptyString']
-	/** slug: Slug! */
+	readonly slug: Scalars['NonEmptyString']
 	readonly owner: GQLUser
 }
 
@@ -71,6 +71,7 @@ export type GQLUser = {
 	readonly id: Scalars['SimpleID']
 	readonly name: Scalars['NonEmptyString']
 	readonly listings: ReadonlyArray<GQLListing>
+	readonly luckyNumber: Maybe<Scalars['Int']>
 }
 
 export type GQLUtil = {
@@ -159,6 +160,7 @@ export type GQLResolversTypes = {
 	Listing: ResolverTypeWrapper<any>
 	NonEmptyString: ResolverTypeWrapper<NonEmptyString>
 	User: ResolverTypeWrapper<any>
+	Int: ResolverTypeWrapper<any>
 	Util: ResolverTypeWrapper<any>
 	UuidV4: ResolverTypeWrapper<UuidV4>
 	String: ResolverTypeWrapper<string>
@@ -174,6 +176,7 @@ export type GQLResolversParentTypes = {
 	Listing: any
 	NonEmptyString: NonEmptyString
 	User: any
+	Int: any
 	Util: any
 	UuidV4: UuidV4
 	String: string
@@ -199,6 +202,7 @@ export type GQLListingResolvers<
 > = {
 	id: Resolver<GQLResolversTypes['SimpleID'], ParentType, ContextType>
 	title: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	slug: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
 	owner: Resolver<GQLResolversTypes['User'], ParentType, ContextType>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
@@ -237,6 +241,7 @@ export type GQLUserResolvers<
 	id: Resolver<GQLResolversTypes['SimpleID'], ParentType, ContextType>
 	name: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
 	listings: Resolver<ReadonlyArray<GQLResolversTypes['Listing']>, ParentType, ContextType>
+	luckyNumber: Resolver<Maybe<GQLResolversTypes['Int']>, ParentType, ContextType>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 

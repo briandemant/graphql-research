@@ -1,7 +1,7 @@
 type Listing {
 	id: SimpleID!
 	title: NonEmptyString!
-	# 	slug: Slug!
+	slug: NonEmptyString!
 	owner: User!
 }
 

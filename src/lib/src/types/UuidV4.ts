@@ -4,7 +4,7 @@ import { v4 } from 'uuid'
 const isUUID = require('is-uuid')
 
 export class UuidV4 {
-	public static readonly ERR_INVALID_UUID = 'invalid uuid'
+	public static readonly ERR_INVALID_UUID = 'Invalid UUID'
 
 	static generate = () => new UuidV4(v4())
 	static validate: (uuid: string) => boolean = (uuid: string) => isUUID.v4(uuid)

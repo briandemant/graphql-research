@@ -21,7 +21,7 @@ export type Scalars = {
 export type Listing = {
 	readonly id: Scalars['SimpleID']
 	readonly title: Scalars['NonEmptyString']
-	/** slug: Slug! */
+	readonly slug: Scalars['NonEmptyString']
 	readonly owner: User
 }
 
@@ -64,6 +64,7 @@ export type User = {
 	readonly id: Scalars['SimpleID']
 	readonly name: Scalars['NonEmptyString']
 	readonly listings: ReadonlyArray<Listing>
+	readonly luckyNumber: Maybe<Scalars['Int']>
 }
 
 export type Util = {

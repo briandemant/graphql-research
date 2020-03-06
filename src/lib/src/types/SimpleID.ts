@@ -3,7 +3,7 @@ import { GraphQLScalarType } from 'graphql'
 let counter = 0
 
 export class SimpleID {
-	private static readonly ERR_INVALID_ID = 'invalid Simple ID'
+	private static readonly ERR_INVALID_ID = 'Invalid Simple ID'
 
 	static generate = () => `ID#${++counter}`
 	static validate: (id: string) => boolean = (id: string) => !!id.match(/^ID#[0-9]$/)

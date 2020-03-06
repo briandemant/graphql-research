@@ -34,6 +34,9 @@ const baseResolvers: GQLUserResolvers = {
 		}
 		return []
 	},
+	luckyNumber(parent, args, context, info) {
+		return Math.round(Math.random() * 100)
+	},
 }
 
 export const resolvers = {

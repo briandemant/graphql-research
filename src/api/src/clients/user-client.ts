@@ -1,4 +1,4 @@
-import { UuidV4, NonEmptyString, SimpleID } from '@demo/lib'
+import { UuidV4, NonEmptyString, SimpleID, sleep } from '@demo/lib'
 
 export interface DataUser {
 	id: SimpleID
@@ -45,14 +45,13 @@ const fromJsonToUser = (user: JsonUser): Result<Readonly<DataUser>> => {
 
 export class UserClient {
 	async findById(id: SimpleID) {
+		await sleep(0.02)
 		return fromJsonToUser(users.filter(u => u.id == id.toString())[0])
 	}
 
-	async findOne(query: any) {
-		return fromJsonToUser(users[0])
-	}
 
 	async findAll(query: any) {
+		await sleep(0.02)
 		return users.map(fromJsonToUser)
 	}
 }

@@ -6,7 +6,6 @@ import { resolvers as nowResolvers } from './now.resolvers'
 import { resolvers as listingResolvers } from './listing.resolvers'
 import { resolvers as userResolvers } from './user.resolvers'
 import { flatMap, uniq } from 'lodash'
-const { buildFederatedSchema } = require('@apollo/federation');
 
 let combined = [welcomeResolvers, utilResolvers, nowResolvers, listingResolvers, userResolvers]
 

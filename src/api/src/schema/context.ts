@@ -8,7 +8,9 @@ export interface Context {
 		sessionId?: string
 	}
 	trace: {
-		'x-request-id': string
+		requestId: string
+		spanId?: string
+		path: string[]
 	}
 }
 
@@ -34,8 +36,6 @@ export let contextFn = async ({ req, res }: ExpressContext): Promise<Context> =>
 			authenticated: false,
 			roles: [],
 		},
-		trace: {
-			'x-request-id': requestId,
-		},
+		trace: { requestId, path: [] },
 	}
 }

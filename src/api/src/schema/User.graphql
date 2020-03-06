@@ -2,6 +2,7 @@ type User {
 	id: SimpleID!
 	name: NonEmptyString!
 	listings: [Listing!]!
+	luckyNumber: Int
 	# description: String!
 	# createdAt: ValidDate!
 }

@@ -3,7 +3,7 @@ import { GraphQLScalarType } from 'graphql'
 const md5 = require('md5')
 
 export class Md5 {
-	private static readonly ERR_INVALID_HASH = 'invalid md5'
+	private static readonly ERR_INVALID_HASH = 'Invalid MD5 hash'
 
 	static fromString = (s: string) => new Md5(md5(s))
 

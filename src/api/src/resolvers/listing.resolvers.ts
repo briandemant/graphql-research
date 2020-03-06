@@ -1,3 +1,4 @@
+import { NonEmptyString } from '@demo/lib'
 import { ListingClient } from './../clients/'
 import { UserClient } from './../clients/'
 
@@ -24,6 +25,9 @@ const listing: ListingQueryResolver = async (parent, { id }, context, info) => {
 const baseResolvers: GQLListingResolvers = {
 	id: async (parent, args, context, info) => {
 		return parent.id
+	},
+	slug: async (parent, args, context, info) => {
+		return new NonEmptyString(`/listing/${parent.id}`)
 	},
 	title: async (parent, args, context, info) => {
 		if (parent.name) {
