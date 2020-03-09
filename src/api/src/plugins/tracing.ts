@@ -39,11 +39,14 @@ export const TracingPlugin = {
 				if (reqCtx.response && reqCtx.response.extensions) {
 					let tracing: TracingFormat = reqCtx.response.extensions.tracing
 					console.log('tracing', tracing)
-					// we have access to the tracing data
-					// which can be used to log:
-					//  * slow resolvers
-					//  * resolvers in use (by which client)
-					//  * ???
+
+					if (process.env['NODE_ENV'] !== 'dev') {
+						delete reqCtx.response.extensions.tracing
+						// emit to metrics queue to be processed for
+						//  * slow resolvers
+						//  * resolvers in use (by which client)
+						//  * ???
+					}
 				}
 			},
 		}
@@ -53,17 +56,4 @@ export const TracingPlugin = {
 		// saved so we can see when a schema change was activated
 		schemaHash = service.schemaHash
 	},
-}
-
-export const tracingMiddleware = async (
-	resolve: any,
-	parent: any,
-	args: any,
-	context: Context,
-	info: GraphQLResolveInfo
-) => {
-	// just a noop for now
-	let result = await resolve(parent, args, context, info)
-
-	return result
 }

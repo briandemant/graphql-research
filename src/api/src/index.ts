@@ -2,7 +2,7 @@ import { ApolloServer, makeExecutableSchema } from 'apollo-server'
 import { GraphQLResolveInfo } from 'graphql'
 import { applyMiddleware } from 'graphql-middleware'
 import { DeprecatedDirective } from './directives'
-import { ExamplePlugin, tracingMiddleware, TracingPlugin } from './plugins/'
+import { TracingPlugin } from './plugins/'
 import { default as resolvers } from './resolvers'
 import { default as typeDefs } from './schema'
 import { Context, contextFn } from './schema/context'
@@ -49,7 +49,7 @@ const schema = makeExecutableSchema({
 })
 
 const server = new ApolloServer({
-	schema: applyMiddleware(schema, tracingMiddleware, logInput, logResult),
+	schema: applyMiddleware(schema, logInput, logResult),
 	typeDefs,
 	resolvers,
 	schemaDirectives: {
