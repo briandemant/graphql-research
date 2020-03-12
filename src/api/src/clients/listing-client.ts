@@ -1,4 +1,7 @@
 import { NonEmptyString, SimpleID, sleep } from '@demo/lib'
+import * as faker from 'faker'
+
+faker.seed(13)
 
 export interface DataListing {
 	id: SimpleID
@@ -29,12 +32,20 @@ function fail<E>(error: E): ResultError<E> {
 	return { ok: false, error }
 }
 
-const listings: JsonListing[] = [
-	{ id: SimpleID.fromInt(3).toString(), owner: SimpleID.fromInt(1).toString(), title: 'Shoe' },
-	{ id: SimpleID.fromInt(4).toString(), owner: SimpleID.fromInt(1).toString(), title: 'Lego' },
-	{ id: SimpleID.fromInt(5).toString(), owner: SimpleID.fromInt(2).toString(), title: 'Guitar' },
-]
+const listings: JsonListing[] = []
 
+for (let u = 0; u < 10; u++) {
+	let items = faker.random.number({ min: 1, max: 10 })
+	let owner = SimpleID.fromInt(u, 'US').toString()
+	for (let l = 0; l < items; l++) {
+		listings.push({
+			id: SimpleID.generate('LI'),
+			owner,
+			title: faker.commerce.productName(),
+		})
+	}
+}
+// console.log(listings)
 const fromJsonToListing = (listing: JsonListing): Result<Readonly<DataListing>> => {
 	try {
 		return ok({

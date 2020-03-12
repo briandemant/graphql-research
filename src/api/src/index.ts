@@ -19,26 +19,28 @@ const logInput = async (resolve: any, parent: any, args: any, context: Context, 
 		path: [...context.trace.path, id],
 	}
 
-	console.log(`${id} -`)
-	console.log(`${id} name`, info.fieldName)
+	// console.log(`${id} -`)
+	const alias = info.path.key != info.fieldName ? ` as ${info.path.key}` : ''
+	if (!info.path.prev) {
+		console.log(`\n\n${id} start: ${info.parentType}.${info.fieldName}${alias}`)
+	} else {
+		console.log(`${id} resolver: ${info.parentType}.${info.fieldName}${alias}`)
+	}
 	// console.log(`${id} path`, info.path)
-	console.log(`${id} tpath`, subTrace.path.join('/'))
+	// console.log(`${id} tpath`, subTrace.path.join('/'))
 	// console.log(`${id} parent`, parent)
 	// console.log(`${id} args`, args)
-	console.log(`${id} trace`, context.trace)
-	console.log(`${id} info`, info)
+	// console.log(`${id} trace`, context.trace)
+	// console.log(`${id} info`, info)
 	const result = await resolve(parent, args, { ...context, trace: subTrace }, info)
-	console.log(`${id} --`)
+	// console.log(`${id} --`)
 	return result
 }
 
 const logResult = async (resolve: any, parent: any, args: any, context: Context, info: GraphQLResolveInfo) => {
-	console.log(`${context.trace.spanId} Result:`)
 	const result = await resolve(parent, args, context, info)
-	console.log(`${context.trace.spanId}       ${JSON.stringify(result)}`)
-	if (!info.path.prev) {
-		console.log(info.parentType, info.path)
-	}
+	console.log(`${context.trace.spanId} Result:`, result)
+
 	return result
 }
 

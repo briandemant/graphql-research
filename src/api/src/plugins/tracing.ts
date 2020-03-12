@@ -35,10 +35,10 @@ export const TracingPlugin = {
 
 		return {
 			async willSendResponse(reqCtx) {
-				console.log('willSendResponse', reqCtx)
+				// console.log('willSendResponse', reqCtx)
 				if (reqCtx.response && reqCtx.response.extensions) {
 					let tracing: TracingFormat = reqCtx.response.extensions.tracing
-					console.log('tracing', tracing)
+					// console.log('tracing', tracing)
 
 					if (process.env['NODE_ENV'] !== 'dev') {
 						delete reqCtx.response.extensions.tracing

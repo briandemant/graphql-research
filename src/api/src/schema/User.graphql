@@ -1,14 +1,214 @@
-type User {
-	id: SimpleID!
-	name: NonEmptyString!
-	listings: [Listing!]!
-	luckyNumber: Int
-	# description: String!
-	# createdAt: ValidDate!
+input PagePaginationParams {
+    limit: Int
+    page:Int
 }
 
-extend type Query {
-	# # 	users: [User!]!
-	user(id: SimpleID!): User
-	# 	user(id: ID!): User
+#input CursorPaginationParams {
+#    limit: Int
+#    after: String
+#    before: String
+#}
+#
+#input BothPaginationParams {
+#    limit: Int
+#    page:Int
+#    after: String
+#    before: String
+#}
+
+#union CursorPaginationParams = AfterCursorPaginationParams | BeforeCursorPaginationParams
+#union FullPaginationParams = PagePaginationParams | CursorPaginationParams
+
+input SortParams {
+    orderBy: String
+    reverse: Boolean = false
 }
+
+#input LocationInput {
+#	range:Int!
+#	lat:Int!
+#	lng:Int!
+#}
+#
+#enum QueryOperator {
+#	GT
+#	LT
+#	GTEQ
+#	LTEQ
+#	EQ
+#}
+
+#input DateTimeQuery {
+#	date:Int!
+#	operator: QueryOperator
+#}
+#
+#input ListingFilterParams {
+#	and:Boolean = true
+#	term:String
+#	createdAt: DateTimeQuery
+#	updatedAt: DateTimeQuery
+#	nearLocation: LocationInput
+#}
+#
+enum ListingOrderEnum  {
+	CREATED_AT
+	UPDATED_AT
+}
+
+type User {
+    id: SimpleID!
+    name: NonEmptyString!
+    listings: [Listing!]!
+    listingConnection(term:String,pageignation:PagePaginationParams, sortBy:ListingOrderEnum , reverse : Boolean = false): ListingConnction!
+
+
+    # List of columns in the project
+    #
+    # Arguments
+    # first: Returns the first _n_ elements from the list.
+    # after: Returns the elements in the list that come after the
+    # specified cursor.
+    # last: Returns the last _n_ elements from the list.
+    # before: Returns the elements in the list that come before the
+    # specified cursor (id of connection).
+    #	favoriteListingsConnection(pageignation:PagePaginationParams, sortBy:SortParams): FavoriteListingConnction!
+    #	favoriteUsersConnection(pageignation:CursorPaginationParams, sortBy:SortParams): FavoriteListingConnction!
+    #	favoriteSearchConnection(pageignation:PaginationParams, sortBy:SortParams): FavoriteListingConnction!
+
+
+
+    #	listingList: ListingList!
+    luckyNumber: Int
+    # description: String!
+    # createdAt: ValidDate!
+}
+
+#type ListingList {
+#	totalCount: Int
+#	pageCount: Int
+#	nextPageCursor: String
+#	previousPageCursor: String
+#	lastPageCursor: String
+#	items: [Listing!]!
+#}
+
+#type PageInfoV2 {
+#	totalCount: Int
+#	pageCount: Int
+#	nextPageCursor: String
+#	previousPageCursor: String
+#	lastPageCursor: String
+#}
+
+type PageInfo {
+    # Indicates if there are more pages to fetch
+    hasNextPage: Boolean!
+    # Indicates if there are any pages prior to the current page
+    hasPreviousPage: Boolean!
+
+    # When paginating backwards, the cursor to continue
+    startCursor: String
+    # When paginating forwards, the cursor to continue
+    endCursor: String
+}
+
+#
+# supported cursor is the same as order key
+type ListingConnction {
+    # A list of edges (same as nodes but with cursor).
+    edges: [ListingEdge]
+    # A list of nodes.
+    nodes: [Listing]
+
+    # Information to aid in pagination.
+    pageInfo: PageInfo!
+    # Identifies the total count of items in the connection.
+    totalCount: Int!
+}
+
+type FavoriteListingConnction {
+    # A list of edges (same as nodes but with cursor).
+    edges: [FavoriteListingEdge]
+    # A list of nodes.
+    nodes: [Listing]
+    # Information to aid in pagination.
+    pageInfo: PageInfo!
+    # Identifies the total count of items in the connection.
+    totalCount: Int!
+}
+
+type FavoriteListingEdge {
+    node: Listing
+    createdAt: DateTime
+}
+
+type ListingFavorite {
+    listing: Listing!
+    user:User!
+    createdAt: DateTime
+}
+
+type ListingEdge {
+    node: Listing
+}
+
+
+
+
+extend type Query {
+    # # 	users: [User!]!
+    user(id: SimpleID!): User
+    # 	user(id: ID!): User
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# INGEN EXTRA DATA
+type ListingConnction {
+    # A list of nodes.
+    nodes: [Listing]
+
+    # Information to aid in pagination.
+    pageInfo: PageInfo!
+    # Identifies the total count of items in the connection.
+    totalCount: Int!
+}
+
+
+
+
+# EXTRA DATA v2
+type ListingConnction {
+    # A list of edges (same as nodes but with cursor).
+    edges: [ListingEdge]
+    # A list of nodes.
+    nodes: [Listing]
+
+    # Information to aid in pagination.
+    pageInfo: PageInfo!
+    # Identifies the total count of items in the connection.
+    totalCount: Int!
+}
+

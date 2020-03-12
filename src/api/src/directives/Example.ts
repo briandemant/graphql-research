@@ -48,3 +48,6 @@ class SomeDirective extends SchemaDirectiveVisitor {
 
 	}
 }
+
+// more:
+// InstrumentDirective : https://medium.com/the-graphqlhub/graphql-tour-directives-558dee4fa903

@@ -25,11 +25,84 @@ export type Scalars = {
 	UuidV4: UuidV4
 }
 
+export type GQLFavoriteListingConnction = {
+	/** A list of edges (same as nodes but with cursor). */
+	readonly edges: Maybe<ReadonlyArray<Maybe<GQLFavoriteListingEdge>>>
+	/** A list of nodes. */
+	readonly nodes: Maybe<ReadonlyArray<Maybe<GQLListing>>>
+	/** Information to aid in pagination. */
+	readonly pageInfo: GQLPageInfo
+	/** Identifies the total count of items in the connection. */
+	readonly totalCount: Scalars['Int']
+}
+
+export type GQLFavoriteListingEdge = {
+	readonly node: Maybe<GQLListing>
+	readonly createdAt: Maybe<Scalars['DateTime']>
+}
+
 export type GQLListing = {
 	readonly id: Scalars['SimpleID']
 	readonly title: Scalars['NonEmptyString']
 	readonly slug: Scalars['NonEmptyString']
 	readonly owner: GQLUser
+}
+
+/** EXTRA DATA v2 */
+export type GQLListingConnction = {
+	/** A list of edges (same as nodes but with cursor). */
+	readonly edges: Maybe<ReadonlyArray<Maybe<GQLListingEdge>>>
+	/** A list of nodes. */
+	readonly nodes: Maybe<ReadonlyArray<Maybe<GQLListing>>>
+	/** Information to aid in pagination. */
+	readonly pageInfo: GQLPageInfo
+	/** Identifies the total count of items in the connection. */
+	readonly totalCount: Scalars['Int']
+}
+
+export type GQLListingEdge = {
+	readonly node: Maybe<GQLListing>
+}
+
+export type GQLListingFavorite = {
+	readonly listing: GQLListing
+	readonly user: GQLUser
+	readonly createdAt: Maybe<Scalars['DateTime']>
+}
+
+/**
+ * input DateTimeQuery {
+ * 	date:Int!
+ * 	operator: QueryOperator
+ * }
+ *
+ * input ListingFilterParams {
+ * 	and:Boolean = true
+ * 	term:String
+ * 	createdAt: DateTimeQuery
+ * 	updatedAt: DateTimeQuery
+ * 	nearLocation: LocationInput
+ * }
+ */
+export enum GQLListingOrderEnum {
+	CreatedAt = 'CREATED_AT',
+	UpdatedAt = 'UPDATED_AT',
+}
+
+export type GQLPageInfo = {
+	/** Indicates if there are more pages to fetch */
+	readonly hasNextPage: Scalars['Boolean']
+	/** Indicates if there are any pages prior to the current page */
+	readonly hasPreviousPage: Scalars['Boolean']
+	/** When paginating backwards, the cursor to continue */
+	readonly startCursor: Maybe<Scalars['String']>
+	/** When paginating forwards, the cursor to continue */
+	readonly endCursor: Maybe<Scalars['String']>
+}
+
+export type GQLPagePaginationParams = {
+	readonly limit: Maybe<Scalars['Int']>
+	readonly page: Maybe<Scalars['Int']>
 }
 
 export type GQLQuery = {
@@ -67,11 +140,25 @@ export enum GQLRole {
 	User = 'USER',
 }
 
+export type GQLSortParams = {
+	readonly orderBy: Maybe<Scalars['String']>
+	readonly reverse: Maybe<Scalars['Boolean']>
+}
+
 export type GQLUser = {
 	readonly id: Scalars['SimpleID']
 	readonly name: Scalars['NonEmptyString']
 	readonly listings: ReadonlyArray<GQLListing>
+	readonly listingConnection: GQLListingConnction
+	/** listingList: ListingList! */
 	readonly luckyNumber: Maybe<Scalars['Int']>
+}
+
+export type GQLUserListingConnectionArgs = {
+	term: Maybe<Scalars['String']>
+	pageignation: Maybe<GQLPagePaginationParams>
+	sortBy: Maybe<GQLListingOrderEnum>
+	reverse?: Maybe<Scalars['Boolean']>
 }
 
 export type GQLUtil = {
@@ -160,11 +247,20 @@ export type GQLResolversTypes = {
 	Listing: ResolverTypeWrapper<any>
 	NonEmptyString: ResolverTypeWrapper<NonEmptyString>
 	User: ResolverTypeWrapper<any>
+	String: ResolverTypeWrapper<string>
+	PagePaginationParams: ResolverTypeWrapper<any>
 	Int: ResolverTypeWrapper<any>
+	ListingOrderEnum: ResolverTypeWrapper<any>
+	ListingConnction: ResolverTypeWrapper<any>
+	ListingEdge: ResolverTypeWrapper<any>
+	PageInfo: ResolverTypeWrapper<any>
 	Util: ResolverTypeWrapper<any>
 	UuidV4: ResolverTypeWrapper<UuidV4>
-	String: ResolverTypeWrapper<string>
 	Role: ResolverTypeWrapper<any>
+	SortParams: ResolverTypeWrapper<any>
+	FavoriteListingConnction: ResolverTypeWrapper<any>
+	FavoriteListingEdge: ResolverTypeWrapper<any>
+	ListingFavorite: ResolverTypeWrapper<any>
 }
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -176,11 +272,20 @@ export type GQLResolversParentTypes = {
 	Listing: any
 	NonEmptyString: NonEmptyString
 	User: any
+	String: string
+	PagePaginationParams: any
 	Int: any
+	ListingOrderEnum: any
+	ListingConnction: any
+	ListingEdge: any
+	PageInfo: any
 	Util: any
 	UuidV4: UuidV4
-	String: string
 	Role: any
+	SortParams: any
+	FavoriteListingConnction: any
+	FavoriteListingEdge: any
+	ListingFavorite: any
 }
 
 export type GQLAuthDirectiveArgs = { requires?: Maybe<GQLRole> }
@@ -196,6 +301,26 @@ export interface GQLDateTimeScalarConfig extends GraphQLScalarTypeConfig<GQLReso
 	name: 'DateTime'
 }
 
+export type GQLFavoriteListingConnctionResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['FavoriteListingConnction'] = GQLResolversParentTypes['FavoriteListingConnction']
+> = {
+	edges: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['FavoriteListingEdge']>>>, ParentType, ContextType>
+	nodes: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Listing']>>>, ParentType, ContextType>
+	pageInfo: Resolver<GQLResolversTypes['PageInfo'], ParentType, ContextType>
+	totalCount: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLFavoriteListingEdgeResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['FavoriteListingEdge'] = GQLResolversParentTypes['FavoriteListingEdge']
+> = {
+	node: Resolver<Maybe<GQLResolversTypes['Listing']>, ParentType, ContextType>
+	createdAt: Resolver<Maybe<GQLResolversTypes['DateTime']>, ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
 export type GQLListingResolvers<
 	ContextType = Context,
 	ParentType extends GQLResolversParentTypes['Listing'] = GQLResolversParentTypes['Listing']
@@ -207,9 +332,49 @@ export type GQLListingResolvers<
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
+export type GQLListingConnctionResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['ListingConnction'] = GQLResolversParentTypes['ListingConnction']
+> = {
+	edges: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['ListingEdge']>>>, ParentType, ContextType>
+	nodes: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Listing']>>>, ParentType, ContextType>
+	pageInfo: Resolver<GQLResolversTypes['PageInfo'], ParentType, ContextType>
+	totalCount: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLListingEdgeResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['ListingEdge'] = GQLResolversParentTypes['ListingEdge']
+> = {
+	node: Resolver<Maybe<GQLResolversTypes['Listing']>, ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLListingFavoriteResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['ListingFavorite'] = GQLResolversParentTypes['ListingFavorite']
+> = {
+	listing: Resolver<GQLResolversTypes['Listing'], ParentType, ContextType>
+	user: Resolver<GQLResolversTypes['User'], ParentType, ContextType>
+	createdAt: Resolver<Maybe<GQLResolversTypes['DateTime']>, ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
 export interface GQLNonEmptyStringScalarConfig
 	extends GraphQLScalarTypeConfig<GQLResolversTypes['NonEmptyString'], any> {
 	name: 'NonEmptyString'
+}
+
+export type GQLPageInfoResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['PageInfo'] = GQLResolversParentTypes['PageInfo']
+> = {
+	hasNextPage: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>
+	hasPreviousPage: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>
+	startCursor: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
+	endCursor: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
 export type GQLQueryResolvers<
@@ -241,6 +406,12 @@ export type GQLUserResolvers<
 	id: Resolver<GQLResolversTypes['SimpleID'], ParentType, ContextType>
 	name: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
 	listings: Resolver<ReadonlyArray<GQLResolversTypes['Listing']>, ParentType, ContextType>
+	listingConnection: Resolver<
+		GQLResolversTypes['ListingConnction'],
+		ParentType,
+		ContextType,
+		RequireFields<GQLUserListingConnectionArgs, 'reverse'>
+	>
 	luckyNumber: Resolver<Maybe<GQLResolversTypes['Int']>, ParentType, ContextType>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
@@ -273,8 +444,14 @@ export interface GQLUuidV4ScalarConfig extends GraphQLScalarTypeConfig<GQLResolv
 
 export type GQLResolvers<ContextType = Context> = {
 	DateTime: GraphQLScalarType
+	FavoriteListingConnction: GQLFavoriteListingConnctionResolvers<ContextType>
+	FavoriteListingEdge: GQLFavoriteListingEdgeResolvers<ContextType>
 	Listing: GQLListingResolvers<ContextType>
+	ListingConnction: GQLListingConnctionResolvers<ContextType>
+	ListingEdge: GQLListingEdgeResolvers<ContextType>
+	ListingFavorite: GQLListingFavoriteResolvers<ContextType>
 	NonEmptyString: GraphQLScalarType
+	PageInfo: GQLPageInfoResolvers<ContextType>
 	Query: GQLQueryResolvers<ContextType>
 	SimpleID: GraphQLScalarType
 	User: GQLUserResolvers<ContextType>

@@ -1,28 +1,52 @@
 import { GraphQLScalarType } from 'graphql'
 
-let counter = 0
+let counters: { [key: string]: number } = {
+	ID: 0,
+}
+
+function validateIdName(idName: string) {
+	if (idName.length != 2 && !idName.match(/[A-Z]/)) {
+		throw new Error(`id name must be 2 uppercase letters '${idName}' was provided`)
+	}
+}
+
+function ensureIdRange(idName: string, id: number) {
+	if (typeof counters[idName] == 'undefined' || counters[idName] < id) {
+		counters[idName] = id
+	}
+}
 
 export class SimpleID {
 	private static readonly ERR_INVALID_ID = 'Invalid Simple ID'
 
-	static generate = () => `ID#${++counter}`
-	static validate: (id: string) => boolean = (id: string) => !!id.match(/^ID#[0-9]$/)
-	static fromInt(id: number) {
-		if (counter < id) {
-			counter = id
-		}
-		return new SimpleID(`ID#${id}`)
+	static generate = (idName: string = 'ID') => {
+		validateIdName(idName)
+		ensureIdRange(idName, 0)
+		counters[idName] = counters[idName] + 1
+
+		return `${idName}#${counters[idName]}`
+	}
+
+	static fromInt(id: number, idName: string = 'ID') {
+		ensureIdRange(idName, id)
+		return new SimpleID(`${idName}#${id}`)
 	}
 
 	constructor(private readonly id: string) {
-		if (!SimpleID.validate(this.id)) {
+		if (id.length < 4 && !!id.match(/^[A-Z][A-Z]#[0-9]$/)) {
 			throw new Error(SimpleID.ERR_INVALID_ID)
 		}
+
+		ensureIdRange(id.substr(0, 2), parseInt(id.substr(3)))
 	}
 
-	equal(otherId: string | SimpleID) {
-		return this.id === otherId.toString()
+	equal(otherId: string | SimpleID | null | undefined) {
+		if (otherId) {
+			return this.id === otherId.toString()
+		}
+		return false
 	}
+
 	toString() {
 		return this.id
 	}
