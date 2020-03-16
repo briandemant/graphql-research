@@ -1,4 +1,4 @@
-import { GQLQueryResolvers, GQLUserResolvers, GQLPageInfo } from '../_gen/server-types'
+import { GQLQueryResolvers, GQLUserResolvers, GQLPageInfo, GQLListingConnection } from '../_gen/server-types'
 import { DataListing, ListingClient, UserClient } from './../clients/'
 
 type UserQueryResolver = GQLQueryResolvers['user']
@@ -34,35 +34,69 @@ const baseResolvers: GQLUserResolvers = {
 	},
 	listings: async ({ id }, args, context, info) => {
 		if (id) {
-			const all = await new ListingClient().findAll(l => l.owner === id.toString())
+			const all = await new ListingClient().findAll(l => l.owner == id.toString())
 			if (all.ok) {
 				return all.value.map(l => ({ id: l.id }))
 			}
 		}
 		return []
 	},
-	listingConnection: async ({ id }, { reverse, cursor }, context, info) => {
+	// TODO: Type the result
+	listingConnection: async ({ id }, { term, reverse, cursor }, context, info) => {
 		if (id) {
-			const all = await new ListingClient().findAll(l => l.owner === id.toString())
+			const all = await new ListingClient().findAll(l => l.owner == id.toString())
+
 			if (!all.ok) {
 				return []
 			}
-			console.log('###listingConnection:: ',all)
 
-			// pagination (TODO: the owner of the data is responsible for pagination logic)
-			const afterCursor = cursor && cursor.after ? parseInt(cursor.after.substr(3), 10) : 0
-			const beforeCursor = cursor && cursor.before ? parseInt(cursor.before.substr(3), 10) : 0
+			// TODO: the owner of the data is responsible for the pagination logic
+			const size = (cursor && cursor.size) || 5
+			const before = cursor && cursor.before
+			const beforeIdx = before && all.value.findIndex(el => el.id.toString() === before)
+			const after = cursor && cursor.after
+			const afterIdx = after && all.value.findIndex(el => el.id.toString() === after)
+			console.log('##IDX', afterIdx, beforeIdx)
 
-			// array slice for cursor based pagination
+			// TOOD: array slice for cursor based pagination?
+			let paginatedResults = all.value.sort(
+				// default sort by id ASC
+				(a, b) => parseInt(a.id.toString().substr(3), 10) - parseInt(b.id.toString().substr(3), 10)
+			)
+
+			// out of bounds
+			if ((beforeIdx && beforeIdx < 0) || (afterIdx && afterIdx < 0)) {
+				// throw error?
+				return []
+			}
+
+			// slice by cursor
+			if (beforeIdx) {
+				paginatedResults = paginatedResults.slice(0, beforeIdx)
+			}
+
+			if (afterIdx) {
+				paginatedResults = paginatedResults.slice(afterIdx + 1, paginatedResults.length)
+			}
+
+			// chunk it
+			paginatedResults = paginatedResults.slice(0, size)
+
+			// reverse it?
+			if(reverse){
+				paginatedResults.reverse()
+			}
+
 			return {
 				pageInfo: {
-					previousPage: true,
-					nextPage: true,
+					previousPage: 'L#1', // TODO
+					nextPage: 'L#4', // TODO
 				} as GQLPageInfo,
-				edges: all.value.map(listing => ({
-					cursor: listing.id.toString(),
+				edges: paginatedResults.map(listing => ({
 					node: listing,
 				})),
+				nodes: paginatedResults,
+				totalCount: all.value.length,
 			}
 		}
 	},

@@ -71,7 +71,7 @@ export class ListingClient {
 
 		const error = list.reduce((prev, i) => prev || !i.ok, false)
 		if (!error) {
-			let mapped = list.map(l => (l.ok ? l.value : null)) as Readonly<DataListing>[]
+			const mapped = list.map(l => (l.ok ? l.value : null)) as Readonly<DataListing>[]
 			// console.log('mapped', mapped)
 			// console.log('filter', mapped.filter(filter))
 			return ok(mapped.filter(filter))

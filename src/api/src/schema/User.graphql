@@ -1,10 +1,10 @@
 input PagePaginationParams {
-	size: Int
+	size: Int = 5
 	page: Int
 }
 
 input CursorPaginationParams {
-	size: Int
+	size: Int = 5
 	after: String
 	before: String
 }
@@ -68,7 +68,7 @@ type User {
 		cursor: CursorPaginationParams
 		sortBy: ListingOrderEnum
 		reverse: Boolean = false
-	): ListingConnction!
+	): ListingConnection!
 
 	# List of columns in the project
 	#
@@ -79,9 +79,9 @@ type User {
 	# last: Returns the last _n_ elements from the list.
 	# before: Returns the elements in the list that come before the
 	# specified cursor (id of connection).
-	#	favoriteListingsConnection(pagination:PagePaginationParams, sortBy:SortParams): FavoriteListingConnction!
-	#	favoriteUsersConnection(cursor:CursorPaginationParams, sortBy:SortParams): FavoriteListingConnction!
-	#	favoriteSearchConnection(pagination:PaginationParams, sortBy:SortParams): FavoriteListingConnction!
+	#	favoriteListingsConnection(pagination:PagePaginationParams, sortBy:SortParams): FavoriteListingConnection!
+	#	favoriteUsersConnection(cursor:CursorPaginationParams, sortBy:SortParams): FavoriteListingConnection!
+	#	favoriteSearchConnection(pagination:PaginationParams, sortBy:SortParams): FavoriteListingConnection!
 
 	#	listingList: ListingList!
 	luckyNumber: Int
@@ -116,7 +116,7 @@ type PageInfo {
 
 #
 # supported cursor is the same as order key
-type ListingConnction {
+type ListingConnection {
 	# A list of edges (same as nodes but with cursor).
 	edges: [ListingEdge]
 	# A list of nodes.
@@ -128,7 +128,7 @@ type ListingConnction {
 	totalCount: Int!
 }
 
-type FavoriteListingConnction {
+type FavoriteListingConnection {
 	# A list of edges (same as nodes but with cursor).
 	edges: [FavoriteListingEdge]
 	# A list of nodes.
