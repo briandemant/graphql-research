@@ -63,12 +63,21 @@ type User {
 	id: SimpleID!
 	name: NonEmptyString!
 	listings: [Listing!]!
+	
+	# Cursor pagination
 	listingConnection(
 		term: String
 		cursor: CursorPaginationParams
 		sortBy: ListingOrderEnum
 		reverse: Boolean = false
-	): ListingConnection!
+	): ListingConnection
+	
+	# Generic pagination
+	favoriteListingsConnection(
+		pagination: PagePaginationParams
+		sortBy: ListingOrderEnum
+		reverse: Boolean = false
+	): FavoriteListingConnection
 
 	# List of columns in the project
 	#
@@ -109,9 +118,11 @@ type User {
 # Generic pagination info
 type PageInfo {
 	# Indicates if there are more pages to fetch
-	nextPage: String
+	# (contains either page number or cursor)
+	next: String
 	# Indicates if there are any pages prior to the current page
-	previousPage: String
+	# (contains either page number or cursor)
+	previous: String
 }
 
 #

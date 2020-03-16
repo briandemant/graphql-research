@@ -90,10 +90,16 @@ export enum ListingOrderEnum {
 
 /** Generic pagination info */
 export type PageInfo = {
-	/** Indicates if there are more pages to fetch */
-	readonly nextPage: Maybe<Scalars['String']>
-	/** Indicates if there are any pages prior to the current page */
-	readonly previousPage: Maybe<Scalars['String']>
+	/**
+	 * Indicates if there are more pages to fetch
+	 * (contains either page number or cursor)
+	 */
+	readonly next: Maybe<Scalars['String']>
+	/**
+	 * Indicates if there are any pages prior to the current page
+	 * (contains either page number or cursor)
+	 */
+	readonly previous: Maybe<Scalars['String']>
 }
 
 export type PagePaginationParams = {
@@ -145,7 +151,10 @@ export type User = {
 	readonly id: Scalars['SimpleID']
 	readonly name: Scalars['NonEmptyString']
 	readonly listings: ReadonlyArray<Listing>
-	readonly listingConnection: ListingConnection
+	/** Cursor pagination */
+	readonly listingConnection: Maybe<ListingConnection>
+	/** Generic pagination */
+	readonly favoriteListingsConnection: Maybe<FavoriteListingConnection>
 	/** listingList: ListingList! */
 	readonly luckyNumber: Maybe<Scalars['Int']>
 }
@@ -153,6 +162,12 @@ export type User = {
 export type UserListingConnectionArgs = {
 	term: Maybe<Scalars['String']>
 	cursor: Maybe<CursorPaginationParams>
+	sortBy: Maybe<ListingOrderEnum>
+	reverse?: Maybe<Scalars['Boolean']>
+}
+
+export type UserFavoriteListingsConnectionArgs = {
+	pagination: Maybe<PagePaginationParams>
 	sortBy: Maybe<ListingOrderEnum>
 	reverse?: Maybe<Scalars['Boolean']>
 }
