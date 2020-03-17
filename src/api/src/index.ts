@@ -1,4 +1,6 @@
-import { ApolloServer, makeExecutableSchema } from 'apollo-server'
+import * as express from 'express'
+import { ApolloServer } from 'apollo-server-express'
+import { makeExecutableSchema } from 'apollo-server'
 import { GraphQLResolveInfo } from 'graphql'
 import { applyMiddleware } from 'graphql-middleware'
 import { DeprecatedDirective } from './directives'
@@ -6,6 +8,7 @@ import { TracingPlugin } from './plugins/'
 import { default as resolvers } from './resolvers'
 import { default as typeDefs } from './schema'
 import { Context, contextFn } from './schema/context'
+import * as colors from 'colors/safe'
 
 const options = { port: 2300 }
 
@@ -50,6 +53,17 @@ const schema = makeExecutableSchema({
 	resolvers,
 })
 
+const app = express()
+app.use((req, res, next) => {
+	console.log(colors.cyan("url"),req.url)
+	next()
+});
+
+let count = 0;
+app.get('/metrics', (req, res) => {
+	res.send(`metrics_scrape_count ${++count}`)
+})
+
 const server = new ApolloServer({
 	schema: applyMiddleware(schema, logInput, logResult),
 	typeDefs,
@@ -61,6 +75,11 @@ const server = new ApolloServer({
 	context: contextFn,
 	// plugins: [TracingPlugin],
 })
-server.listen(options).then(({ url }: any) => {
-	console.log(`🚀 Server ready at ${url}`)
-})
+
+server.applyMiddleware({ app, path: '/' })
+
+// server.listen(options).then(({ url }: any) => {
+// 	console.log(`🚀 Server ready at ${url}`)
+// })
+
+app.listen(options, () => console.log(`🚀 Server ready at http://localhost:${options.port}`))

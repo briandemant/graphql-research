@@ -25,7 +25,40 @@ src/api/src/_gen/server-types.ts
 
 
 ### Resources
-
 https://graphql-code-generator.com/docs/getting-started/lifecycle-hooks
 https://medium.com/@maurice.de.beijer/yup-validation-and-typescript-and-formik-6c342578a20e
 https://github.com/prisma-labs/graphql-yoga
+
+https://blog.apollographql.com/explaining-graphql-connections-c48b7c3d6976
+https://blog.apollographql.com/designing-graphql-mutations-e09de826ed97
+
+### Dataloaders
+https://www.apollographql.com/docs/apollo-server/data/data-sources/
+
+### persistent queries
+https://www.apollographql.com/docs/apollo-server/performance/apq/
+https://github.com/apollographql/apollo-link-persisted-queries
+https://github.com/leoasis/graphql-persisted-document-loader
+
+### upload
+https://blog.apollographql.com/apollo-server-file-upload-best-practices-1e7f24cdc050
+
+### Testing
+https://github.com/addityasingh/graphql-pino-middleware/blob/master/src/__tests__/index.test.ts
+https://medium.com/entria/testing-a-graphql-server-using-jest-4e00d0e4980e
+https://github.com/prisma-labs/graphql-yoga/issues/616
+
+### Tracing, metrics & error
+https://dev.to/andre/handling-errors-in-graphql--2ea3
+https://github.com/addityasingh/graphql-lightstep-middleware/blob/master/src/index.ts
+
+### client stuff
+https://github.com/zeit/next.js/tree/canary/examples/with-typescript-graphql
+https://github.com/borisowsky/next-advanced-starter
+https://github.com/piglovesyou/graphql-let#readme
+
+### plugin and middlewares
+https://www.apollographql.com/docs/apollo-server/integrations/plugins/
+https://github.com/BrunoScheufler/graphql-middleware-sentry
+https://github.com/maticzav/graphql-shield
+https://github.com/BrunoScheufler/graphql-middleware-sentry
