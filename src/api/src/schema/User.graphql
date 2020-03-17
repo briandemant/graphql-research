@@ -1,16 +1,16 @@
 input PagePaginationParams {
-	size: Int = 5
+	limit: Int = 5
 	page: Int
 }
 
 input CursorPaginationParams {
-	size: Int = 5
+	limit: Int = 5
 	after: String
 	before: String
 }
 
 #input BothPaginationParams {
-#    size: Int
+#    limit: Int
 #    page:Int
 #    after: String
 #    before: String

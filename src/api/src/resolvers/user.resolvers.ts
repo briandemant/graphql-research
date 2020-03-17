@@ -57,7 +57,7 @@ const baseResolvers: GQLUserResolvers = {
 		}
 
 		// TODO: the owner of the data is responsible for the pagination logic
-		const size = (cursor && cursor.size) || 5
+		const limit = (cursor && cursor.limit) || 5
 		const before = cursor && cursor.before
 		const beforeIdx = before && all.value.findIndex(el => el.id.toString() === before)
 		const after = cursor && cursor.after
@@ -85,7 +85,7 @@ const baseResolvers: GQLUserResolvers = {
 		}
 
 		// chunk it
-		paginatedResults = paginatedResults.slice(0, size)
+		paginatedResults = paginatedResults.slice(0, limit)
 
 		// reverse it?
 		if (reverse) {
@@ -122,7 +122,7 @@ const baseResolvers: GQLUserResolvers = {
 			return emptyResult
 		}
 		// TODO: the owner of the data is responsible for the pagination logic
-		const size = (pagination && pagination.size) || 5
+		const limit = (pagination && pagination.limit) || 5
 		const page = (pagination && pagination.page) || 1
 
 		// limit+offset based pagination, implemented with array_slice
@@ -131,7 +131,7 @@ const baseResolvers: GQLUserResolvers = {
 				// default sort by id ASC
 				(a, b) => parseInt(a.id.toString().substr(3), 10) - parseInt(b.id.toString().substr(3), 10)
 			)
-			.slice((page - 1) * size, page * size)
+			.slice((page - 1) * limit, page * limit)
 
 		return {
 			pageInfo: emptyResult.pageInfo, // TODO
