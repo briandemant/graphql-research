@@ -59,7 +59,7 @@ const server = new ApolloServer({
 	},
 	tracing: true,
 	context: contextFn,
-	plugins: [TracingPlugin],
+	// plugins: [TracingPlugin],
 })
 server.listen(options).then(({ url }: any) => {
 	console.log(`🚀 Server ready at ${url}`)

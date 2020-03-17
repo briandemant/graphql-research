@@ -6,12 +6,14 @@ faker.seed(13)
 export interface DataListing {
 	id: SimpleID
 	title: NonEmptyString
+	slug: NonEmptyString
 	owner: SimpleID
 }
 
 interface JsonListing {
 	id: string
 	title: string
+	slug: string
 	owner: string
 }
 
@@ -38,10 +40,12 @@ for (let u = 0; u < 10; u++) {
 	let items = faker.random.number({ min: 1, max: 10 })
 	let owner = SimpleID.fromInt(u, 'US').toString()
 	for (let l = 0; l < items; l++) {
+		const id=SimpleID.generate('LI')
 		listings.push({
-			id: SimpleID.generate('LI'),
+			id,
 			owner,
 			title: faker.commerce.productName(),
+			slug: `/listing/${id}`,
 		})
 	}
 }
@@ -51,6 +55,7 @@ const fromJsonToListing = (listing: JsonListing): Result<Readonly<DataListing>> 
 		return ok({
 			id: new SimpleID(listing.id),
 			title: new NonEmptyString(listing.title),
+			slug: new NonEmptyString(listing.slug),
 			owner: new SimpleID(listing.owner),
 		} as Readonly<DataListing>)
 	} catch (e) {
@@ -71,7 +76,7 @@ export class ListingClient {
 
 		const error = list.reduce((prev, i) => prev || !i.ok, false)
 		if (!error) {
-			let mapped = list.map(l => (l.ok ? l.value : null)) as Readonly<DataListing>[]
+			const mapped = list.map(l => (l.ok ? l.value : null)) as Readonly<DataListing>[]
 			// console.log('mapped', mapped)
 			// console.log('filter', mapped.filter(filter))
 			return ok(mapped.filter(filter))

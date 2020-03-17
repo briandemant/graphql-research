@@ -25,7 +25,13 @@ export type Scalars = {
 	UuidV4: UuidV4
 }
 
-export type GQLFavoriteListingConnction = {
+export type GQLCursorPaginationParams = {
+	readonly limit: Maybe<Scalars['Int']>
+	readonly after: Maybe<Scalars['String']>
+	readonly before: Maybe<Scalars['String']>
+}
+
+export type GQLFavoriteListingConnection = {
 	/** A list of edges (same as nodes but with cursor). */
 	readonly edges: Maybe<ReadonlyArray<Maybe<GQLFavoriteListingEdge>>>
 	/** A list of nodes. */
@@ -48,8 +54,8 @@ export type GQLListing = {
 	readonly owner: GQLUser
 }
 
-/** EXTRA DATA v2 */
-export type GQLListingConnction = {
+/** supported cursor is the same as order key */
+export type GQLListingConnection = {
 	/** A list of edges (same as nodes but with cursor). */
 	readonly edges: Maybe<ReadonlyArray<Maybe<GQLListingEdge>>>
 	/** A list of nodes. */
@@ -89,15 +95,18 @@ export enum GQLListingOrderEnum {
 	UpdatedAt = 'UPDATED_AT',
 }
 
+/** Generic pagination info */
 export type GQLPageInfo = {
-	/** Indicates if there are more pages to fetch */
-	readonly hasNextPage: Scalars['Boolean']
-	/** Indicates if there are any pages prior to the current page */
-	readonly hasPreviousPage: Scalars['Boolean']
-	/** When paginating backwards, the cursor to continue */
-	readonly startCursor: Maybe<Scalars['String']>
-	/** When paginating forwards, the cursor to continue */
-	readonly endCursor: Maybe<Scalars['String']>
+	/**
+	 * Indicates if there are more pages to fetch
+	 * (contains either page number or cursor)
+	 */
+	readonly next: Maybe<Scalars['String']>
+	/**
+	 * Indicates if there are any pages prior to the current page
+	 * (contains either page number or cursor)
+	 */
+	readonly previous: Maybe<Scalars['String']>
 }
 
 export type GQLPagePaginationParams = {
@@ -149,14 +158,23 @@ export type GQLUser = {
 	readonly id: Scalars['SimpleID']
 	readonly name: Scalars['NonEmptyString']
 	readonly listings: ReadonlyArray<GQLListing>
-	readonly listingConnection: GQLListingConnction
+	/** Cursor pagination */
+	readonly listingConnection: Maybe<GQLListingConnection>
+	/** Generic pagination */
+	readonly favoriteListingsConnection: Maybe<GQLFavoriteListingConnection>
 	/** listingList: ListingList! */
 	readonly luckyNumber: Maybe<Scalars['Int']>
 }
 
 export type GQLUserListingConnectionArgs = {
 	term: Maybe<Scalars['String']>
-	pageignation: Maybe<GQLPagePaginationParams>
+	cursor: Maybe<GQLCursorPaginationParams>
+	sortBy: Maybe<GQLListingOrderEnum>
+	reverse?: Maybe<Scalars['Boolean']>
+}
+
+export type GQLUserFavoriteListingsConnectionArgs = {
+	pagination: Maybe<GQLPagePaginationParams>
 	sortBy: Maybe<GQLListingOrderEnum>
 	reverse?: Maybe<Scalars['Boolean']>
 }
@@ -248,18 +266,19 @@ export type GQLResolversTypes = {
 	NonEmptyString: ResolverTypeWrapper<NonEmptyString>
 	User: ResolverTypeWrapper<any>
 	String: ResolverTypeWrapper<string>
-	PagePaginationParams: ResolverTypeWrapper<any>
+	CursorPaginationParams: ResolverTypeWrapper<any>
 	Int: ResolverTypeWrapper<any>
 	ListingOrderEnum: ResolverTypeWrapper<any>
-	ListingConnction: ResolverTypeWrapper<any>
+	ListingConnection: ResolverTypeWrapper<any>
 	ListingEdge: ResolverTypeWrapper<any>
 	PageInfo: ResolverTypeWrapper<any>
+	PagePaginationParams: ResolverTypeWrapper<any>
+	FavoriteListingConnection: ResolverTypeWrapper<any>
+	FavoriteListingEdge: ResolverTypeWrapper<any>
 	Util: ResolverTypeWrapper<any>
 	UuidV4: ResolverTypeWrapper<UuidV4>
 	Role: ResolverTypeWrapper<any>
 	SortParams: ResolverTypeWrapper<any>
-	FavoriteListingConnction: ResolverTypeWrapper<any>
-	FavoriteListingEdge: ResolverTypeWrapper<any>
 	ListingFavorite: ResolverTypeWrapper<any>
 }
 
@@ -273,18 +292,19 @@ export type GQLResolversParentTypes = {
 	NonEmptyString: NonEmptyString
 	User: any
 	String: string
-	PagePaginationParams: any
+	CursorPaginationParams: any
 	Int: any
 	ListingOrderEnum: any
-	ListingConnction: any
+	ListingConnection: any
 	ListingEdge: any
 	PageInfo: any
+	PagePaginationParams: any
+	FavoriteListingConnection: any
+	FavoriteListingEdge: any
 	Util: any
 	UuidV4: UuidV4
 	Role: any
 	SortParams: any
-	FavoriteListingConnction: any
-	FavoriteListingEdge: any
 	ListingFavorite: any
 }
 
@@ -301,9 +321,9 @@ export interface GQLDateTimeScalarConfig extends GraphQLScalarTypeConfig<GQLReso
 	name: 'DateTime'
 }
 
-export type GQLFavoriteListingConnctionResolvers<
+export type GQLFavoriteListingConnectionResolvers<
 	ContextType = Context,
-	ParentType extends GQLResolversParentTypes['FavoriteListingConnction'] = GQLResolversParentTypes['FavoriteListingConnction']
+	ParentType extends GQLResolversParentTypes['FavoriteListingConnection'] = GQLResolversParentTypes['FavoriteListingConnection']
 > = {
 	edges: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['FavoriteListingEdge']>>>, ParentType, ContextType>
 	nodes: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Listing']>>>, ParentType, ContextType>
@@ -332,9 +352,9 @@ export type GQLListingResolvers<
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
-export type GQLListingConnctionResolvers<
+export type GQLListingConnectionResolvers<
 	ContextType = Context,
-	ParentType extends GQLResolversParentTypes['ListingConnction'] = GQLResolversParentTypes['ListingConnction']
+	ParentType extends GQLResolversParentTypes['ListingConnection'] = GQLResolversParentTypes['ListingConnection']
 > = {
 	edges: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['ListingEdge']>>>, ParentType, ContextType>
 	nodes: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Listing']>>>, ParentType, ContextType>
@@ -370,10 +390,8 @@ export type GQLPageInfoResolvers<
 	ContextType = Context,
 	ParentType extends GQLResolversParentTypes['PageInfo'] = GQLResolversParentTypes['PageInfo']
 > = {
-	hasNextPage: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>
-	hasPreviousPage: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>
-	startCursor: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
-	endCursor: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
+	next: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
+	previous: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
@@ -407,10 +425,16 @@ export type GQLUserResolvers<
 	name: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
 	listings: Resolver<ReadonlyArray<GQLResolversTypes['Listing']>, ParentType, ContextType>
 	listingConnection: Resolver<
-		GQLResolversTypes['ListingConnction'],
+		Maybe<GQLResolversTypes['ListingConnection']>,
 		ParentType,
 		ContextType,
 		RequireFields<GQLUserListingConnectionArgs, 'reverse'>
+	>
+	favoriteListingsConnection: Resolver<
+		Maybe<GQLResolversTypes['FavoriteListingConnection']>,
+		ParentType,
+		ContextType,
+		RequireFields<GQLUserFavoriteListingsConnectionArgs, 'reverse'>
 	>
 	luckyNumber: Resolver<Maybe<GQLResolversTypes['Int']>, ParentType, ContextType>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
@@ -444,10 +468,10 @@ export interface GQLUuidV4ScalarConfig extends GraphQLScalarTypeConfig<GQLResolv
 
 export type GQLResolvers<ContextType = Context> = {
 	DateTime: GraphQLScalarType
-	FavoriteListingConnction: GQLFavoriteListingConnctionResolvers<ContextType>
+	FavoriteListingConnection: GQLFavoriteListingConnectionResolvers<ContextType>
 	FavoriteListingEdge: GQLFavoriteListingEdgeResolvers<ContextType>
 	Listing: GQLListingResolvers<ContextType>
-	ListingConnction: GQLListingConnctionResolvers<ContextType>
+	ListingConnection: GQLListingConnectionResolvers<ContextType>
 	ListingEdge: GQLListingEdgeResolvers<ContextType>
 	ListingFavorite: GQLListingFavoriteResolvers<ContextType>
 	NonEmptyString: GraphQLScalarType

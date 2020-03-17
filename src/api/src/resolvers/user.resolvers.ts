@@ -1,12 +1,12 @@
-import { GQLQueryResolvers, GQLUserResolvers } from '../_gen/server-types'
+import { GQLQueryResolvers, GQLUserResolvers, GQLPageInfo, GQLListingConnection } from '../_gen/server-types'
 import { DataListing, ListingClient, UserClient } from './../clients/'
 
 type UserQueryResolver = GQLQueryResolvers['user']
 
 const user: UserQueryResolver = async (parent, { id }, context, info) => {
-	let user = await new UserClient().findById(id)
-	if (user.ok) {
-		return user.value
+	const userResp = await new UserClient().findById(id)
+	if (userResp.ok) {
+		return userResp.value
 	}
 	return null
 }
@@ -19,70 +19,128 @@ const baseResolvers: GQLUserResolvers = {
 		if (parent.name) {
 			return parent.name
 		} else if (parent.id) {
-			let user = await new UserClient().findById(parent.id)
-			if (user.ok) {
-				return user.value.name
+			const userResp = await new UserClient().findById(parent.id)
+			if (userResp.ok) {
+				return userResp.value.name
 			}
 		}
 	},
 	listings: async ({ id }, args, context, info) => {
 		if (id) {
-			let all = await new ListingClient().findAll(l => l.owner == id.toString())
+			const all = await new ListingClient().findAll(l => l.owner == id.toString())
 			if (all.ok) {
 				return all.value.map(l => ({ id: l.id }))
 			}
 		}
 		return []
 	},
-	listingConnection: async ({ id }, { first = 5, after = '' }, context, info) => {
-		if (id) {
-			let all = await new ListingClient().findAll(l => l.owner == id.toString())
-			if (all.ok) {
-				type ReducerAcc = {
-					results: Readonly<DataListing>[]
-					started: boolean
-					endCursor: false | string
-					hasMore: boolean
-				}
-
-				let afterCursor = after ? parseInt(after.substr(3), 10) : 0
-				let reducer = (acc: ReducerAcc, next: Readonly<DataListing>, idx: number) => {
-					if (acc.endCursor) return { ...acc, hasMore: true }
-
-					if (!acc.started && parseInt(next.id.toString().substr(3), 10) > afterCursor) {
-						acc.started = true
-					}
-
-					if (acc.started) {
-						acc.results.push(next)
-						if (acc.results.length == first) {
-							acc.endCursor = next.id.toString()
-						}
-					}
-
-					return acc
-				}
-
-				const { results, endCursor, hasMore } = all.value.reduce(reducer, {
-					results: [],
-					started: !after,
-					endCursor: false,
-					hasMore: false,
-				})
-
-				return {
-					pageInfo: {
-						hasNextPage: hasMore,
-						endCursor: endCursor,
-					},
-					edges: results.map(listing => ({
-						cursor: listing.id.toString(),
-						node: listing,
-					})),
-				}
-			}
+	// TODO: correctly Type the result
+	listingConnection: async ({ id }, { term, reverse, cursor }, context, info): Promise<any> => {
+		const emptyResult: GQLListingConnection = {
+			pageInfo: {
+				previous: '',
+				next: '',
+			},
+			totalCount: 0,
+			edges: [],
+			nodes: [],
 		}
-		return []
+
+		if (!id) {
+			return emptyResult
+		}
+
+		const all = await new ListingClient().findAll(l => l.owner == id.toString())
+
+		if (!all.ok) {
+			return emptyResult
+		}
+
+		// TODO: the owner of the data is responsible for the pagination logic
+		const limit = (cursor && cursor.limit) || 5
+		const before = cursor && cursor.before
+		const beforeIdx = before && all.value.findIndex(el => el.id.toString() === before)
+		const after = cursor && cursor.after
+		const afterIdx = after && all.value.findIndex(el => el.id.toString() === after)
+
+		// cursor based pagination, implemented with array_slice
+		let paginatedResults = all.value.sort(
+			// default sort by id ASC
+			(a, b) => parseInt(a.id.toString().substr(3), 10) - parseInt(b.id.toString().substr(3), 10)
+		)
+
+		// out of bounds
+		if ((beforeIdx && beforeIdx < 0) || (afterIdx && afterIdx < 0)) {
+			// throw pagination error
+			throw Error('cursor out of bounds!')
+		}
+
+		// slice by cursor
+		if (beforeIdx) {
+			paginatedResults = paginatedResults.slice(0, beforeIdx)
+		}
+
+		if (afterIdx) {
+			paginatedResults = paginatedResults.slice(afterIdx + 1, paginatedResults.length)
+		}
+
+		// chunk it
+		paginatedResults = paginatedResults.slice(0, limit)
+
+		// reverse it?
+		if (reverse) {
+			paginatedResults.reverse()
+		}
+
+		return {
+			pageInfo: emptyResult.pageInfo, // TODO
+			edges: paginatedResults.map(listing => ({
+				node: listing,
+			})),
+			nodes: paginatedResults,
+			totalCount: all.value.length,
+		}
+	},
+
+	favoriteListingsConnection: async ({ id }, { pagination }, ctx, info) => {
+		const emptyResult: GQLListingConnection = {
+			pageInfo: {
+				previous: '',
+				next: '',
+			},
+			totalCount: 0,
+			edges: [],
+			nodes: [],
+		}
+		if (!id) {
+			return emptyResult
+		}
+		// listings by other users
+		const all = await new ListingClient().findAll(l => l.owner != id.toString())
+
+		if (!all.ok) {
+			return emptyResult
+		}
+		// TODO: the owner of the data is responsible for the pagination logic
+		const limit = (pagination && pagination.limit) || 5
+		const page = (pagination && pagination.page) || 1
+
+		// limit+offset based pagination, implemented with array_slice
+		const paginatedResults = all.value
+			.sort(
+				// default sort by id ASC
+				(a, b) => parseInt(a.id.toString().substr(3), 10) - parseInt(b.id.toString().substr(3), 10)
+			)
+			.slice((page - 1) * limit, page * limit)
+
+		return {
+			pageInfo: emptyResult.pageInfo, // TODO
+			edges: paginatedResults.map(listing => ({
+				node: listing,
+			})),
+			nodes: paginatedResults,
+			totalCount: all.value.length,
+		}
 	},
 	luckyNumber(parent, args, context, info) {
 		return Math.round(Math.random() * 100)
