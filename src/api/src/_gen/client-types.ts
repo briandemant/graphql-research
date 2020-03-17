@@ -18,6 +18,19 @@ export type Scalars = {
 	UuidV4: string
 }
 
+export type Category = {
+	readonly id: Scalars['SimpleID']
+	readonly name: Scalars['NonEmptyString']
+	readonly slug: Scalars['NonEmptyString']
+	readonly createdAt: Scalars['DateTime']
+}
+
+export type CategoryFieldsConnection = {
+	readonly id: Scalars['SimpleID']
+	readonly name: Scalars['NonEmptyString']
+	readonly value: Maybe<ReadonlyArray<Maybe<Scalars['NonEmptyString']>>>
+}
+
 export type CursorPaginationParams = {
 	readonly size: Maybe<Scalars['Int']>
 	readonly after: Maybe<Scalars['String']>
@@ -45,6 +58,7 @@ export type Listing = {
 	readonly title: Scalars['NonEmptyString']
 	readonly slug: Scalars['NonEmptyString']
 	readonly owner: User
+	readonly category: Category
 }
 
 /** supported cursor is the same as order key */
@@ -61,28 +75,9 @@ export type ListingConnection = {
 
 export type ListingEdge = {
 	readonly node: Maybe<Listing>
-}
-
-export type ListingFavorite = {
-	readonly listing: Listing
-	readonly user: User
 	readonly createdAt: Maybe<Scalars['DateTime']>
 }
 
-/**
- * input DateTimeQuery {
- * 	date:Int!
- * 	operator: QueryOperator
- * }
- *
- * input ListingFilterParams {
- * 	and:Boolean = true
- * 	term:String
- * 	createdAt: DateTimeQuery
- * 	updatedAt: DateTimeQuery
- * 	nearLocation: LocationInput
- * }
- */
 export enum ListingOrderEnum {
 	CreatedAt = 'CREATED_AT',
 	UpdatedAt = 'UPDATED_AT',
@@ -108,9 +103,11 @@ export type PagePaginationParams = {
 }
 
 export type Query = {
+	readonly apiVersion: Scalars['String']
 	readonly isFuture: Maybe<Scalars['Boolean']>
 	readonly isPast: Maybe<Scalars['Boolean']>
 	readonly listing: Maybe<Listing>
+	readonly listings: ReadonlyArray<Listing>
 	readonly now: Maybe<Scalars['DateTime']>
 	readonly user: Maybe<User>
 	readonly utils: Maybe<Util>
@@ -129,6 +126,12 @@ export type QueryListingArgs = {
 	id: Scalars['SimpleID']
 }
 
+export type QueryListingsArgs = {
+	cursor: Maybe<CursorPaginationParams>
+	sortBy?: Maybe<ListingOrderEnum>
+	reverse?: Maybe<Scalars['Boolean']>
+}
+
 export type QueryUserArgs = {
 	id: Scalars['SimpleID']
 }
@@ -142,33 +145,26 @@ export enum Role {
 	User = 'USER',
 }
 
-export type SortParams = {
-	readonly orderBy: Maybe<Scalars['String']>
-	readonly reverse: Maybe<Scalars['Boolean']>
-}
-
 export type User = {
 	readonly id: Scalars['SimpleID']
-	readonly name: Scalars['NonEmptyString']
-	readonly listings: ReadonlyArray<Listing>
+	readonly name: Maybe<Scalars['NonEmptyString']>
+	readonly userName: Maybe<Scalars['NonEmptyString']>
+	readonly createdAt: Scalars['DateTime']
 	/** Cursor pagination */
 	readonly listingConnection: Maybe<ListingConnection>
 	/** Generic pagination */
 	readonly favoriteListingsConnection: Maybe<FavoriteListingConnection>
-	/** listingList: ListingList! */
-	readonly luckyNumber: Maybe<Scalars['Int']>
 }
 
 export type UserListingConnectionArgs = {
-	term: Maybe<Scalars['String']>
 	cursor: Maybe<CursorPaginationParams>
-	sortBy: Maybe<ListingOrderEnum>
+	sortBy?: Maybe<ListingOrderEnum>
 	reverse?: Maybe<Scalars['Boolean']>
 }
 
 export type UserFavoriteListingsConnectionArgs = {
 	pagination: Maybe<PagePaginationParams>
-	sortBy: Maybe<ListingOrderEnum>
+	sortBy?: Maybe<ListingOrderEnum>
 	reverse?: Maybe<Scalars['Boolean']>
 }
 

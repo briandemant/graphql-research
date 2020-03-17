@@ -25,17 +25,28 @@ const baseResolvers: GQLUserResolvers = {
 			}
 		}
 	},
-	listings: async ({ id }, args, context, info) => {
-		if (id) {
-			const all = await new ListingClient().findAll(l => l.owner == id.toString())
-			if (all.ok) {
-				return all.value.map(l => ({ id: l.id }))
+	userName: async (parent, args, context, info) => {
+		if (parent.userName) {
+			return parent.userName
+		} else if (parent.id) {
+			const userResp = await new UserClient().findById(parent.id)
+			if (userResp.ok) {
+				return userResp.value.userName
 			}
 		}
-		return []
+	},
+	createdAt: async (parent, args, context, info) => {
+		if (parent.createdAt) {
+			return parent.createdAt
+		} else if (parent.id) {
+			const userResp = await new UserClient().findById(parent.id)
+			if (userResp.ok) {
+				return userResp.value.createdAt
+			}
+		}
 	},
 	// TODO: correctly Type the result
-	listingConnection: async ({ id }, { term, reverse, cursor }, context, info): Promise<any> => {
+	listingConnection: async ({ id }, { reverse, cursor }, context, info): Promise<any> => {
 		const emptyResult: GQLListingConnection = {
 			pageInfo: {
 				previous: '',
@@ -141,9 +152,6 @@ const baseResolvers: GQLUserResolvers = {
 			nodes: paginatedResults,
 			totalCount: all.value.length,
 		}
-	},
-	luckyNumber(parent, args, context, info) {
-		return Math.round(Math.random() * 100)
 	},
 }
 

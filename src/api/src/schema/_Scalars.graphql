@@ -20,10 +20,6 @@ type Util {
 	oldField: String @deprecated(reason: "Use 'newField'.")
 }
 
-type Query {
+extend type Query {
 	utils: Util
-}
-
-schema {
-	query: Query
 }

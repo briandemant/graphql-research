@@ -1,131 +1,25 @@
-input PagePaginationParams {
-	size: Int = 5
-	page: Int
-}
-
-input CursorPaginationParams {
-	size: Int = 5
-	after: String
-	before: String
-}
-
-#input BothPaginationParams {
-#    size: Int
-#    page:Int
-#    after: String
-#    before: String
-#}
-
-# Doesn't work (yet)
-# https://github.com/graphql/graphql-spec/blob/master/rfcs/InputUnion.md
-# https://github.com/Cardinal90/graphql-union-input-type
-#union CursorPaginationParams = AfterCursorPaginationParams | BeforeCursorPaginationParams
-#union FullPaginationParams = PagePaginationParams | CursorPaginationParams
-
-input SortParams {
-	orderBy: String
-	reverse: Boolean = false
-}
-
-#input LocationInput {
-#	range:Int!
-#	lat:Int!
-#	lng:Int!
-#}
-#
-#enum QueryOperator {
-#	GT
-#	LT
-#	GTEQ
-#	LTEQ
-#	EQ
-#}
-
-#input DateTimeQuery {
-#	date:Int!
-#	operator: QueryOperator
-#}
-#
-#input ListingFilterParams {
-#	and:Boolean = true
-#	term:String
-#	createdAt: DateTimeQuery
-#	updatedAt: DateTimeQuery
-#	nearLocation: LocationInput
-#}
-#
-enum ListingOrderEnum {
-	CREATED_AT
-	UPDATED_AT
-}
-
 type User {
 	id: SimpleID!
-	name: NonEmptyString!
-	listings: [Listing!]!
-	
+	name: NonEmptyString
+	userName: NonEmptyString
+	createdAt: DateTime!
+
 	# Cursor pagination
 	listingConnection(
-		term: String
+		#term: String #wilcard search
 		cursor: CursorPaginationParams
-		sortBy: ListingOrderEnum
+		sortBy: ListingOrderEnum = CREATED_AT
 		reverse: Boolean = false
 	): ListingConnection
-	
+
 	# Generic pagination
 	favoriteListingsConnection(
 		pagination: PagePaginationParams
-		sortBy: ListingOrderEnum
+		sortBy: ListingOrderEnum = CREATED_AT
 		reverse: Boolean = false
 	): FavoriteListingConnection
-
-	# List of columns in the project
-	#
-	# Arguments
-	# first: Returns the first _n_ elements from the list.
-	# after: Returns the elements in the list that come after the
-	# specified cursor.
-	# last: Returns the last _n_ elements from the list.
-	# before: Returns the elements in the list that come before the
-	# specified cursor (id of connection).
-	#	favoriteListingsConnection(pagination:PagePaginationParams, sortBy:SortParams): FavoriteListingConnection!
-	#	favoriteUsersConnection(cursor:CursorPaginationParams, sortBy:SortParams): FavoriteListingConnection!
-	#	favoriteSearchConnection(pagination:PaginationParams, sortBy:SortParams): FavoriteListingConnection!
-
-	#	listingList: ListingList!
-	luckyNumber: Int
-	# description: String!
-	# createdAt: ValidDate!
 }
 
-#type ListingList {
-#	totalCount: Int
-#	pageCount: Int
-#	nextPageCursor: String
-#	previousPageCursor: String
-#	lastPageCursor: String
-#	items: [Listing!]!
-#}
-
-#type PageInfoV2 {
-#	totalCount: Int
-#	pageCount: Int
-#	nextPageCursor: String
-#	previousPageCursor: String
-#	lastPageCursor: String
-#}
-
-# Generic pagination info
-type PageInfo {
-	# Indicates if there are more pages to fetch
-	# (contains either page number or cursor)
-	next: String
-	# Indicates if there are any pages prior to the current page
-	# (contains either page number or cursor)
-	previous: String
-}
-
-#
 # supported cursor is the same as order key
 type ListingConnection {
 	# A list of edges (same as nodes but with cursor).
@@ -150,23 +44,16 @@ type FavoriteListingConnection {
 	totalCount: Int!
 }
 
+type ListingEdge {
+	node: Listing
+	createdAt: DateTime
+}
+
 type FavoriteListingEdge {
 	node: Listing
 	createdAt: DateTime
 }
 
-type ListingFavorite {
-	listing: Listing!
-	user: User!
-	createdAt: DateTime
-}
-
-type ListingEdge {
-	node: Listing
-}
-
 extend type Query {
-	# # 	users: [User!]!
 	user(id: SimpleID!): User
-	# 	user(id: ID!): User
 }

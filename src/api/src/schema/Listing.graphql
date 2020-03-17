@@ -1,12 +1,65 @@
+enum ListingOrderEnum {
+	CREATED_AT
+	UPDATED_AT
+}
+enum ListingStatusEnum {
+	ACTIVE
+	INACTIVE
+	EXPIRED
+	DRAFT
+}
+
 type Listing {
+	# basic
 	id: SimpleID!
-	title: NonEmptyString!
 	slug: NonEmptyString!
 	owner: User!
+	online: Boolean!
+	status: ListingStatusEnum!
+
+	# textual content
+	title: NonEmptyString!
+	desc: NonEmptyString!
+	publicationTitle: NonEmptyString!
+	publicationDesc: NonEmptyString!
+	
+	# pricing
+	price: NonEmptyString!
+	offersAccepted: Boolean
+	vatEnabled: Boolean # Bizz user only (Maybe annotate this with a directive)
+	
+	# relationships
+	category:Category!
+	images:[Image]
+	# (categoryFields should be a connection on the Category entity)
+	
+	# misc
+	type?: string #TODO: rename to something that makes sense (in the context of: selling, buying, trading, giving away for free)
+	homepage: NonEmptyString # Bizz user only (Maybe annotate this with a directive?)
+	
+	# location
+	contactInfo:{
+		phone:NonEmptyString
+		adress:NonEmptyString
+	}
+	geoLocation: {
+		address: NonEmptyString
+		zipcode: NonEmptyString
+		city: NonEmptyString
+		country: NonEmptyString
+		lat:NonEmptyString
+		long:NonEmptyString
+	}
+
+	# Product
+	productPackage: ProductPackage!
+
+
 }
 
 extend type Query {
 	listing(id: SimpleID!): Listing
-	# 	listings: [Listing!]!
-	# 	frontPageListings(After: Int = 0): [Listing!]!
+	listings(cursor: CursorPaginationParams, sortBy: ListingOrderEnum = CREATED_AT, reverse: Boolean = false): [Listing!]!
+	# TODO: Don't know if this should be a connection of sorts? Or a computed field?
+	#frontPageListings(pagination: PagePaginationParams, sortBy: ListingOrderEnum, reverse: Boolean = false): [Listing!]!
 }

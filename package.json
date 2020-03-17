@@ -8,6 +8,7 @@
 		"start": "nodemon -r source-map-support/register src/server",
 		"build:src": "tsc --build tsconfig.json  --pretty",
 		"build:api-gen": "cd src/api;graphql-codegen --config codegen.yaml",
+		"build:lib": "cd src/lib;tsc --build ../../tsconfig.json  --pretty",
 		"lint": "tslint -c ./tslint.json **/src/**/*.{ts,tsx}",
 		"pretty": "prettier --config ./.prettierrc.json --loglevel error --write **/src/**/*.{json,ts,tsx,js}",
 		"pretty-lint": "yarn pretty && yarn lint",

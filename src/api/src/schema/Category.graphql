@@ -1,0 +1,12 @@
+type Category {
+	id: SimpleID!
+	name: NonEmptyString!
+	slug: NonEmptyString!
+	createdAt: DateTime!
+}
+
+type CategoryFieldsConnection {
+	id: SimpleID!
+	name: NonEmptyString!
+	value: [NonEmptyString]
+}

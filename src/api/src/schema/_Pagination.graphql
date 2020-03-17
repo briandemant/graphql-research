@@ -1,0 +1,28 @@
+input PagePaginationParams {
+	size: Int = 5
+	page: Int
+}
+
+input CursorPaginationParams {
+	size: Int = 5
+	after: String
+	before: String
+}
+
+# Generic pagination info
+type PageInfo {
+	# Indicates if there are more pages to fetch
+	# (contains either page number or cursor)
+	next: String
+	# Indicates if there are any pages prior to the current page
+	# (contains either page number or cursor)
+	previous: String
+}
+
+# Doesn't work (yet)
+# https://github.com/graphql/graphql-spec/blob/master/rfcs/InputUnion.md
+# https://github.com/Cardinal90/graphql-union-input-type
+#union CursorPaginationParams = AfterCursorPaginationParams | BeforeCursorPaginationParams
+#union FullPaginationParams = PagePaginationParams | CursorPaginationParams
+
+
