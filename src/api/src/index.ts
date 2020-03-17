@@ -55,7 +55,7 @@ const schema = makeExecutableSchema({
 
 const app = express()
 app.use((req, res, next) => {
-	console.log(colors.cyan("url"),req.url)
+	// console.log(colors.cyan("url"),req.url)
 	next()
 });
 
