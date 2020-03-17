@@ -32,7 +32,7 @@ export type CategoryFieldsConnection = {
 }
 
 export type CursorPaginationParams = {
-	readonly size: Maybe<Scalars['Int']>
+	readonly limit: Maybe<Scalars['Int']>
 	readonly after: Maybe<Scalars['String']>
 	readonly before: Maybe<Scalars['String']>
 }
@@ -98,7 +98,7 @@ export type PageInfo = {
 }
 
 export type PagePaginationParams = {
-	readonly size: Maybe<Scalars['Int']>
+	readonly limit: Maybe<Scalars['Int']>
 	readonly page: Maybe<Scalars['Int']>
 }
 
