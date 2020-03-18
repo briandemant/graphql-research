@@ -1,0 +1,65 @@
+enum ListingOrderEnum {
+	CREATED_AT
+	UPDATED_AT
+	RANDOM
+}
+
+enum ListingStatusEnum {
+	ACTIVE
+	INACTIVE
+	EXPIRED
+	DRAFT
+}
+
+enum ListingTypeEnum {
+	SELL
+	BUY
+	FREE
+	TRADE
+}
+
+type Listing implements Entity {
+	# basic
+	id: SimpleID!
+	slug: NonEmptyString!
+	owner: User!
+	online: Boolean!
+	status: ListingStatusEnum!
+
+	# textual content
+	title: NonEmptyString!
+	desc: NonEmptyString!
+	publicationTitle: NonEmptyString!
+	publicationDesc: NonEmptyString!
+
+	# pricing
+	price: NonEmptyString!
+	offersAccepted: Boolean
+	vatEnabled: Boolean # Bizz user only (@brde - Maybe annotate this with a directive?)
+	# relationships
+	category: Category!
+	images: [Image]
+	# (categoryFields should be a connection on the Category entity)
+
+	# misc
+	type: ListingTypeEnum! #TODO: rename to something that makes sense (in the context of: selling, buying, trading, giving away for free)
+	homepage: NonEmptyString # Bizz user only (@brde - Maybe annotate this with a directive?)
+	# contact - might be inherited from owner or listing specific
+	phone: NonEmptyString
+
+	# location - might be inherited from owner or defined for the listing specifically
+	location: Location!
+	# Product - package, addons, publications
+	productPackage: ProductPackage!
+}
+
+extend type Query {
+	listing(id: SimpleID!): Listing
+	listings(cursor: CursorPaginationParams, sortBy: ListingOrderEnum = CREATED_AT, reverse: Boolean = false): [Listing!]!
+	# TODO: Don't know if this should be a connection of sorts? Or a computed field?
+	frontPageListings(
+		cursor: CursorPaginationParams
+		sortBy: ListingOrderEnum = RANDOM
+		reverse: Boolean = false
+	): [Listing!]!
+}

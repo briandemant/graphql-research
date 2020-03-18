@@ -1,0 +1,62 @@
+type User implements Entity {
+	id: SimpleID!
+	name: NonEmptyString
+	email: NonEmptyString # TODO: Implement a custom "Email" Scalar?
+	userName: NonEmptyString
+	createdAt: DateTime!
+
+	# Cursor pagination
+	listingConnection(
+		cursor: CursorPaginationParams
+		sortBy: ListingOrderEnum = CREATED_AT
+		reverse: Boolean = false
+	): ListingConnection
+
+	# Generic pagination
+	favoriteListingsConnection(
+		pagination: PagePaginationParams
+		sortBy: ListingOrderEnum = CREATED_AT
+		reverse: Boolean = false
+	): FavoriteListingConnection
+}
+
+# Listings owned by User, paginated
+type ListingConnection implements PaginatedConnection {
+	# A list of edges (same as nodes but with cursor).
+	edges: [ListingEdge]
+	# A list of nodes.
+	nodes: [Listing]
+
+	# Information to aid in pagination.
+	pageInfo: PageInfo!
+	# Identifies the total count of items in the connection.
+	totalCount: Int!
+}
+
+# "Saved-Search of listings" owned by User, paginated
+type FavoriteListingConnection implements PaginatedConnection {
+	# A list of edges (same as nodes but with cursor).
+	edges: [FavoriteListingEdge]
+	# A list of nodes.
+	nodes: [Listing]
+	# Information to aid in pagination.
+	pageInfo: PageInfo!
+	# Identifies the total count of items in the connection.
+	totalCount: Int!
+}
+
+# Connection details between a Listings and a User
+type ListingEdge implements DatedEdge {
+	node: Listing
+	createdAt: DateTime
+}
+
+# Connection details between a "Saved-Search of listings" and a User
+type FavoriteListingEdge implements DatedEdge {
+	node: Listing
+	createdAt: DateTime
+}
+
+extend type Query {
+	user(id: SimpleID!): User
+}

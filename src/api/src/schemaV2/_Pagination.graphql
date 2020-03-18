@@ -1,0 +1,33 @@
+interface PaginatedConnection {
+	# Information to aid in pagination.
+	pageInfo: PageInfo!
+	# Identifies the total count of items in the connection.
+	totalCount: Int!
+}
+
+input PagePaginationParams {
+	limit: Int = 5
+	page: Int
+}
+
+input CursorPaginationParams {
+	limit: Int = 5
+	after: NonEmptyString
+	before: NonEmptyString
+}
+
+# Generic pagination info
+type PageInfo {
+	# Indicates if there are more pages to fetch
+	# (contains either page number or cursor or null)
+	next: NonEmptyString
+	# Indicates if there are any pages prior to the current page
+	# (contains either page number, cursor or null)
+	previous: NonEmptyString
+}
+
+# Doesn't work (yet)
+# https://github.com/graphql/graphql-spec/blob/master/rfcs/InputUnion.md
+# https://github.com/Cardinal90/graphql-union-input-type
+#union CursorPaginationParams = AfterCursorPaginationParams | BeforeCursorPaginationParams
+#union FullPaginationParams = PagePaginationParams | CursorPaginationParams

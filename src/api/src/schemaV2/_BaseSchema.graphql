@@ -1,0 +1,7 @@
+# this is just to be able to return something in this separate schema file
+type Query {
+	apiVersion: String!
+}
+schema {
+	query: Query
+}
