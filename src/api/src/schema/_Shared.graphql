@@ -11,7 +11,7 @@ interface Entity {
 # For Edges that have a timestamp,
 # documenting the time of the connection
 interface DatedEdge {
-	createdAt: DateTuime
+	createdAt: DateTime
 }
 
 # Basic mutation response

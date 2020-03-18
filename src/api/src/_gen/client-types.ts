@@ -10,9 +10,9 @@ export type Scalars = {
 	Boolean: boolean
 	Int: number
 	Float: number
+	NonEmptyString: string
 	/** scalar Md5 */
 	SimpleID: any
-	NonEmptyString: string
 	DateTime: Date
 	/** scalar Slug */
 	UuidV4: string
@@ -33,18 +33,24 @@ export type CategoryField = Entity & {
 
 export type CursorPaginationParams = {
 	readonly limit: Maybe<Scalars['Int']>
-	readonly after: Maybe<Scalars['String']>
-	readonly before: Maybe<Scalars['String']>
+	readonly after: Maybe<Scalars['NonEmptyString']>
+	readonly before: Maybe<Scalars['NonEmptyString']>
 }
 
+/**
+ * For Edges that have a timestamp,
+ * documenting the time of the connection
+ */
 export type DatedEdge = {
 	readonly createdAt: Maybe<Scalars['DateTime']>
 }
 
+/** ## Interfaces */
 export type Entity = {
 	readonly id: Scalars['SimpleID']
 }
 
+/** "Saved-Search of listings" owned by User, paginated */
 export type FavoriteListingConnection = PaginatedConnection & {
 	/** A list of edges (same as nodes but with cursor). */
 	readonly edges: Maybe<ReadonlyArray<Maybe<FavoriteListingEdge>>>
@@ -56,14 +62,28 @@ export type FavoriteListingConnection = PaginatedConnection & {
 	readonly totalCount: Scalars['Int']
 }
 
-export type FavoriteListingEdge = {
+/** Connection details between a "Saved-Search of listings" and a User */
+export type FavoriteListingEdge = DatedEdge & {
 	readonly node: Maybe<Listing>
 	readonly createdAt: Maybe<Scalars['DateTime']>
 }
 
 export type Image = {
+	/** Absolute URL for accessing an image */
 	readonly slug: Scalars['NonEmptyString']
+	/** TODO: should list the available sizes from ImageSizes */
 	readonly sizes: ReadonlyArray<Scalars['NonEmptyString']>
+}
+
+export type ImageSlugArgs = {
+	size?: Maybe<ImageSizes>
+}
+
+export enum ImageSizes {
+	Thumb = 'THUMB',
+	Small = 'SMALL',
+	Medium = 'MEDIUM',
+	Large = 'LARGE',
 }
 
 export type Listing = Entity & {
@@ -96,7 +116,7 @@ export type Listing = Entity & {
 	readonly productPackage: ProductPackage
 }
 
-/** supported cursor is the same as order key */
+/** Listings owned by User, paginated */
 export type ListingConnection = PaginatedConnection & {
 	/** A list of edges (same as nodes but with cursor). */
 	readonly edges: Maybe<ReadonlyArray<Maybe<ListingEdge>>>
@@ -108,7 +128,8 @@ export type ListingConnection = PaginatedConnection & {
 	readonly totalCount: Scalars['Int']
 }
 
-export type ListingEdge = {
+/** Connection details between a Listings and a User */
+export type ListingEdge = DatedEdge & {
 	readonly node: Maybe<Listing>
 	readonly createdAt: Maybe<Scalars['DateTime']>
 }
@@ -133,6 +154,7 @@ export enum ListingTypeEnum {
 	Trade = 'TRADE',
 }
 
+/** ## Generic (re-usable) types */
 export type Location = {
 	readonly address: Maybe<Scalars['NonEmptyString']>
 	readonly zipCode: Maybe<Scalars['NonEmptyString']>
@@ -142,18 +164,24 @@ export type Location = {
 	readonly long: Maybe<Scalars['NonEmptyString']>
 }
 
+/** Basic mutation response */
+export type MutationResponse = {
+	readonly code: Scalars['Int']
+	readonly success: Scalars['Boolean']
+}
+
 /** Generic pagination info */
 export type PageInfo = {
 	/**
 	 * Indicates if there are more pages to fetch
-	 * (contains either page number or cursor)
+	 * (contains either page number or cursor or null)
 	 */
-	readonly next: Maybe<Scalars['String']>
+	readonly next: Maybe<Scalars['NonEmptyString']>
 	/**
 	 * Indicates if there are any pages prior to the current page
-	 * (contains either page number or cursor)
+	 * (contains either page number, cursor or null)
 	 */
-	readonly previous: Maybe<Scalars['String']>
+	readonly previous: Maybe<Scalars['NonEmptyString']>
 }
 
 export type PagePaginationParams = {
@@ -168,11 +196,13 @@ export type PaginatedConnection = {
 	readonly totalCount: Scalars['Int']
 }
 
+/** Addons, for granular tweaking of the exposure rules/features. */
 export type ProductAddon = Entity & {
 	readonly id: Scalars['SimpleID']
 	readonly name: Scalars['NonEmptyString']
 }
 
+/** A product package defines the general exposure rules/features of the Listing. */
 export type ProductPackage = Entity & {
 	readonly id: Scalars['SimpleID']
 	readonly name: Scalars['NonEmptyString']
@@ -180,6 +210,10 @@ export type ProductPackage = Entity & {
 	readonly publications: Maybe<ReadonlyArray<Maybe<ProductPackage>>>
 }
 
+/**
+ * Offline exposure (print) of the Listing.
+ * Which publication/newspaper will the Listing appear in.
+ */
 export type Publication = Entity & {
 	readonly id: Scalars['SimpleID']
 	readonly name: Scalars['NonEmptyString']
@@ -248,6 +282,7 @@ export enum Role {
 export type User = Entity & {
 	readonly id: Scalars['SimpleID']
 	readonly name: Maybe<Scalars['NonEmptyString']>
+	readonly email: Maybe<Scalars['NonEmptyString']>
 	readonly userName: Maybe<Scalars['NonEmptyString']>
 	readonly createdAt: Scalars['DateTime']
 	/** Cursor pagination */
