@@ -4,3 +4,5 @@ enum Role {
 	ADMIN
 	USER
 }
+
+# TODO: Schema + types

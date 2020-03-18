@@ -1,12 +1,12 @@
-type User {
+type User implements Entity {
 	id: SimpleID!
 	name: NonEmptyString
+	email: NonEmptyString # TODO: Implement a custom "Email" Scalar?
 	userName: NonEmptyString
 	createdAt: DateTime!
 
 	# Cursor pagination
 	listingConnection(
-		#term: String #wilcard search
 		cursor: CursorPaginationParams
 		sortBy: ListingOrderEnum = CREATED_AT
 		reverse: Boolean = false
@@ -20,8 +20,8 @@ type User {
 	): FavoriteListingConnection
 }
 
-# supported cursor is the same as order key
-type ListingConnection {
+# Listings owned by User, paginated
+type ListingConnection implements PaginatedConnection {
 	# A list of edges (same as nodes but with cursor).
 	edges: [ListingEdge]
 	# A list of nodes.
@@ -33,7 +33,8 @@ type ListingConnection {
 	totalCount: Int!
 }
 
-type FavoriteListingConnection {
+# "Saved-Search of listings" owned by User, paginated
+type FavoriteListingConnection implements PaginatedConnection {
 	# A list of edges (same as nodes but with cursor).
 	edges: [FavoriteListingEdge]
 	# A list of nodes.
@@ -44,12 +45,14 @@ type FavoriteListingConnection {
 	totalCount: Int!
 }
 
-type ListingEdge {
+# Connection details between a Listings and a User
+type ListingEdge implements DatedEdge {
 	node: Listing
 	createdAt: DateTime
 }
 
-type FavoriteListingEdge {
+# Connection details between a "Saved-Search of listings" and a User
+type FavoriteListingEdge implements DatedEdge {
 	node: Listing
 	createdAt: DateTime
 }

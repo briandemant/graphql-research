@@ -1,11 +1,11 @@
-type Category {
+type Category implements Entity {
 	id: SimpleID!
 	name: NonEmptyString!
 	slug: NonEmptyString!
 	createdAt: DateTime!
 }
 
-type CategoryFieldsConnection {
+type CategoryField implements Entity {
 	id: SimpleID!
 	name: NonEmptyString!
 	value: [NonEmptyString]

@@ -20,8 +20,9 @@ interface ExpressContext {
 }
 
 export let contextFn = async ({ req, res }: ExpressContext): Promise<Context> => {
-	let requestId = req.header('x-request-id') ? req.header('x-request-id')! : 'UNTRACEABLE'
-	let context = {
+	const requestId = req.header('x-request-id') ? req.header('x-request-id')! : 'UNTRACEABLE'
+	// TODO: Add to context after JWT link
+	const context = {
 		danger: {
 			'gg-user-segment': req.header('gg-user-segment'),
 			'gg-user-type': req.header('gg-user-type'),

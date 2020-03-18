@@ -1,0 +1,44 @@
+### All things that are shareable (without ownership)
+
+### Annotations / Directives
+directive @deprecated(reason: String = "No longer supported") on FIELD_DEFINITION | ENUM_VALUE
+
+### Interfaces
+interface Entity {
+	id: SimpleID!
+}
+
+# For Edges that have a timestamp,
+# documenting the time of the connection
+interface DatedEdge {
+	createdAt: DateTuime
+}
+
+# Basic mutation response
+interface MutationResponse {
+	code: Int!
+	success: Boolean!
+}
+
+### Generic (re-usable) types
+type Location {
+	address: NonEmptyString
+	zipCode: NonEmptyString
+	city: NonEmptyString
+	country: NonEmptyString
+	lat: NonEmptyString
+	long: NonEmptyString
+}
+
+enum ImageSizes {
+	THUMB
+	SMALL
+	MEDIUM
+	LARGE
+}
+type Image {
+	# Absolute URL for accessing an image
+	slug(size: ImageSizes = SMALL): NonEmptyString!
+	# TODO: should list the available sizes from ImageSizes
+	sizes: [NonEmptyString!]!
+}
