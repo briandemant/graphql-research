@@ -17,6 +17,7 @@ items:
       metadata:
         labels:
           app: jaeger
+          name: jaeger
           app.kubernetes.io/name: jaeger
           app.kubernetes.io/component: all-in-one
         annotations:
