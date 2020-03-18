@@ -6,7 +6,7 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc --pretty",
-		"dev": "nodemon -w dist -w ../lib/dist --delay 20ms --inspect=2301 dist/index.js",
+		"dev": "NODE_ENV=dev nodemon -w dist -w ../lib/dist --delay 20ms --inspect=2301 dist/index.js",
 		"dev:ts": "nodemon -e ts,graphql -x \"ts-node src/index.ts\"",
 		"build:api-gen": "graphql-codegen --config codegen.yaml",
 		"build:api-gen:watch": "nodemon -w codegen.yaml -e yaml -x 'graphql-codegen --config codegen.yaml --watch'"
@@ -18,6 +18,8 @@
 		"@types/lodash": "^4.14.149",
 		"@types/ws": "^7.2.2",
 		"apollo-server": "^2.11.0",
+		"apollo-server-express": "^2.11.0",
+		"colors": "^1.4.0",
 		"faker": "^4.1.0",
 		"graphql": "^14.6.0",
 		"graphql-import": "^1.0.0-beta.2",

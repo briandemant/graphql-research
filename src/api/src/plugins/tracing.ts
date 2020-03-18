@@ -31,7 +31,7 @@ export interface TracingFormat {
 let schemaHash: string = 'INVALID'
 export const TracingPlugin = {
 	requestDidStart(reqCtx: GraphQLRequestContext): GraphQLRequestListener {
-		console.log('requestDidStart', reqCtx)
+		// console.log('requestDidStart', reqCtx)
 
 		return {
 			async willSendResponse(reqCtx) {

@@ -7,6 +7,6 @@ type Listing {
 
 extend type Query {
 	listing(id: SimpleID!): Listing
-	# 	listings: [Listing!]!
+#	 	listings: [Listing!]!
 	# 	frontPageListings(After: Int = 0): [Listing!]!
 }

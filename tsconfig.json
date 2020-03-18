@@ -32,6 +32,7 @@
 	"files": [],
 	"references": [
 		{ "path": "./src/lib/tsconfig.json" },
-		{ "path": "./src/api/tsconfig.json" }
+		{ "path": "./src/api/tsconfig.json" },
+		{ "path": "./src/trace-test/tsconfig.json" }
 	]
 }
