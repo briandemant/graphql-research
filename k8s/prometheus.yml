@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+        name: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus
+          volumeMounts:
+            - name: config-volume
+              subPath: prometheus.yml
+              mountPath: /etc/prometheus/prometheus.yml
+            - name: prometheus-storage-volume
+              mountPath: /prometheus/
+          ports:
+            - containerPort: 9090
+      volumes:
+        - name: config-volume
+          configMap:
+            defaultMode: 420
+            name: config-volume
+
+        - name: prometheus-storage-volume
+          emptyDir: {}
+#      volumes:
+#        - name: nginx-conf
+#          configMap:
+#            name: config-volume
+#            items:
+#              - key: prometheus.yaml
+#                path:  /etc/prometheus/prometheus.yml
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: prometheus
+spec:
+  selector:
+    app: prometheus
+  ports:
+    - name: promui
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
