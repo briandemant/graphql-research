@@ -16,8 +16,10 @@ enum ListingTypeEnum {
 	BUY
 	FREE
 	TRADE
-	LEASE # Properties (Apartments, houses, etc.)
-	RENT # Things (Cars, machines, etc.)
+	# Properties (Apartments, houses, etc.)
+	LEASE
+	# Things (Cars, machines, etc.)
+	RENT
 	OTHER
 }
 
@@ -38,7 +40,8 @@ type Listing implements Entity {
 	# pricing
 	price: NonEmptyString!
 	offersAccepted: Boolean
-	vatEnabled: Boolean @include(if: Boolean) # Bizz user only
+	# Bizz user only
+	vatEnabled: Boolean
 	# relationships
 	category: Category!
 	primaryImage: Image
@@ -47,11 +50,12 @@ type Listing implements Entity {
 
 	# misc
 	type: ListingTypeEnum! #TODO: rename to something that makes sense (in the context of: selling, buying, trading, giving away for free)
-	homepage: NonEmptyString @include(if: Boolean) # Bizz user only
-	# contact - might be inherited from owner or listing specific
+	# Bizz user only
+	homepage: NonEmptyString
+	# contact - (might be inherited from owner or listing specific)
 	phone: NonEmptyString
 
-	# location - might be inherited from owner or defined for the listing specifically
+	# location - (might be inherited from owner or defined for the listing specifically)
 	location: Location!
 
 	# Product - package, addons, publications
