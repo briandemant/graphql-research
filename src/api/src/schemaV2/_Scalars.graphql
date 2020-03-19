@@ -4,3 +4,5 @@ scalar NonEmptyString
 scalar UuidV4
 # scalar Md5
 scalar SimpleID
+scalar Email
+scalar URL

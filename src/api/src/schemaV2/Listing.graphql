@@ -16,11 +16,14 @@ enum ListingTypeEnum {
 	BUY
 	FREE
 	TRADE
+	LEASE # Properties (Apartments, houses, etc.)
+	RENT # Things (Cars, machines, etc.)
+	OTHER
 }
 
 type Listing implements Entity {
 	# basic
-	id: SimpleID!
+	id: UuidV4!
 	slug: NonEmptyString!
 	owner: User!
 	online: Boolean!
@@ -35,27 +38,30 @@ type Listing implements Entity {
 	# pricing
 	price: NonEmptyString!
 	offersAccepted: Boolean
-	vatEnabled: Boolean # Bizz user only (@brde - Maybe annotate this with a directive?)
+	vatEnabled: Boolean @include(if: Boolean) # Bizz user only
 	# relationships
 	category: Category!
-	images: [Image]
+	primaryImage: Image
+	images: [Image!]
 	# (categoryFields should be a connection on the Category entity)
 
 	# misc
 	type: ListingTypeEnum! #TODO: rename to something that makes sense (in the context of: selling, buying, trading, giving away for free)
-	homepage: NonEmptyString # Bizz user only (@brde - Maybe annotate this with a directive?)
+	homepage: NonEmptyString @include(if: Boolean) # Bizz user only
 	# contact - might be inherited from owner or listing specific
 	phone: NonEmptyString
 
 	# location - might be inherited from owner or defined for the listing specifically
 	location: Location!
+
 	# Product - package, addons, publications
 	productPackage: ProductPackage!
 }
 
 extend type Query {
-	listing(id: SimpleID!): Listing
+	listing(id: UuidV4!): Listing
 	listings(cursor: CursorPaginationParams, sortBy: ListingOrderEnum = CREATED_AT, reverse: Boolean = false): [Listing!]!
+
 	# TODO: Don't know if this should be a connection of sorts? Or a computed field?
 	frontPageListings(
 		cursor: CursorPaginationParams

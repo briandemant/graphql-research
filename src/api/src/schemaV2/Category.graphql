@@ -1,12 +1,14 @@
 type Category implements Entity {
-	id: SimpleID!
+	id: UuidV4!
 	name: NonEmptyString!
 	slug: NonEmptyString!
-	createdAt: DateTime!
+	createdAt: ValidDate!
 }
 
+# TODO: Basic implementation, for now.
+# Needs to be refactored, to support different types of values, etc.
 type CategoryField implements Entity {
-	id: SimpleID!
+	id: UuidV4!
 	name: NonEmptyString!
-	value: [NonEmptyString]
+	value: [NonEmptyString!]
 }
