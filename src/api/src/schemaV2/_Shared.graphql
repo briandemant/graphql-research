@@ -12,7 +12,7 @@ interface Entity {
 # documenting the time of the connection
 interface DatedEdge {
 	createdAt: ValidDate!
-	# updatedAt: ValidDate! # Does all edges have an updatedAt
+	# updatedAt: ValidDate! # Can we guarantee all edges to have an `updatedAt` property
 }
 
 # Bare minium mutation response
