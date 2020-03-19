@@ -1,5 +1,5 @@
 import express from 'express'
-
+import { Meter } from '@opentelemetry/metrics'
 export interface Context {
 	auth: {
 		authenticated: boolean
@@ -12,6 +12,7 @@ export interface Context {
 		spanId?: string
 		path: string[]
 	}
+	meter: Meter
 }
 
 interface ExpressContext {
@@ -19,7 +20,7 @@ interface ExpressContext {
 	res: express.Response
 }
 
-export let contextFn = async ({ req, res }: ExpressContext): Promise<Context> => {
+export let contextFn = async ({ req, res }: ExpressContext): Promise<Partial<Context>> => {
 	let requestId = req.header('x-request-id') ? req.header('x-request-id')! : 'UNTRACEABLE'
 	let context = {
 		danger: {

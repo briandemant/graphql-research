@@ -41,15 +41,19 @@ const baseResolvers: GQLListingResolvers = {
 	},
 	owner: async (parent, args, context, info) => {
 		if (parent.owner) {
+			console.log("parent.owner",parent)
+
 			let user = await new UserClient().findById(parent.owner)
 			if (user.ok) {
 				return user.value
 			}
 		} else if (parent.id) {
+			console.log("parent.id",parent)
 			let listing = await new ListingClient().findById(parent.id)
 			if (listing.ok) {
 				let user = await new UserClient().findById(listing.value.owner)
 				if (user.ok) {
+			console.log("user.value",user.value)
 					return user.value
 				}
 			}

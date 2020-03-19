@@ -49,6 +49,7 @@ https://medium.com/entria/testing-a-graphql-server-using-jest-4e00d0e4980e
 https://github.com/prisma-labs/graphql-yoga/issues/616
 
 ### Tracing, metrics & error
+https://opentracing.io/docs/overview/ << what is tracing
 https://dev.to/andre/handling-errors-in-graphql--2ea3
 https://github.com/addityasingh/graphql-lightstep-middleware/blob/master/src/index.ts
 
