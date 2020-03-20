@@ -1,0 +1,23 @@
+# Receipts belonging to User, paginated
+type ReceiptsConnection implements PaginatedConnection {
+	# A list of edges (same as nodes but with cursor).
+	edges: [ReceiptEdge]
+	# A list of nodes.
+	nodes: [Receipt!]
+	# Information to aid in pagination.
+	pageInfo: PageInfo!
+	# Identifies the total count of items in the connection.
+	totalCount: Int!
+}
+
+type ReceiptEdge implements DatedEdge {
+	node: Receipt
+	createdAt: DateTime!
+}
+
+type Receipt implements Entity {
+	id: UuidV4!
+	price: Int!
+	slug: NonEmptyString!
+	createdAt: DateTime!
+}

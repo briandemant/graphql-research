@@ -5,23 +5,40 @@ type User implements Entity {
 	userName: NonEmptyString
 	createdAt: DateTime!
 
-	# Cursor pagination
 	listingConnection(
 		cursor: CursorPaginationParams
 		sortBy: ListingOrderEnum = CREATED_AT
 		reverse: Boolean = false
 	): ListingConnection
 
-	# Generic pagination
 	favoriteListingsConnection(
 		pagination: PagePaginationParams
 		sortBy: ListingOrderEnum = CREATED_AT
 		reverse: Boolean = false
 	): FavoriteListingConnection
+
+	labelsConnection(
+		pagination: PagePaginationParams
+		sortBy: GenericSortBy = CREATED_AT
+		reverse: Boolean = false
+	): LabelsConnection
+
+	receiptsConnection(
+		pagination: PagePaginationParams
+		sortBy: GenericSortBy = CREATED_AT
+		reverse: Boolean = false
+	): ReceiptsConnection
+
+	# TODO: Needs more args to separate type of messages (own, replies from others, etc.)
+	messagesConnection(
+		pagination: PagePaginationParams
+		sortBy: GenericSortBy = CREATED_AT
+		reverse: Boolean = false
+	): MessagesConnection
 }
 
 # TODO: Move to separate FavoriteListing type
-# "Saved-Search of listings" owned by User, paginated
+# "Saved-Search of listings" belonging to User, paginated
 type FavoriteListingConnection implements PaginatedConnection {
 	# A list of edges (same as nodes but with cursor).
 	edges: [FavoriteListingEdge]
@@ -32,7 +49,6 @@ type FavoriteListingConnection implements PaginatedConnection {
 	# Identifies the total count of items in the connection.
 	totalCount: Int!
 }
-
 # TODO: Move to separate FavoriteListing type
 # Connection details between a "Saved-Search of listings" and a User
 type FavoriteListingEdge implements DatedEdge {

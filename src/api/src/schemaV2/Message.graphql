@@ -1,0 +1,20 @@
+# Messages belonging to a User, paginated
+type MessagesConnection implements PaginatedConnection {
+	# A list of edges (same as nodes but with cursor).
+	edges: [MessageEdge]
+	# A list of nodes.
+	nodes: [Message!]
+	# Information to aid in pagination.
+	pageInfo: PageInfo!
+	# Identifies the total count of items in the connection.
+	totalCount: Int!
+}
+
+type MessageEdge implements DatedEdge {
+	node: Message
+	createdAt: DateTime!
+}
+
+type Message implements Entity {
+	id: UuidV4!
+}

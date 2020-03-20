@@ -97,7 +97,7 @@ export type GQLEntity = {
 
 /**
  * TODO: Move to separate FavoriteListing type
- * "Saved-Search of listings" owned by User, paginated
+ * "Saved-Search of listings" belonging to User, paginated
  */
 export type GQLFavoriteListingConnection = GQLPaginatedConnection & {
 	/** A list of edges (same as nodes but with cursor). */
@@ -125,6 +125,11 @@ export enum GQLFrontpageGroupTypeEnum {
 	User = 'USER',
 }
 
+export enum GQLGenericSortBy {
+	CreatedAt = 'CREATED_AT',
+	UpdatedAt = 'UPDATED_AT',
+}
+
 export type GQLImage = {
 	/** Absolute URL for accessing an image */
 	readonly url: Scalars['NonEmptyString']
@@ -140,6 +145,27 @@ export enum GQLImageSizes {
 	Small = 'SMALL',
 	Medium = 'MEDIUM',
 	Large = 'LARGE',
+}
+
+export type GQLLabel = GQLEntity & {
+	readonly id: Scalars['UuidV4']
+}
+
+export type GQLLabelEdge = GQLDatedEdge & {
+	readonly node: Maybe<GQLLabel>
+	readonly createdAt: Scalars['DateTime']
+}
+
+/** Labels belonging to User, paginated */
+export type GQLLabelsConnection = GQLPaginatedConnection & {
+	/** A list of edges (same as nodes but with cursor). */
+	readonly edges: Maybe<ReadonlyArray<Maybe<GQLLabelEdge>>>
+	/** A list of nodes. */
+	readonly nodes: Maybe<ReadonlyArray<GQLLabel>>
+	/** Information to aid in pagination. */
+	readonly pageInfo: GQLPageInfo
+	/** Identifies the total count of items in the connection. */
+	readonly totalCount: Scalars['Int']
 }
 
 export type GQLListing = GQLEntity & {
@@ -226,6 +252,27 @@ export type GQLLocation = {
 	readonly country: GQLCountry
 	readonly lat: Maybe<Scalars['NonEmptyString']>
 	readonly long: Maybe<Scalars['NonEmptyString']>
+}
+
+export type GQLMessage = GQLEntity & {
+	readonly id: Scalars['UuidV4']
+}
+
+export type GQLMessageEdge = GQLDatedEdge & {
+	readonly node: Maybe<GQLMessage>
+	readonly createdAt: Scalars['DateTime']
+}
+
+/** Messages belonging to a User, paginated */
+export type GQLMessagesConnection = GQLPaginatedConnection & {
+	/** A list of edges (same as nodes but with cursor). */
+	readonly edges: Maybe<ReadonlyArray<Maybe<GQLMessageEdge>>>
+	/** A list of nodes. */
+	readonly nodes: Maybe<ReadonlyArray<GQLMessage>>
+	/** Information to aid in pagination. */
+	readonly pageInfo: GQLPageInfo
+	/** Identifies the total count of items in the connection. */
+	readonly totalCount: Scalars['Int']
 }
 
 export type GQLMutationResponse = {
@@ -331,6 +378,30 @@ export type GQLQueryUserArgs = {
 	id: Scalars['UuidV4']
 }
 
+export type GQLReceipt = GQLEntity & {
+	readonly id: Scalars['UuidV4']
+	readonly price: Scalars['Int']
+	readonly slug: Scalars['NonEmptyString']
+	readonly createdAt: Scalars['DateTime']
+}
+
+export type GQLReceiptEdge = GQLDatedEdge & {
+	readonly node: Maybe<GQLReceipt>
+	readonly createdAt: Scalars['DateTime']
+}
+
+/** Receipts belonging to User, paginated */
+export type GQLReceiptsConnection = GQLPaginatedConnection & {
+	/** A list of edges (same as nodes but with cursor). */
+	readonly edges: Maybe<ReadonlyArray<Maybe<GQLReceiptEdge>>>
+	/** A list of nodes. */
+	readonly nodes: Maybe<ReadonlyArray<GQLReceipt>>
+	/** Information to aid in pagination. */
+	readonly pageInfo: GQLPageInfo
+	/** Identifies the total count of items in the connection. */
+	readonly totalCount: Scalars['Int']
+}
+
 /** Bare minium mutation response */
 export enum GQLResponseCodeEnum {
 	Ok = 'OK',
@@ -349,10 +420,12 @@ export type GQLUser = GQLEntity & {
 	readonly email: Maybe<Scalars['NonEmptyString']>
 	readonly userName: Maybe<Scalars['NonEmptyString']>
 	readonly createdAt: Scalars['DateTime']
-	/** Cursor pagination */
 	readonly listingConnection: Maybe<GQLListingConnection>
-	/** Generic pagination */
 	readonly favoriteListingsConnection: Maybe<GQLFavoriteListingConnection>
+	readonly labelsConnection: Maybe<GQLLabelsConnection>
+	readonly receiptsConnection: Maybe<GQLReceiptsConnection>
+	/** TODO: Needs more args to separate type of messages (own, replies from others, etc.) */
+	readonly messagesConnection: Maybe<GQLMessagesConnection>
 }
 
 export type GQLUserListingConnectionArgs = {
@@ -364,6 +437,24 @@ export type GQLUserListingConnectionArgs = {
 export type GQLUserFavoriteListingsConnectionArgs = {
 	pagination: Maybe<GQLPagePaginationParams>
 	sortBy?: Maybe<GQLListingOrderEnum>
+	reverse?: Maybe<Scalars['Boolean']>
+}
+
+export type GQLUserLabelsConnectionArgs = {
+	pagination: Maybe<GQLPagePaginationParams>
+	sortBy?: Maybe<GQLGenericSortBy>
+	reverse?: Maybe<Scalars['Boolean']>
+}
+
+export type GQLUserReceiptsConnectionArgs = {
+	pagination: Maybe<GQLPagePaginationParams>
+	sortBy?: Maybe<GQLGenericSortBy>
+	reverse?: Maybe<Scalars['Boolean']>
+}
+
+export type GQLUserMessagesConnectionArgs = {
+	pagination: Maybe<GQLPagePaginationParams>
+	sortBy?: Maybe<GQLGenericSortBy>
 	reverse?: Maybe<Scalars['Boolean']>
 }
 
@@ -453,6 +544,16 @@ export type GQLResolversTypes = {
 	PagePaginationParams: ResolverTypeWrapper<any>
 	FavoriteListingConnection: ResolverTypeWrapper<any>
 	FavoriteListingEdge: ResolverTypeWrapper<any>
+	GenericSortBy: ResolverTypeWrapper<any>
+	LabelsConnection: ResolverTypeWrapper<any>
+	LabelEdge: ResolverTypeWrapper<any>
+	Label: ResolverTypeWrapper<any>
+	ReceiptsConnection: ResolverTypeWrapper<any>
+	ReceiptEdge: ResolverTypeWrapper<any>
+	Receipt: ResolverTypeWrapper<any>
+	MessagesConnection: ResolverTypeWrapper<any>
+	MessageEdge: ResolverTypeWrapper<any>
+	Message: ResolverTypeWrapper<any>
 	ListingStatusEnum: ResolverTypeWrapper<any>
 	Category: ResolverTypeWrapper<any>
 	Image: ResolverTypeWrapper<any>
@@ -495,6 +596,16 @@ export type GQLResolversParentTypes = {
 	PagePaginationParams: any
 	FavoriteListingConnection: any
 	FavoriteListingEdge: any
+	GenericSortBy: any
+	LabelsConnection: any
+	LabelEdge: any
+	Label: any
+	ReceiptsConnection: any
+	ReceiptEdge: any
+	Receipt: any
+	MessagesConnection: any
+	MessageEdge: any
+	Message: any
 	ListingStatusEnum: any
 	Category: any
 	Image: any
@@ -575,7 +686,11 @@ export type GQLDatedEdgeResolvers<
 	ContextType = Context,
 	ParentType extends GQLResolversParentTypes['DatedEdge'] = GQLResolversParentTypes['DatedEdge']
 > = {
-	__resolveType: TypeResolveFn<'ListingEdge' | 'FavoriteListingEdge', ParentType, ContextType>
+	__resolveType: TypeResolveFn<
+		'ListingEdge' | 'FavoriteListingEdge' | 'LabelEdge' | 'ReceiptEdge' | 'MessageEdge',
+		ParentType,
+		ContextType
+	>
 	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
 }
 
@@ -594,6 +709,9 @@ export type GQLEntityResolvers<
 	__resolveType: TypeResolveFn<
 		| 'Listing'
 		| 'User'
+		| 'Label'
+		| 'Receipt'
+		| 'Message'
 		| 'Category'
 		| 'Country'
 		| 'ProductPackage'
@@ -633,6 +751,34 @@ export type GQLImageResolvers<
 > = {
 	url: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType, RequireFields<GQLImageUrlArgs, 'size'>>
 	size: Resolver<GQLResolversTypes['ImageSizes'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLLabelResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['Label'] = GQLResolversParentTypes['Label']
+> = {
+	id: Resolver<GQLResolversTypes['UuidV4'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLLabelEdgeResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['LabelEdge'] = GQLResolversParentTypes['LabelEdge']
+> = {
+	node: Resolver<Maybe<GQLResolversTypes['Label']>, ParentType, ContextType>
+	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLLabelsConnectionResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['LabelsConnection'] = GQLResolversParentTypes['LabelsConnection']
+> = {
+	edges: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['LabelEdge']>>>, ParentType, ContextType>
+	nodes: Resolver<Maybe<ReadonlyArray<GQLResolversTypes['Label']>>, ParentType, ContextType>
+	pageInfo: Resolver<GQLResolversTypes['PageInfo'], ParentType, ContextType>
+	totalCount: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
@@ -696,6 +842,34 @@ export type GQLLocationResolvers<
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
+export type GQLMessageResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['Message'] = GQLResolversParentTypes['Message']
+> = {
+	id: Resolver<GQLResolversTypes['UuidV4'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLMessageEdgeResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['MessageEdge'] = GQLResolversParentTypes['MessageEdge']
+> = {
+	node: Resolver<Maybe<GQLResolversTypes['Message']>, ParentType, ContextType>
+	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLMessagesConnectionResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['MessagesConnection'] = GQLResolversParentTypes['MessagesConnection']
+> = {
+	edges: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['MessageEdge']>>>, ParentType, ContextType>
+	nodes: Resolver<Maybe<ReadonlyArray<GQLResolversTypes['Message']>>, ParentType, ContextType>
+	pageInfo: Resolver<GQLResolversTypes['PageInfo'], ParentType, ContextType>
+	totalCount: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
 export type GQLMutationResponseResolvers<
 	ContextType = Context,
 	ParentType extends GQLResolversParentTypes['MutationResponse'] = GQLResolversParentTypes['MutationResponse']
@@ -724,7 +898,15 @@ export type GQLPaginatedConnectionResolvers<
 	ContextType = Context,
 	ParentType extends GQLResolversParentTypes['PaginatedConnection'] = GQLResolversParentTypes['PaginatedConnection']
 > = {
-	__resolveType: TypeResolveFn<'ListingConnection' | 'FavoriteListingConnection', ParentType, ContextType>
+	__resolveType: TypeResolveFn<
+		| 'ListingConnection'
+		| 'FavoriteListingConnection'
+		| 'LabelsConnection'
+		| 'ReceiptsConnection'
+		| 'MessagesConnection',
+		ParentType,
+		ContextType
+	>
 	pageInfo: Resolver<GQLResolversTypes['PageInfo'], ParentType, ContextType>
 	totalCount: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>
 }
@@ -801,6 +983,37 @@ export type GQLQueryResolvers<
 	user: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryUserArgs, 'id'>>
 }
 
+export type GQLReceiptResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['Receipt'] = GQLResolversParentTypes['Receipt']
+> = {
+	id: Resolver<GQLResolversTypes['UuidV4'], ParentType, ContextType>
+	price: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>
+	slug: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLReceiptEdgeResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['ReceiptEdge'] = GQLResolversParentTypes['ReceiptEdge']
+> = {
+	node: Resolver<Maybe<GQLResolversTypes['Receipt']>, ParentType, ContextType>
+	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLReceiptsConnectionResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['ReceiptsConnection'] = GQLResolversParentTypes['ReceiptsConnection']
+> = {
+	edges: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['ReceiptEdge']>>>, ParentType, ContextType>
+	nodes: Resolver<Maybe<ReadonlyArray<GQLResolversTypes['Receipt']>>, ParentType, ContextType>
+	pageInfo: Resolver<GQLResolversTypes['PageInfo'], ParentType, ContextType>
+	totalCount: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
 export interface GQLUrlScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['URL'], any> {
 	name: 'URL'
 }
@@ -826,6 +1039,24 @@ export type GQLUserResolvers<
 		ContextType,
 		RequireFields<GQLUserFavoriteListingsConnectionArgs, 'sortBy' | 'reverse'>
 	>
+	labelsConnection: Resolver<
+		Maybe<GQLResolversTypes['LabelsConnection']>,
+		ParentType,
+		ContextType,
+		RequireFields<GQLUserLabelsConnectionArgs, 'sortBy' | 'reverse'>
+	>
+	receiptsConnection: Resolver<
+		Maybe<GQLResolversTypes['ReceiptsConnection']>,
+		ParentType,
+		ContextType,
+		RequireFields<GQLUserReceiptsConnectionArgs, 'sortBy' | 'reverse'>
+	>
+	messagesConnection: Resolver<
+		Maybe<GQLResolversTypes['MessagesConnection']>,
+		ParentType,
+		ContextType,
+		RequireFields<GQLUserMessagesConnectionArgs, 'sortBy' | 'reverse'>
+	>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
@@ -844,10 +1075,16 @@ export type GQLResolvers<ContextType = Context> = {
 	FavoriteListingConnection: GQLFavoriteListingConnectionResolvers<ContextType>
 	FavoriteListingEdge: GQLFavoriteListingEdgeResolvers<ContextType>
 	Image: GQLImageResolvers<ContextType>
+	Label: GQLLabelResolvers<ContextType>
+	LabelEdge: GQLLabelEdgeResolvers<ContextType>
+	LabelsConnection: GQLLabelsConnectionResolvers<ContextType>
 	Listing: GQLListingResolvers<ContextType>
 	ListingConnection: GQLListingConnectionResolvers<ContextType>
 	ListingEdge: GQLListingEdgeResolvers<ContextType>
 	Location: GQLLocationResolvers<ContextType>
+	Message: GQLMessageResolvers<ContextType>
+	MessageEdge: GQLMessageEdgeResolvers<ContextType>
+	MessagesConnection: GQLMessagesConnectionResolvers<ContextType>
 	MutationResponse: GQLMutationResponseResolvers
 	NonEmptyString: GraphQLScalarType
 	PageInfo: GQLPageInfoResolvers<ContextType>
@@ -857,6 +1094,9 @@ export type GQLResolvers<ContextType = Context> = {
 	ProductPackage: GQLProductPackageResolvers<ContextType>
 	Publication: GQLPublicationResolvers<ContextType>
 	Query: GQLQueryResolvers<ContextType>
+	Receipt: GQLReceiptResolvers<ContextType>
+	ReceiptEdge: GQLReceiptEdgeResolvers<ContextType>
+	ReceiptsConnection: GQLReceiptsConnectionResolvers<ContextType>
 	URL: GraphQLScalarType
 	User: GQLUserResolvers<ContextType>
 	UuidV4: GraphQLScalarType

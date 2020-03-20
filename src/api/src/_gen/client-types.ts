@@ -89,7 +89,7 @@ export type Entity = {
 
 /**
  * TODO: Move to separate FavoriteListing type
- * "Saved-Search of listings" owned by User, paginated
+ * "Saved-Search of listings" belonging to User, paginated
  */
 export type FavoriteListingConnection = PaginatedConnection & {
 	/** A list of edges (same as nodes but with cursor). */
@@ -117,6 +117,11 @@ export enum FrontpageGroupTypeEnum {
 	User = 'USER',
 }
 
+export enum GenericSortBy {
+	CreatedAt = 'CREATED_AT',
+	UpdatedAt = 'UPDATED_AT',
+}
+
 export type Image = {
 	/** Absolute URL for accessing an image */
 	readonly url: Scalars['NonEmptyString']
@@ -132,6 +137,27 @@ export enum ImageSizes {
 	Small = 'SMALL',
 	Medium = 'MEDIUM',
 	Large = 'LARGE',
+}
+
+export type Label = Entity & {
+	readonly id: Scalars['UuidV4']
+}
+
+export type LabelEdge = DatedEdge & {
+	readonly node: Maybe<Label>
+	readonly createdAt: Scalars['DateTime']
+}
+
+/** Labels belonging to User, paginated */
+export type LabelsConnection = PaginatedConnection & {
+	/** A list of edges (same as nodes but with cursor). */
+	readonly edges: Maybe<ReadonlyArray<Maybe<LabelEdge>>>
+	/** A list of nodes. */
+	readonly nodes: Maybe<ReadonlyArray<Label>>
+	/** Information to aid in pagination. */
+	readonly pageInfo: PageInfo
+	/** Identifies the total count of items in the connection. */
+	readonly totalCount: Scalars['Int']
 }
 
 export type Listing = Entity & {
@@ -218,6 +244,27 @@ export type Location = {
 	readonly country: Country
 	readonly lat: Maybe<Scalars['NonEmptyString']>
 	readonly long: Maybe<Scalars['NonEmptyString']>
+}
+
+export type Message = Entity & {
+	readonly id: Scalars['UuidV4']
+}
+
+export type MessageEdge = DatedEdge & {
+	readonly node: Maybe<Message>
+	readonly createdAt: Scalars['DateTime']
+}
+
+/** Messages belonging to a User, paginated */
+export type MessagesConnection = PaginatedConnection & {
+	/** A list of edges (same as nodes but with cursor). */
+	readonly edges: Maybe<ReadonlyArray<Maybe<MessageEdge>>>
+	/** A list of nodes. */
+	readonly nodes: Maybe<ReadonlyArray<Message>>
+	/** Information to aid in pagination. */
+	readonly pageInfo: PageInfo
+	/** Identifies the total count of items in the connection. */
+	readonly totalCount: Scalars['Int']
 }
 
 export type MutationResponse = {
@@ -323,6 +370,30 @@ export type QueryUserArgs = {
 	id: Scalars['UuidV4']
 }
 
+export type Receipt = Entity & {
+	readonly id: Scalars['UuidV4']
+	readonly price: Scalars['Int']
+	readonly slug: Scalars['NonEmptyString']
+	readonly createdAt: Scalars['DateTime']
+}
+
+export type ReceiptEdge = DatedEdge & {
+	readonly node: Maybe<Receipt>
+	readonly createdAt: Scalars['DateTime']
+}
+
+/** Receipts belonging to User, paginated */
+export type ReceiptsConnection = PaginatedConnection & {
+	/** A list of edges (same as nodes but with cursor). */
+	readonly edges: Maybe<ReadonlyArray<Maybe<ReceiptEdge>>>
+	/** A list of nodes. */
+	readonly nodes: Maybe<ReadonlyArray<Receipt>>
+	/** Information to aid in pagination. */
+	readonly pageInfo: PageInfo
+	/** Identifies the total count of items in the connection. */
+	readonly totalCount: Scalars['Int']
+}
+
 /** Bare minium mutation response */
 export enum ResponseCodeEnum {
 	Ok = 'OK',
@@ -341,10 +412,12 @@ export type User = Entity & {
 	readonly email: Maybe<Scalars['NonEmptyString']>
 	readonly userName: Maybe<Scalars['NonEmptyString']>
 	readonly createdAt: Scalars['DateTime']
-	/** Cursor pagination */
 	readonly listingConnection: Maybe<ListingConnection>
-	/** Generic pagination */
 	readonly favoriteListingsConnection: Maybe<FavoriteListingConnection>
+	readonly labelsConnection: Maybe<LabelsConnection>
+	readonly receiptsConnection: Maybe<ReceiptsConnection>
+	/** TODO: Needs more args to separate type of messages (own, replies from others, etc.) */
+	readonly messagesConnection: Maybe<MessagesConnection>
 }
 
 export type UserListingConnectionArgs = {
@@ -356,5 +429,23 @@ export type UserListingConnectionArgs = {
 export type UserFavoriteListingsConnectionArgs = {
 	pagination: Maybe<PagePaginationParams>
 	sortBy?: Maybe<ListingOrderEnum>
+	reverse?: Maybe<Scalars['Boolean']>
+}
+
+export type UserLabelsConnectionArgs = {
+	pagination: Maybe<PagePaginationParams>
+	sortBy?: Maybe<GenericSortBy>
+	reverse?: Maybe<Scalars['Boolean']>
+}
+
+export type UserReceiptsConnectionArgs = {
+	pagination: Maybe<PagePaginationParams>
+	sortBy?: Maybe<GenericSortBy>
+	reverse?: Maybe<Scalars['Boolean']>
+}
+
+export type UserMessagesConnectionArgs = {
+	pagination: Maybe<PagePaginationParams>
+	sortBy?: Maybe<GenericSortBy>
 	reverse?: Maybe<Scalars['Boolean']>
 }

@@ -13,7 +13,12 @@ interface Entity {
 interface DatedEdge {
 	createdAt: DateTime!
 	# Can we guarantee all edges to have an `updatedAt` property
-	# updatedAt: DateTime! 
+	# updatedAt: DateTime!
+}
+
+enum GenericSortBy {
+	CREATED_AT
+	UPDATED_AT
 }
 
 # Bare minium mutation response

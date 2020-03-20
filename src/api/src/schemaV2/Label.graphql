@@ -1,0 +1,20 @@
+# Labels belonging to User, paginated
+type LabelsConnection implements PaginatedConnection {
+	# A list of edges (same as nodes but with cursor).
+	edges: [LabelEdge]
+	# A list of nodes.
+	nodes: [Label!]
+	# Information to aid in pagination.
+	pageInfo: PageInfo!
+	# Identifies the total count of items in the connection.
+	totalCount: Int!
+}
+
+type LabelEdge implements DatedEdge {
+	node: Label
+	createdAt: DateTime!
+}
+
+type Label implements Entity {
+	id: UuidV4!
+}
