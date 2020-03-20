@@ -49,25 +49,25 @@ const logResult = async (resolve: any, parent: any, args: any, context: Context,
 
 const schema = makeExecutableSchema({
 	typeDefs,
-	resolvers:{},
+	resolvers: {},
 	// ignore missing
-	allowUndefinedInResolve:true,
-	resolverValidationOptions:{
+	allowUndefinedInResolve: true,
+	resolverValidationOptions: {
 		requireResolversForArgs: false,
 		requireResolversForNonScalar: false,
 		requireResolversForAllFields: false,
 		requireResolversForResolveType: false,
 		allowResolversNotInSchema: false,
-	}
+	},
 })
 
 const app = express()
 app.use((req, res, next) => {
 	// console.log(colors.cyan("url"),req.url)
 	next()
-});
+})
 
-let count = 0;
+let count = 0
 app.get('/metrics', (req, res) => {
 	res.send(`metrics_scrape_count ${++count}`)
 })
@@ -75,7 +75,7 @@ app.get('/metrics', (req, res) => {
 const server = new ApolloServer({
 	schema: applyMiddleware(schema, logInput, logResult),
 	typeDefs,
-	resolvers:{},
+	resolvers: {},
 	schemaDirectives: {
 		deprecated: DeprecatedDirective,
 	},
