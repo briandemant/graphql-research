@@ -32,6 +32,9 @@ https://github.com/prisma-labs/graphql-yoga
 https://blog.apollographql.com/explaining-graphql-connections-c48b7c3d6976
 https://blog.apollographql.com/designing-graphql-mutations-e09de826ed97
 
+### Tools
+http://nathanrandal.com/graphql-visualizer/
+
 ### Dataloaders
 https://www.apollographql.com/docs/apollo-server/data/data-sources/
 
@@ -61,4 +64,3 @@ https://github.com/piglovesyou/graphql-let#readme
 https://www.apollographql.com/docs/apollo-server/integrations/plugins/
 https://github.com/BrunoScheufler/graphql-middleware-sentry
 https://github.com/maticzav/graphql-shield
-https://github.com/BrunoScheufler/graphql-middleware-sentry
