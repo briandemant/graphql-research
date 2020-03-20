@@ -1,8 +1,30 @@
 type Category implements Entity {
 	id: UuidV4!
 	name: NonEmptyString!
+	# category URL path
 	slug: NonEmptyString!
+
+	# hierarchy
+	parents: [Category!]
+	children: [Category!]
+	isLeaf: Boolean!
+
+	# meta
+	isCars: Boolean!
+	isPersonal: Boolean!
+	nemIdRequired: Boolean!
+
+	# relationships
+	listingConnection(
+		cursor: CursorPaginationParams
+		sortBy: ListingOrderEnum = CREATED_AT
+		reverse: Boolean = false
+	): ListingConnection
+	#categoryFieldsConnection():[Category!]
+
+	# timestamps
 	createdAt: DateTime!
+	updatedAt: DateTime!
 }
 
 # TODO: Basic implementation, for now.

@@ -15,7 +15,6 @@ export type Scalars = {
 	UuidV4: string
 	DateTime: Date
 	/** scalar Md5 */
-	SimpleID: any
 	Email: any
 	URL: any
 }
@@ -23,8 +22,27 @@ export type Scalars = {
 export type Category = Entity & {
 	readonly id: Scalars['UuidV4']
 	readonly name: Scalars['NonEmptyString']
+	/** category URL path */
 	readonly slug: Scalars['NonEmptyString']
+	/** hierarchy */
+	readonly parents: Maybe<ReadonlyArray<Category>>
+	readonly children: Maybe<ReadonlyArray<Category>>
+	readonly isLeaf: Scalars['Boolean']
+	/** meta */
+	readonly isCars: Scalars['Boolean']
+	readonly isPersonal: Scalars['Boolean']
+	readonly nemIdRequired: Scalars['Boolean']
+	/** relationships */
+	readonly listingConnection: Maybe<ListingConnection>
+	/** timestamps */
 	readonly createdAt: Scalars['DateTime']
+	readonly updatedAt: Scalars['DateTime']
+}
+
+export type CategoryListingConnectionArgs = {
+	cursor: Maybe<CursorPaginationParams>
+	sortBy?: Maybe<ListingOrderEnum>
+	reverse?: Maybe<Scalars['Boolean']>
 }
 
 /**
@@ -35,6 +53,19 @@ export type CategoryField = Entity & {
 	readonly id: Scalars['UuidV4']
 	readonly name: Scalars['NonEmptyString']
 	readonly value: Maybe<ReadonlyArray<Scalars['NonEmptyString']>>
+}
+
+export type Country = Entity & {
+	readonly id: Scalars['UuidV4']
+	readonly name: Scalars['NonEmptyString']
+	/** ISO 3166-1 alpha-2 */
+	readonly code: Scalars['NonEmptyString']
+	/** Phone prefix (+45, +44, etc.) */
+	readonly callingCode: Scalars['NonEmptyString']
+	readonly callingCodeValidationRegex: Scalars['NonEmptyString']
+	/** meta */
+	readonly createdAt: Scalars['DateTime']
+	readonly updatedAt: Scalars['DateTime']
 }
 
 export type CursorPaginationParams = {
@@ -56,7 +87,10 @@ export type Entity = {
 	readonly id: Scalars['UuidV4']
 }
 
-/** "Saved-Search of listings" owned by User, paginated */
+/**
+ * TODO: Move to separate FavoriteListing type
+ * "Saved-Search of listings" owned by User, paginated
+ */
 export type FavoriteListingConnection = PaginatedConnection & {
 	/** A list of edges (same as nodes but with cursor). */
 	readonly edges: Maybe<ReadonlyArray<Maybe<FavoriteListingEdge>>>
@@ -68,7 +102,10 @@ export type FavoriteListingConnection = PaginatedConnection & {
 	readonly totalCount: Scalars['Int']
 }
 
-/** Connection details between a "Saved-Search of listings" and a User */
+/**
+ * TODO: Move to separate FavoriteListing type
+ * Connection details between a "Saved-Search of listings" and a User
+ */
 export type FavoriteListingEdge = DatedEdge & {
 	readonly node: Maybe<Listing>
 	readonly createdAt: Scalars['DateTime']
@@ -124,7 +161,7 @@ export type Listing = Entity & {
 	readonly productPackage: ProductPackage
 }
 
-/** Listings owned by User, paginated */
+/** Listing connection, paginated */
 export type ListingConnection = PaginatedConnection & {
 	/** A list of edges (same as nodes but with cursor). */
 	readonly edges: Maybe<ReadonlyArray<Maybe<ListingEdge>>>
@@ -136,7 +173,7 @@ export type ListingConnection = PaginatedConnection & {
 	readonly totalCount: Scalars['Int']
 }
 
-/** Connection details between a Listings and a User */
+/** Connection details between a Listings and an Entity */
 export type ListingEdge = DatedEdge & {
 	readonly node: Maybe<Listing>
 	readonly createdAt: Scalars['DateTime']
@@ -172,7 +209,7 @@ export type Location = {
 	readonly address: Maybe<Scalars['NonEmptyString']>
 	readonly zipCode: Maybe<Scalars['NonEmptyString']>
 	readonly city: Maybe<Scalars['NonEmptyString']>
-	readonly country: Maybe<Scalars['NonEmptyString']>
+	readonly country: Country
 	readonly lat: Maybe<Scalars['NonEmptyString']>
 	readonly long: Maybe<Scalars['NonEmptyString']>
 }
@@ -209,6 +246,15 @@ export type PaginatedConnection = {
 	readonly totalCount: Scalars['Int']
 }
 
+export type Phone = Entity & {
+	readonly id: Scalars['UuidV4']
+	readonly country: Country
+	readonly value: Scalars['NonEmptyString']
+	/** meta */
+	readonly createdAt: Scalars['DateTime']
+	readonly updatedAt: Scalars['DateTime']
+}
+
 /** Addons, for granular tweaking of the exposure rules/features. */
 export type ProductAddon = Entity & {
 	readonly id: Scalars['UuidV4']
@@ -222,7 +268,7 @@ export type ProductPackage = Entity & {
 	readonly sku: Scalars['NonEmptyString']
 	readonly name: Scalars['NonEmptyString']
 	readonly addons: Maybe<ReadonlyArray<ProductAddon>>
-	readonly publications: Maybe<ReadonlyArray<ProductPackage>>
+	readonly publications: Maybe<ReadonlyArray<Publication>>
 }
 
 /**
@@ -241,14 +287,9 @@ export type Publication = Entity & {
 export type Query = {
 	readonly apiVersion: Scalars['String']
 	readonly frontPageListings: ReadonlyArray<Listing>
-	readonly isFuture: Maybe<Scalars['Boolean']>
-	readonly isPast: Maybe<Scalars['Boolean']>
 	readonly listing: Maybe<Listing>
 	readonly listings: ReadonlyArray<Listing>
-	readonly now: Maybe<Scalars['DateTime']>
 	readonly user: Maybe<User>
-	readonly utils: Maybe<Util>
-	readonly welcome: Scalars['String']
 }
 
 /** this is just to be able to return something in this separate schema file */
@@ -256,16 +297,6 @@ export type QueryFrontPageListingsArgs = {
 	cursor: Maybe<CursorPaginationParams>
 	sortBy?: Maybe<ListingOrderEnum>
 	reverse?: Maybe<Scalars['Boolean']>
-}
-
-/** this is just to be able to return something in this separate schema file */
-export type QueryIsFutureArgs = {
-	date: Maybe<Scalars['DateTime']>
-}
-
-/** this is just to be able to return something in this separate schema file */
-export type QueryIsPastArgs = {
-	date: Maybe<Scalars['DateTime']>
 }
 
 /** this is just to be able to return something in this separate schema file */
@@ -283,11 +314,6 @@ export type QueryListingsArgs = {
 /** this is just to be able to return something in this separate schema file */
 export type QueryUserArgs = {
 	id: Scalars['UuidV4']
-}
-
-/** this is just to be able to return something in this separate schema file */
-export type QueryWelcomeArgs = {
-	name: Maybe<Scalars['String']>
 }
 
 /** Bare minium mutation response */
@@ -324,20 +350,4 @@ export type UserFavoriteListingsConnectionArgs = {
 	pagination: Maybe<PagePaginationParams>
 	sortBy?: Maybe<ListingOrderEnum>
 	reverse?: Maybe<Scalars['Boolean']>
-}
-
-export type Util = {
-	readonly uuid: Maybe<Scalars['UuidV4']>
-	readonly validUuid: Maybe<Scalars['Boolean']>
-	readonly echoUuid: Maybe<Scalars['UuidV4']>
-	readonly newField: Maybe<Scalars['String']>
-	readonly oldField: Maybe<Scalars['String']>
-}
-
-export type UtilValidUuidArgs = {
-	idOrNot: Scalars['String']
-}
-
-export type UtilEchoUuidArgs = {
-	id: Scalars['UuidV4']
 }

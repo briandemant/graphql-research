@@ -23,6 +23,25 @@ enum ListingTypeEnum {
 	OTHER
 }
 
+# Listing connection, paginated
+type ListingConnection implements PaginatedConnection {
+	# A list of edges (same as nodes but with cursor).
+	edges: [ListingEdge]
+	# A list of nodes.
+	nodes: [Listing!]
+
+	# Information to aid in pagination.
+	pageInfo: PageInfo!
+	# Identifies the total count of items in the connection.
+	totalCount: Int!
+}
+
+# Connection details between a Listings and an Entity
+type ListingEdge implements DatedEdge {
+	node: Listing
+	createdAt: DateTime!
+}
+
 type Listing implements Entity {
 	# basic
 	id: UuidV4!

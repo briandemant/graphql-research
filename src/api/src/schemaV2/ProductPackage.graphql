@@ -4,7 +4,7 @@ type ProductPackage implements Entity {
 	sku: NonEmptyString! # Composite, Revision id
 	name: NonEmptyString!
 	addons: [ProductAddon!]
-	publications: [ProductPackage!]
+	publications: [Publication!]
 }
 
 # Addons, for granular tweaking of the exposure rules/features.

@@ -20,19 +20,7 @@ type User implements Entity {
 	): FavoriteListingConnection
 }
 
-# Listings owned by User, paginated
-type ListingConnection implements PaginatedConnection {
-	# A list of edges (same as nodes but with cursor).
-	edges: [ListingEdge]
-	# A list of nodes.
-	nodes: [Listing!]
-
-	# Information to aid in pagination.
-	pageInfo: PageInfo!
-	# Identifies the total count of items in the connection.
-	totalCount: Int!
-}
-
+# TODO: Move to separate FavoriteListing type
 # "Saved-Search of listings" owned by User, paginated
 type FavoriteListingConnection implements PaginatedConnection {
 	# A list of edges (same as nodes but with cursor).
@@ -45,12 +33,7 @@ type FavoriteListingConnection implements PaginatedConnection {
 	totalCount: Int!
 }
 
-# Connection details between a Listings and a User
-type ListingEdge implements DatedEdge {
-	node: Listing
-	createdAt: DateTime!
-}
-
+# TODO: Move to separate FavoriteListing type
 # Connection details between a "Saved-Search of listings" and a User
 type FavoriteListingEdge implements DatedEdge {
 	node: Listing

@@ -12,7 +12,8 @@ interface Entity {
 # documenting the time of the connection
 interface DatedEdge {
 	createdAt: DateTime!
-	# updatedAt: DateTime! # Can we guarantee all edges to have an `updatedAt` property
+	# Can we guarantee all edges to have an `updatedAt` property
+	# updatedAt: DateTime! 
 }
 
 # Bare minium mutation response
@@ -25,7 +26,7 @@ enum ResponseCodeEnum {
 interface MutationResponse {
 	code: ResponseCodeEnum!
 	success: Boolean!
-	data: Entity! # anything
+	data: Entity! # anything?
 }
 
 ### Generic (re-usable) types
@@ -33,7 +34,7 @@ type Location {
 	address: NonEmptyString
 	zipCode: NonEmptyString
 	city: NonEmptyString
-	country: NonEmptyString
+	country: Country!
 	lat: NonEmptyString
 	long: NonEmptyString
 }
