@@ -3,7 +3,7 @@ type User implements Entity {
 	name: NonEmptyString
 	email: NonEmptyString # TODO: Implement a custom "Email" Scalar?
 	userName: NonEmptyString
-	createdAt: ValidDate!
+	createdAt: DateTime!
 
 	# Cursor pagination
 	listingConnection(
@@ -48,13 +48,13 @@ type FavoriteListingConnection implements PaginatedConnection {
 # Connection details between a Listings and a User
 type ListingEdge implements DatedEdge {
 	node: Listing
-	createdAt: ValidDate
+	createdAt: DateTime!
 }
 
 # Connection details between a "Saved-Search of listings" and a User
 type FavoriteListingEdge implements DatedEdge {
 	node: Listing
-	createdAt: ValidDate
+	createdAt: DateTime!
 }
 
 extend type Query {

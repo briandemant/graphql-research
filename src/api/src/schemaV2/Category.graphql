@@ -2,7 +2,7 @@ type Category implements Entity {
 	id: UuidV4!
 	name: NonEmptyString!
 	slug: NonEmptyString!
-	createdAt: ValidDate!
+	createdAt: DateTime!
 }
 
 # TODO: Basic implementation, for now.

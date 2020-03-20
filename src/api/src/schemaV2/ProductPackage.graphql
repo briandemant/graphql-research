@@ -20,6 +20,6 @@ type Publication implements Entity {
 	id: UuidV4!
 	sku: NonEmptyString! # Composite, UUID and DateTime
 	name: NonEmptyString!
-	from: ValidDate!
-	to: ValidDate!
+	from: DateTime!
+	to: DateTime!
 }
