@@ -119,6 +119,12 @@ export type GQLFavoriteListingEdge = GQLDatedEdge & {
 	readonly createdAt: Scalars['DateTime']
 }
 
+export enum GQLFrontpageGroupTypeEnum {
+	Default = 'DEFAULT',
+	Newest = 'NEWEST',
+	User = 'USER',
+}
+
 export type GQLImage = {
 	/** Absolute URL for accessing an image */
 	readonly url: Scalars['NonEmptyString']
@@ -303,6 +309,7 @@ export type GQLQuery = {
 /** this is just to be able to return something in this separate schema file */
 export type GQLQueryFrontPageListingsArgs = {
 	cursor: Maybe<GQLCursorPaginationParams>
+	ofGroup?: Maybe<GQLFrontpageGroupTypeEnum>
 	sortBy?: Maybe<GQLListingOrderEnum>
 	reverse?: Maybe<Scalars['Boolean']>
 }
@@ -428,6 +435,7 @@ export type GQLResolversTypes = {
 	CursorPaginationParams: ResolverTypeWrapper<any>
 	Int: ResolverTypeWrapper<any>
 	NonEmptyString: ResolverTypeWrapper<NonEmptyString>
+	FrontpageGroupTypeEnum: ResolverTypeWrapper<any>
 	ListingOrderEnum: ResolverTypeWrapper<any>
 	Boolean: ResolverTypeWrapper<any>
 	Listing: ResolverTypeWrapper<any>
@@ -471,6 +479,7 @@ export type GQLResolversParentTypes = {
 	CursorPaginationParams: any
 	Int: any
 	NonEmptyString: NonEmptyString
+	FrontpageGroupTypeEnum: any
 	ListingOrderEnum: any
 	Boolean: any
 	Listing: any
@@ -775,7 +784,7 @@ export type GQLQueryResolvers<
 		ReadonlyArray<GQLResolversTypes['Listing']>,
 		ParentType,
 		ContextType,
-		RequireFields<GQLQueryFrontPageListingsArgs, 'sortBy' | 'reverse'>
+		RequireFields<GQLQueryFrontPageListingsArgs, 'ofGroup' | 'sortBy' | 'reverse'>
 	>
 	listing: Resolver<
 		Maybe<GQLResolversTypes['Listing']>,

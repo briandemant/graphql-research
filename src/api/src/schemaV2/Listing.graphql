@@ -4,6 +4,12 @@ enum ListingOrderEnum {
 	RANDOM
 }
 
+enum FrontpageGroupTypeEnum {
+	DEFAULT
+	NEWEST
+	USER
+}
+
 enum ListingStatusEnum {
 	ACTIVE
 	INACTIVE
@@ -85,9 +91,10 @@ extend type Query {
 	listing(id: UuidV4!): Listing
 	listings(cursor: CursorPaginationParams, sortBy: ListingOrderEnum = CREATED_AT, reverse: Boolean = false): [Listing!]!
 
-	# TODO: Don't know if this should be a connection of sorts? Or a computed field?
+	# Custom query of listings for the Frontpage
 	frontPageListings(
 		cursor: CursorPaginationParams
+		ofGroup: FrontpageGroupTypeEnum = DEFAULT
 		sortBy: ListingOrderEnum = RANDOM
 		reverse: Boolean = false
 	): [Listing!]!

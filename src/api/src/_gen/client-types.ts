@@ -111,6 +111,12 @@ export type FavoriteListingEdge = DatedEdge & {
 	readonly createdAt: Scalars['DateTime']
 }
 
+export enum FrontpageGroupTypeEnum {
+	Default = 'DEFAULT',
+	Newest = 'NEWEST',
+	User = 'USER',
+}
+
 export type Image = {
 	/** Absolute URL for accessing an image */
 	readonly url: Scalars['NonEmptyString']
@@ -295,6 +301,7 @@ export type Query = {
 /** this is just to be able to return something in this separate schema file */
 export type QueryFrontPageListingsArgs = {
 	cursor: Maybe<CursorPaginationParams>
+	ofGroup?: Maybe<FrontpageGroupTypeEnum>
 	sortBy?: Maybe<ListingOrderEnum>
 	reverse?: Maybe<Scalars['Boolean']>
 }
