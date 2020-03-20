@@ -17,4 +17,24 @@ type LabelEdge implements DatedEdge {
 
 type Label implements Entity {
 	id: UuidV4!
+    # download link
+	url: NonEmptyString!
+	receiver: NonEmptyString!
+	provider: LabelProvider!
+	trackUrl: NonEmptyString!
+	labellessCode: NonEmptyString!
+	parcelId: NonEmptyString!
+	# Don't know what this is
+	product: LabelProduct!
+}
+
+type LabelProvider implements Entity {
+	id: UuidV4!
+	name: NonEmptyString!
+}
+
+type LabelProduct implements Entity {
+	id: UuidV4!
+	sku: NonEmptyString!
+	name: NonEmptyString!
 }

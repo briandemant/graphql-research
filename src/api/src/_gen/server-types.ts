@@ -149,10 +149,39 @@ export enum GQLImageSizes {
 
 export type GQLLabel = GQLEntity & {
 	readonly id: Scalars['UuidV4']
+	/** download link */
+	readonly url: Scalars['NonEmptyString']
+	readonly receiver: Scalars['NonEmptyString']
+	readonly provider: GQLLabelProvider
+	readonly trackUrl: Scalars['NonEmptyString']
+	readonly labellessCode: Scalars['NonEmptyString']
+	readonly parcelId: Scalars['NonEmptyString']
+	/** Don't know what this is */
+	readonly product: GQLLabelProduct
 }
 
 export type GQLLabelEdge = GQLDatedEdge & {
 	readonly node: Maybe<GQLLabel>
+	readonly createdAt: Scalars['DateTime']
+}
+
+export type GQLLabelProduct = GQLEntity & {
+	readonly id: Scalars['UuidV4']
+	readonly sku: Scalars['NonEmptyString']
+	readonly name: Scalars['NonEmptyString']
+}
+
+export type GQLLabelProvider = GQLEntity & {
+	readonly id: Scalars['UuidV4']
+	readonly name: Scalars['NonEmptyString']
+}
+
+export type GQLLabelReceipt = GQLEntity & {
+	readonly id: Scalars['UuidV4']
+	/** Label contains the download link and the purchased LabelProduct */
+	readonly label: GQLLabel
+	/** Payment data */
+	readonly order: GQLOrder
 	readonly createdAt: Scalars['DateTime']
 }
 
@@ -225,6 +254,17 @@ export enum GQLListingOrderEnum {
 	Random = 'RANDOM',
 }
 
+export type GQLListingReceipt = GQLEntity & {
+	readonly id: Scalars['UuidV4']
+	/** download link */
+	readonly url: Scalars['NonEmptyString']
+	/** Listing contains the purchased ProductPackage data */
+	readonly listing: Maybe<ReadonlyArray<GQLListing>>
+	/** Payment data */
+	readonly order: GQLOrder
+	readonly createdAt: Scalars['DateTime']
+}
+
 export enum GQLListingStatusEnum {
 	Active = 'ACTIVE',
 	Inactive = 'INACTIVE',
@@ -281,6 +321,15 @@ export type GQLMutationResponse = {
 	readonly data: GQLEntity
 }
 
+export type GQLOrder = GQLEntity & {
+	readonly id: Scalars['UuidV4']
+	/** OrderId */
+	readonly sku: Scalars['NonEmptyString']
+	readonly price: Scalars['Int']
+	readonly paymentMethod: GQLPaymentMethodEnum
+	readonly createdAt: Scalars['DateTime']
+}
+
 /** Generic pagination info */
 export type GQLPageInfo = {
 	/**
@@ -305,6 +354,11 @@ export type GQLPaginatedConnection = {
 	readonly pageInfo: GQLPageInfo
 	/** Identifies the total count of items in the connection. */
 	readonly totalCount: Scalars['Int']
+}
+
+export enum GQLPaymentMethodEnum {
+	Mobilepay = 'MOBILEPAY',
+	Creditcard = 'CREDITCARD',
 }
 
 export type GQLPhone = GQLEntity & {
@@ -378,12 +432,7 @@ export type GQLQueryUserArgs = {
 	id: Scalars['UuidV4']
 }
 
-export type GQLReceipt = GQLEntity & {
-	readonly id: Scalars['UuidV4']
-	readonly price: Scalars['Int']
-	readonly slug: Scalars['NonEmptyString']
-	readonly createdAt: Scalars['DateTime']
-}
+export type GQLReceipt = GQLListingReceipt | GQLLabelReceipt
 
 export type GQLReceiptEdge = GQLDatedEdge & {
 	readonly node: Maybe<GQLReceipt>
@@ -548,9 +597,15 @@ export type GQLResolversTypes = {
 	LabelsConnection: ResolverTypeWrapper<any>
 	LabelEdge: ResolverTypeWrapper<any>
 	Label: ResolverTypeWrapper<any>
+	LabelProvider: ResolverTypeWrapper<any>
+	LabelProduct: ResolverTypeWrapper<any>
 	ReceiptsConnection: ResolverTypeWrapper<any>
 	ReceiptEdge: ResolverTypeWrapper<any>
 	Receipt: ResolverTypeWrapper<any>
+	ListingReceipt: ResolverTypeWrapper<any>
+	Order: ResolverTypeWrapper<any>
+	PaymentMethodEnum: ResolverTypeWrapper<any>
+	LabelReceipt: ResolverTypeWrapper<any>
 	MessagesConnection: ResolverTypeWrapper<any>
 	MessageEdge: ResolverTypeWrapper<any>
 	Message: ResolverTypeWrapper<any>
@@ -600,9 +655,15 @@ export type GQLResolversParentTypes = {
 	LabelsConnection: any
 	LabelEdge: any
 	Label: any
+	LabelProvider: any
+	LabelProduct: any
 	ReceiptsConnection: any
 	ReceiptEdge: any
 	Receipt: any
+	ListingReceipt: any
+	Order: any
+	PaymentMethodEnum: any
+	LabelReceipt: any
 	MessagesConnection: any
 	MessageEdge: any
 	Message: any
@@ -710,7 +771,11 @@ export type GQLEntityResolvers<
 		| 'Listing'
 		| 'User'
 		| 'Label'
-		| 'Receipt'
+		| 'LabelProvider'
+		| 'LabelProduct'
+		| 'ListingReceipt'
+		| 'Order'
+		| 'LabelReceipt'
 		| 'Message'
 		| 'Category'
 		| 'Country'
@@ -759,6 +824,13 @@ export type GQLLabelResolvers<
 	ParentType extends GQLResolversParentTypes['Label'] = GQLResolversParentTypes['Label']
 > = {
 	id: Resolver<GQLResolversTypes['UuidV4'], ParentType, ContextType>
+	url: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	receiver: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	provider: Resolver<GQLResolversTypes['LabelProvider'], ParentType, ContextType>
+	trackUrl: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	labellessCode: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	parcelId: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	product: Resolver<GQLResolversTypes['LabelProduct'], ParentType, ContextType>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
@@ -767,6 +839,36 @@ export type GQLLabelEdgeResolvers<
 	ParentType extends GQLResolversParentTypes['LabelEdge'] = GQLResolversParentTypes['LabelEdge']
 > = {
 	node: Resolver<Maybe<GQLResolversTypes['Label']>, ParentType, ContextType>
+	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLLabelProductResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['LabelProduct'] = GQLResolversParentTypes['LabelProduct']
+> = {
+	id: Resolver<GQLResolversTypes['UuidV4'], ParentType, ContextType>
+	sku: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	name: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLLabelProviderResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['LabelProvider'] = GQLResolversParentTypes['LabelProvider']
+> = {
+	id: Resolver<GQLResolversTypes['UuidV4'], ParentType, ContextType>
+	name: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLLabelReceiptResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['LabelReceipt'] = GQLResolversParentTypes['LabelReceipt']
+> = {
+	id: Resolver<GQLResolversTypes['UuidV4'], ParentType, ContextType>
+	label: Resolver<GQLResolversTypes['Label'], ParentType, ContextType>
+	order: Resolver<GQLResolversTypes['Order'], ParentType, ContextType>
 	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
@@ -829,6 +931,18 @@ export type GQLListingEdgeResolvers<
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
+export type GQLListingReceiptResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['ListingReceipt'] = GQLResolversParentTypes['ListingReceipt']
+> = {
+	id: Resolver<GQLResolversTypes['UuidV4'], ParentType, ContextType>
+	url: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	listing: Resolver<Maybe<ReadonlyArray<GQLResolversTypes['Listing']>>, ParentType, ContextType>
+	order: Resolver<GQLResolversTypes['Order'], ParentType, ContextType>
+	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
 export type GQLLocationResolvers<
 	ContextType = Context,
 	ParentType extends GQLResolversParentTypes['Location'] = GQLResolversParentTypes['Location']
@@ -883,6 +997,18 @@ export type GQLMutationResponseResolvers<
 export interface GQLNonEmptyStringScalarConfig
 	extends GraphQLScalarTypeConfig<GQLResolversTypes['NonEmptyString'], any> {
 	name: 'NonEmptyString'
+}
+
+export type GQLOrderResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['Order'] = GQLResolversParentTypes['Order']
+> = {
+	id: Resolver<GQLResolversTypes['UuidV4'], ParentType, ContextType>
+	sku: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	price: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>
+	paymentMethod: Resolver<GQLResolversTypes['PaymentMethodEnum'], ParentType, ContextType>
+	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
 export type GQLPageInfoResolvers<
@@ -987,11 +1113,7 @@ export type GQLReceiptResolvers<
 	ContextType = Context,
 	ParentType extends GQLResolversParentTypes['Receipt'] = GQLResolversParentTypes['Receipt']
 > = {
-	id: Resolver<GQLResolversTypes['UuidV4'], ParentType, ContextType>
-	price: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>
-	slug: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
-	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
-	__isTypeOf?: isTypeOfResolverFn<ParentType>
+	__resolveType: TypeResolveFn<'ListingReceipt' | 'LabelReceipt', ParentType, ContextType>
 }
 
 export type GQLReceiptEdgeResolvers<
@@ -1077,16 +1199,21 @@ export type GQLResolvers<ContextType = Context> = {
 	Image: GQLImageResolvers<ContextType>
 	Label: GQLLabelResolvers<ContextType>
 	LabelEdge: GQLLabelEdgeResolvers<ContextType>
+	LabelProduct: GQLLabelProductResolvers<ContextType>
+	LabelProvider: GQLLabelProviderResolvers<ContextType>
+	LabelReceipt: GQLLabelReceiptResolvers<ContextType>
 	LabelsConnection: GQLLabelsConnectionResolvers<ContextType>
 	Listing: GQLListingResolvers<ContextType>
 	ListingConnection: GQLListingConnectionResolvers<ContextType>
 	ListingEdge: GQLListingEdgeResolvers<ContextType>
+	ListingReceipt: GQLListingReceiptResolvers<ContextType>
 	Location: GQLLocationResolvers<ContextType>
 	Message: GQLMessageResolvers<ContextType>
 	MessageEdge: GQLMessageEdgeResolvers<ContextType>
 	MessagesConnection: GQLMessagesConnectionResolvers<ContextType>
 	MutationResponse: GQLMutationResponseResolvers
 	NonEmptyString: GraphQLScalarType
+	Order: GQLOrderResolvers<ContextType>
 	PageInfo: GQLPageInfoResolvers<ContextType>
 	PaginatedConnection: GQLPaginatedConnectionResolvers
 	Phone: GQLPhoneResolvers<ContextType>
@@ -1094,7 +1221,7 @@ export type GQLResolvers<ContextType = Context> = {
 	ProductPackage: GQLProductPackageResolvers<ContextType>
 	Publication: GQLPublicationResolvers<ContextType>
 	Query: GQLQueryResolvers<ContextType>
-	Receipt: GQLReceiptResolvers<ContextType>
+	Receipt: GQLReceiptResolvers
 	ReceiptEdge: GQLReceiptEdgeResolvers<ContextType>
 	ReceiptsConnection: GQLReceiptsConnectionResolvers<ContextType>
 	URL: GraphQLScalarType

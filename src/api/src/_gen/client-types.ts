@@ -141,10 +141,39 @@ export enum ImageSizes {
 
 export type Label = Entity & {
 	readonly id: Scalars['UuidV4']
+	/** download link */
+	readonly url: Scalars['NonEmptyString']
+	readonly receiver: Scalars['NonEmptyString']
+	readonly provider: LabelProvider
+	readonly trackUrl: Scalars['NonEmptyString']
+	readonly labellessCode: Scalars['NonEmptyString']
+	readonly parcelId: Scalars['NonEmptyString']
+	/** Don't know what this is */
+	readonly product: LabelProduct
 }
 
 export type LabelEdge = DatedEdge & {
 	readonly node: Maybe<Label>
+	readonly createdAt: Scalars['DateTime']
+}
+
+export type LabelProduct = Entity & {
+	readonly id: Scalars['UuidV4']
+	readonly sku: Scalars['NonEmptyString']
+	readonly name: Scalars['NonEmptyString']
+}
+
+export type LabelProvider = Entity & {
+	readonly id: Scalars['UuidV4']
+	readonly name: Scalars['NonEmptyString']
+}
+
+export type LabelReceipt = Entity & {
+	readonly id: Scalars['UuidV4']
+	/** Label contains the download link and the purchased LabelProduct */
+	readonly label: Label
+	/** Payment data */
+	readonly order: Order
 	readonly createdAt: Scalars['DateTime']
 }
 
@@ -217,6 +246,17 @@ export enum ListingOrderEnum {
 	Random = 'RANDOM',
 }
 
+export type ListingReceipt = Entity & {
+	readonly id: Scalars['UuidV4']
+	/** download link */
+	readonly url: Scalars['NonEmptyString']
+	/** Listing contains the purchased ProductPackage data */
+	readonly listing: Maybe<ReadonlyArray<Listing>>
+	/** Payment data */
+	readonly order: Order
+	readonly createdAt: Scalars['DateTime']
+}
+
 export enum ListingStatusEnum {
 	Active = 'ACTIVE',
 	Inactive = 'INACTIVE',
@@ -273,6 +313,15 @@ export type MutationResponse = {
 	readonly data: Entity
 }
 
+export type Order = Entity & {
+	readonly id: Scalars['UuidV4']
+	/** OrderId */
+	readonly sku: Scalars['NonEmptyString']
+	readonly price: Scalars['Int']
+	readonly paymentMethod: PaymentMethodEnum
+	readonly createdAt: Scalars['DateTime']
+}
+
 /** Generic pagination info */
 export type PageInfo = {
 	/**
@@ -297,6 +346,11 @@ export type PaginatedConnection = {
 	readonly pageInfo: PageInfo
 	/** Identifies the total count of items in the connection. */
 	readonly totalCount: Scalars['Int']
+}
+
+export enum PaymentMethodEnum {
+	Mobilepay = 'MOBILEPAY',
+	Creditcard = 'CREDITCARD',
 }
 
 export type Phone = Entity & {
@@ -370,12 +424,7 @@ export type QueryUserArgs = {
 	id: Scalars['UuidV4']
 }
 
-export type Receipt = Entity & {
-	readonly id: Scalars['UuidV4']
-	readonly price: Scalars['Int']
-	readonly slug: Scalars['NonEmptyString']
-	readonly createdAt: Scalars['DateTime']
-}
+export type Receipt = ListingReceipt | LabelReceipt
 
 export type ReceiptEdge = DatedEdge & {
 	readonly node: Maybe<Receipt>

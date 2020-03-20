@@ -15,9 +15,24 @@ type ReceiptEdge implements DatedEdge {
 	createdAt: DateTime!
 }
 
-type Receipt implements Entity {
+union Receipt = ListingReceipt | LabelReceipt
+
+type ListingReceipt implements Entity {
 	id: UuidV4!
-	price: Int!
-	slug: NonEmptyString!
+	# download link
+	url: NonEmptyString!
+    # Listing contains the purchased ProductPackage data
+	listing: [Listing!]
+	# Payment data
+	order: Order!
+	createdAt: DateTime!
+}
+
+type LabelReceipt implements Entity {
+	id: UuidV4!
+	# Label contains the download link and the purchased LabelProduct
+	label: Label!
+	# Payment data
+	order: Order!
 	createdAt: DateTime!
 }
