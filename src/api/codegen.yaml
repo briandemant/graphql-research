@@ -1,5 +1,5 @@
 # schema: ./server/schema.ts
-schema: ./src/schemaV2/*.graphql
+schema: ./src/schemaV2/*.gql
 hooks:
   afterOneFileWrite:
     - prettier --config ../../.prettierrc.json --write
