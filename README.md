@@ -3,8 +3,7 @@
 ## Generation of typescript types from Graphql
 
 ```
-cd src/api
-yarn generate-graphql
+yarn build:gen
 ```
 outputs:
 
