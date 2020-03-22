@@ -1,22 +1,13 @@
-import { NonEmptyString } from '@demo/lib'
-import { ListingClient } from './../clients/'
-import { UserClient } from './../clients/'
+import { isOk, NonEmptyString } from '@demo/lib'
 
 import { GQLListingResolvers, GQLQueryResolvers, GQLUserResolvers } from '../_gen/server-types'
 
 type ListingQueryResolver = GQLQueryResolvers['listing']
 
-const listing: ListingQueryResolver = async (parent, { id }, context, info) => {
-	let listing = await new ListingClient().findById(id)
-	if (listing.ok) {
-		return listing.value
-
-		// DONT DO THIS!!! LET USERRESOLVER DO THE WORK
-		// let owner = await new UserClient().findById(listing.value.owner)
-		// return {
-		// 	...listing.value,
-		// 	owner: owner.ok ? owner.value : null,
-		// }
+const listing: ListingQueryResolver = async (parent, { id }, { sources }, info) => {
+	let listing = await sources.listing.findById(id)
+	if (isOk(listing)) {
+		return listing
 	}
 
 	return null
@@ -29,28 +20,28 @@ const baseResolvers: GQLListingResolvers = {
 	slug: async (parent, args, context, info) => {
 		return new NonEmptyString(`/listing/${parent.id}`)
 	},
-	title: async (parent, args, context, info) => {
+	title: async (parent, args, { sources }, info) => {
 		if (parent.name) {
 			return parent.name
 		} else if (parent.id) {
-			let listing = await new ListingClient().findById(parent.id)
-			if (listing.ok) {
-				return listing.value.title
+			let listing = await sources.listing.findById(parent.id)
+			if (isOk(listing)) {
+				return listing.title
 			}
 		}
 	},
-	owner: async (parent, args, context, info) => {
+	owner: async (parent, args, { sources }, info) => {
 		if (parent.owner) {
-			let user = await new UserClient().findById(parent.owner)
-			if (user.ok) {
-				return user.value
+			let user = await sources.user.findById(parent.owner)
+			if (isOk(user)) {
+				return user
 			}
 		} else if (parent.id) {
-			let listing = await new ListingClient().findById(parent.id)
-			if (listing.ok) {
-				let user = await new UserClient().findById(listing.value.owner)
-				if (user.ok) {
-					return user.value
+			let listing = await sources.listing.findById(parent.id)
+			if (isOk(listing)) {
+				let user = await sources.user.findById(listing.owner)
+				if (isOk(user)) {
+					return user
 				}
 			}
 		}
