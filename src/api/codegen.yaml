@@ -4,7 +4,6 @@ hooks:
   afterOneFileWrite:
     - prettier --config ../../.prettierrc.json --write
 generates:
-
   # Server types
   ./src/_gen/server-types.ts:
     # hooks:
@@ -23,23 +22,30 @@ generates:
       contextType: ../schemaV2/context#Context
       scalars:
         DateTime: ValidDate
-        NonEmptyString: NonEmptyString
+        Email: NonEmptyString
+        ID: UuidV4
         Md5: Md5
-        SimpleID: SimpleID
+        NonEmptyString: NonEmptyString
+        Slug: NonEmptyString
         UuidV4: UuidV4
+        URL: NonEmptyString
       mappers:
-        DateTime: "@demo/lib#ValidDate"
-        ID: "@demo/lib#SimpleID"
-        NonEmptyString: "@demo/lib#NonEmptyString"
-        SimpleID: "@demo/lib#SimpleID"
-        UuidV4: "@demo/lib#UuidV4"
-        Md5: "@demo/lib#Md5"
-        String: string
+        DateTime: ValidDate
+        Email: NonEmptyString
+        ID: UuidV4
+        Md5: Md5
+        NonEmptyString: NonEmptyString
+        Slug: NonEmptyString
+        UuidV4: UuidV4
+        URL: NonEmptyString
     plugins:
       - add: |
           /* eslint-disable */
           // PLEASE DO NOT EDIT
           export * from './manual-server-types'
+          import {
+            Md5, NonEmptyString, UuidV4, ValidDate
+          } from '@demo/lib'
           // import { GQLRole } from './manual-server-types'
       - typescript
       - typescript-resolvers

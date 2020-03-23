@@ -1,10 +1,12 @@
+export * from './types/Maybe'
 export * from './types/Md5'
 export * from './types/NonEmptyString'
 export * from './types/UuidV4'
 export * from './types/ValidDate'
 export * from './types/SimpleID'
 export * from './types/Version'
-export * from './types/Maybe'
+export * from './types/URL'
+export * from './types/Email'
 
 export const sleep = async (sec: number) =>
 	new Promise(res => {

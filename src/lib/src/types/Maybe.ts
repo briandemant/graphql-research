@@ -1,29 +1,30 @@
-export interface Error<E = string> {
-	error: E
+export class MaybeError<E = string> {
+	constructor(public readonly error: E) {}
 }
-export type Maybe<T, E = string> = T | Error<E>
 
-export const isOk = <T, E>(arg: Maybe<T, E>): arg is T => 'error' in arg
-export const isError = <T, E>(arg: Maybe<T, E>): arg is Error<E> => !('error' in arg)
+export class ParseError<E, V = any> extends MaybeError<E> {
+	constructor(public readonly error: E, public readonly value: V) {
+		super(error)
+	}
+}
+
+export type Maybe<T, E = string> = T | MaybeError<E>
+
+export const isOk = <T, E>(value: Maybe<T, E>): value is T => isError(value)
+export const isError = <T, E>(value: Maybe<T, E>): value is MaybeError<E> => value instanceof MaybeError
+export const isParseError = <T, E, V>(value: Maybe<T, E>): value is ParseError<E, V> => value instanceof ParseError
 
 export const ok = <T>(value: T): T => value
-export const fail = <E>(error: E): Error<E> => ({ error })
 
-//
-// export interface Ok<T> {
-// 	ok: true
-// 	value: T
-// }
-//
-// export interface Error<E = string> {
-// 	ok: false
-// 	error: E
-// }
-//
-// export type Maybe<T, E = string> = Ok<T> | Error<E>
-//
-// export const isOk = <T, E>(arg: Maybe<T, E>): arg is Ok<T> => arg.ok
-// export const isError = <T, E>(arg: Maybe<T, E>): arg is Error<E> => !arg.ok
-//
-// export const ok = <T>(value: T): Ok<T> => ({ ok: true, value })
-// export const fail = <E>(error: E): Error<E> => ({ ok: false, error })
+enum EMPTY {
+	'NO_VALUE',
+}
+
+export const fail = <E, V>(error: E, value: V | EMPTY = EMPTY.NO_VALUE): MaybeError<E> => {
+	if (value == EMPTY.NO_VALUE) {
+		return new MaybeError(error)
+	} else {
+		return new ParseError(error, value)
+	}
+}
+

@@ -22,15 +22,21 @@ const fakeUser = () => {
 			parent: any,
 			params: { sortBy: string; reverse: boolean },
 			ctx: Context,
-			info: GraphQLResolveInfo
+			info: GraphQLResolveInfo,
 		) => {
+			let nodes: any[] = []
+			let numberOFListings = faker.random.number({ min: 1, max: 10 })
+			for (let i = 0; i < Math.min(numberOFListings, 5); i++) {
+				nodes.push(fakeListing(parent))
+			}
 			return {
-				edges: [
-					{
-						node: fakeListing(parent),
-					},
-				],
-				totalCount: 11,
+				pageInfo: {
+					previous: nodes[0].id,
+					next: numberOFListings > 5 ? UuidV4.generate().toString() : null,
+				},
+				edges: nodes.map(node => ({ node })),
+				nodes: nodes,
+				totalCount: numberOFListings,
 			}
 		},
 	}
@@ -39,11 +45,12 @@ const fakeUser = () => {
 const fakeListing = (owner: any) => {
 	owner = owner ? owner : fakeUser()
 	return {
+		id: UuidV4.generate().toString(),
 		owner,
 		title: faker.commerce.productName(),
 		desc: faker.company.catchPhrase(),
 		slug: `/${faker.lorem
-			.words(faker.random.number(2) + 1)
+			.words(faker.random.number({ min: 1, max: 4 }))
 			.split(' ')
 			.join('/')}/`,
 	}
@@ -58,6 +65,15 @@ export const mocks: IMocks = {
 	NonEmptyString: (parent: any, params: any, ctx: Context, info: GraphQLResolveInfo) => faker.lorem.word(),
 	DateTime: (parent: any, params: any, ctx: Context, info: GraphQLResolveInfo) =>
 		faker.date.between('01-01-2000', '04-20-2020'),
+
+	// ListingConnection: (parent: any, params: any, ctx: Context, info: GraphQLResolveInfo) => {
+	// 	const edges = faker.random.number({ min: 0, max: 8 })
+	//
+	// 	return {
+	// 		edges: () => new MockList(edges),
+	// 		totalCount: edges,
+	// 	}
+	// },
 
 	Query: () => ({
 		user: fakeUser,

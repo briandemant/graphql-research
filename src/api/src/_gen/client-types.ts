@@ -11,10 +11,10 @@ export type Scalars = {
 	Int: number
 	Float: number
 	NonEmptyString: string
-	/** scalar Slug */
 	UuidV4: string
 	DateTime: Date
-	/** scalar Md5 */
+	Slug: string
+	Md5: string
 	Email: any
 	URL: any
 }
