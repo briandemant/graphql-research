@@ -90,6 +90,7 @@ export type GQLDatedEdge = {
 	readonly createdAt: Scalars['DateTime']
 }
 
+/** Available date formatting */
 export enum GQLDateFormatEnum {
 	Raw = 'RAW',
 	Full = 'FULL',
@@ -132,6 +133,7 @@ export enum GQLFrontpageGroupTypeEnum {
 	User = 'USER',
 }
 
+/** Available sorting options */
 export enum GQLGenericSortBy {
 	CreatedAt = 'CREATED_AT',
 	UpdatedAt = 'UPDATED_AT',
@@ -147,6 +149,7 @@ export type GQLImageUrlArgs = {
 	size?: Maybe<GQLImageSizes>
 }
 
+/** Available image sizes */
 export enum GQLImageSizes {
 	Thumb = 'THUMB',
 	Small = 'SMALL',
@@ -208,6 +211,7 @@ export type GQLListing = GQLEntity & {
 	/** basic */
 	readonly id: Scalars['UuidV4']
 	readonly slug: Scalars['NonEmptyString']
+	/** NOTE: directives don't work when mocking is enabled */
 	readonly owner: GQLUser
 	readonly online: Scalars['Boolean']
 	readonly status: GQLListingStatusEnum
@@ -390,6 +394,7 @@ export type GQLPhone = GQLEntity & {
 	readonly updatedAt: Scalars['DateTime']
 }
 
+/** Available price formatting */
 export enum GQLPriceFormatEnum {
 	Raw = 'RAW',
 	Full = 'FULL',
@@ -485,7 +490,8 @@ export enum GQLResponseCodeEnum {
 	Error = 'ERROR',
 }
 
-export enum GQLRole {
+/** authorization */
+export enum GQLRoleEnum {
 	Admin = 'ADMIN',
 	User = 'USER',
 }
@@ -496,8 +502,10 @@ export type GQLUser = GQLEntity & {
 	readonly email: Maybe<Scalars['NonEmptyString']>
 	readonly userName: Maybe<Scalars['NonEmptyString']>
 	readonly createdAt: Scalars['DateTime']
+	readonly updatedAt: Scalars['DateTime']
 	/** Formattable fields (fugly! but works) */
 	readonly forDisplayCreatedAt: Scalars['NonEmptyString']
+	readonly forDisplayUpdatedAt: Scalars['NonEmptyString']
 	readonly listingConnection: Maybe<GQLListingConnection>
 	readonly favoriteListingsConnection: Maybe<GQLFavoriteListingConnection>
 	readonly labelsConnection: Maybe<GQLLabelsConnection>
@@ -507,6 +515,10 @@ export type GQLUser = GQLEntity & {
 }
 
 export type GQLUserForDisplayCreatedAtArgs = {
+	format: Maybe<GQLDateFormatEnum>
+}
+
+export type GQLUserForDisplayUpdatedAtArgs = {
 	format: Maybe<GQLDateFormatEnum>
 }
 
@@ -654,11 +666,11 @@ export type GQLResolversTypes = {
 	ProductPackage: ResolverTypeWrapper<any>
 	ProductAddon: ResolverTypeWrapper<any>
 	Publication: ResolverTypeWrapper<any>
-	Role: ResolverTypeWrapper<any>
 	CategoryField: ResolverTypeWrapper<any>
 	Phone: ResolverTypeWrapper<any>
 	Email: ResolverTypeWrapper<any>
 	URL: ResolverTypeWrapper<any>
+	RoleEnum: ResolverTypeWrapper<any>
 	ResponseCodeEnum: ResolverTypeWrapper<any>
 	MutationResponse: ResolverTypeWrapper<any>
 }
@@ -714,16 +726,16 @@ export type GQLResolversParentTypes = {
 	ProductPackage: any
 	ProductAddon: any
 	Publication: any
-	Role: any
 	CategoryField: any
 	Phone: any
 	Email: any
 	URL: any
+	RoleEnum: any
 	ResponseCodeEnum: any
 	MutationResponse: any
 }
 
-export type GQLAuthDirectiveArgs = { requires?: Maybe<GQLRole> }
+export type GQLAuthDirectiveArgs = { requires?: Maybe<GQLRoleEnum> }
 
 export type GQLAuthDirectiveResolver<
 	Result,
@@ -1195,11 +1207,18 @@ export type GQLUserResolvers<
 	email: Resolver<Maybe<GQLResolversTypes['NonEmptyString']>, ParentType, ContextType>
 	userName: Resolver<Maybe<GQLResolversTypes['NonEmptyString']>, ParentType, ContextType>
 	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
+	updatedAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
 	forDisplayCreatedAt: Resolver<
 		GQLResolversTypes['NonEmptyString'],
 		ParentType,
 		ContextType,
 		GQLUserForDisplayCreatedAtArgs
+	>
+	forDisplayUpdatedAt: Resolver<
+		GQLResolversTypes['NonEmptyString'],
+		ParentType,
+		ContextType,
+		GQLUserForDisplayUpdatedAtArgs
 	>
 	listingConnection: Resolver<
 		Maybe<GQLResolversTypes['ListingConnection']>,

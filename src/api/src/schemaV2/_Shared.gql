@@ -1,14 +1,17 @@
-### All things that are shareable (without ownership)
+### All things that are shareable (without obvious ownership)
 
 ### Annotations / Directives
+# deprecated stuff
 directive @deprecated(reason: String = "No longer supported") on FIELD_DEFINITION | ENUM_VALUE
 
-#enum RoleEnum {
-#	ADMIN
-#	USER
-#}
-#directive @auth(requires: RoleEnum = USER) on OBJECT | FIELD_DEFINITION
+# authorization
+enum RoleEnum {
+	ADMIN
+	USER
+}
+directive @auth(requires: RoleEnum = USER) on OBJECT | FIELD_DEFINITION
 
+# Available date formatting
 enum DateFormatEnum {
 	RAW
 	FULL
@@ -16,6 +19,7 @@ enum DateFormatEnum {
 	RELATIVE
 }
 
+# Available price formatting
 enum PriceFormatEnum {
 	RAW
 	FULL
@@ -36,6 +40,7 @@ interface DatedEdge {
 	# updatedAt: DateTime!
 }
 
+# Available sorting options
 enum GenericSortBy {
 	CREATED_AT
 	UPDATED_AT
@@ -64,6 +69,7 @@ type Location {
 	long: NonEmptyString
 }
 
+# Available image sizes
 enum ImageSizes {
 	THUMB
 	SMALL

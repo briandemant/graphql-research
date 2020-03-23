@@ -82,6 +82,7 @@ export type DatedEdge = {
 	readonly createdAt: Scalars['DateTime']
 }
 
+/** Available date formatting */
 export enum DateFormatEnum {
 	Raw = 'RAW',
 	Full = 'FULL',
@@ -124,6 +125,7 @@ export enum FrontpageGroupTypeEnum {
 	User = 'USER',
 }
 
+/** Available sorting options */
 export enum GenericSortBy {
 	CreatedAt = 'CREATED_AT',
 	UpdatedAt = 'UPDATED_AT',
@@ -139,6 +141,7 @@ export type ImageUrlArgs = {
 	size?: Maybe<ImageSizes>
 }
 
+/** Available image sizes */
 export enum ImageSizes {
 	Thumb = 'THUMB',
 	Small = 'SMALL',
@@ -200,6 +203,7 @@ export type Listing = Entity & {
 	/** basic */
 	readonly id: Scalars['UuidV4']
 	readonly slug: Scalars['NonEmptyString']
+	/** NOTE: directives don't work when mocking is enabled */
 	readonly owner: User
 	readonly online: Scalars['Boolean']
 	readonly status: ListingStatusEnum
@@ -382,6 +386,7 @@ export type Phone = Entity & {
 	readonly updatedAt: Scalars['DateTime']
 }
 
+/** Available price formatting */
 export enum PriceFormatEnum {
 	Raw = 'RAW',
 	Full = 'FULL',
@@ -477,7 +482,8 @@ export enum ResponseCodeEnum {
 	Error = 'ERROR',
 }
 
-export enum Role {
+/** authorization */
+export enum RoleEnum {
 	Admin = 'ADMIN',
 	User = 'USER',
 }
@@ -488,8 +494,10 @@ export type User = Entity & {
 	readonly email: Maybe<Scalars['NonEmptyString']>
 	readonly userName: Maybe<Scalars['NonEmptyString']>
 	readonly createdAt: Scalars['DateTime']
+	readonly updatedAt: Scalars['DateTime']
 	/** Formattable fields (fugly! but works) */
 	readonly forDisplayCreatedAt: Scalars['NonEmptyString']
+	readonly forDisplayUpdatedAt: Scalars['NonEmptyString']
 	readonly listingConnection: Maybe<ListingConnection>
 	readonly favoriteListingsConnection: Maybe<FavoriteListingConnection>
 	readonly labelsConnection: Maybe<LabelsConnection>
@@ -499,6 +507,10 @@ export type User = Entity & {
 }
 
 export type UserForDisplayCreatedAtArgs = {
+	format: Maybe<DateFormatEnum>
+}
+
+export type UserForDisplayUpdatedAtArgs = {
 	format: Maybe<DateFormatEnum>
 }
 

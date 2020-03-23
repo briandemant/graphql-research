@@ -4,7 +4,7 @@ import * as express from 'express'
 import { GraphQLResolveInfo } from 'graphql'
 import { applyMiddleware } from 'graphql-middleware'
 import { mocks } from './clients'
-import { DeprecatedDirective } from './directives'
+import { DeprecatedDirective, AuthDirective } from './directives'
 // import { default as resolvers } from './resolvers'
 import { default as typeDefs } from './schemaV2'
 import { Context, contextFn } from './schemaV2/context'
@@ -78,6 +78,7 @@ const server = new ApolloServer({
 	resolvers: {},
 	schemaDirectives: {
 		deprecated: DeprecatedDirective,
+		auth: AuthDirective,
 	},
 	tracing: true,
 	context: contextFn,

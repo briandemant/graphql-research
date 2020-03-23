@@ -52,7 +52,8 @@ type Listing implements Entity {
 	# basic
 	id: UuidV4!
 	slug: NonEmptyString!
-	owner: User!
+	# NOTE: directives don't work when mocking is enabled
+	owner: User! @auth(requires: USER)
 	online: Boolean!
 	status: ListingStatusEnum!
 	createdAt: DateTime!
