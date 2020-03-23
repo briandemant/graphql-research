@@ -1,0 +1,13 @@
+type Order implements Entity {
+	id: UuidV4!
+	# OrderId
+	sku: NonEmptyString!
+	price: Int!
+	paymentMethod: PaymentMethodEnum!
+	createdAt: DateTime!
+}
+
+enum PaymentMethodEnum {
+	MOBILEPAY
+	CREDITCARD
+}

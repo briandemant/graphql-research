@@ -1,0 +1,101 @@
+enum ListingOrderEnum {
+	CREATED_AT
+	UPDATED_AT
+	RANDOM
+}
+
+enum FrontpageGroupTypeEnum {
+	DEFAULT
+	NEWEST
+	USER
+}
+
+enum ListingStatusEnum {
+	ACTIVE
+	INACTIVE
+	EXPIRED
+	DRAFT
+}
+
+enum ListingTypeEnum {
+	SELL
+	BUY
+	FREE
+	TRADE
+	# Properties (Apartments, houses, etc.)
+	LEASE
+	# Things (Cars, machines, etc.)
+	RENT
+	OTHER
+}
+
+# Listing connection, paginated
+type ListingConnection implements PaginatedConnection {
+	# A list of edges (same as nodes but with cursor).
+	edges: [ListingEdge]
+	# A list of nodes.
+	nodes: [Listing!]
+
+	# Information to aid in pagination.
+	pageInfo: PageInfo!
+	# Identifies the total count of items in the connection.
+	totalCount: Int!
+}
+
+# Connection details between a Listings and an Entity
+type ListingEdge implements DatedEdge {
+	node: Listing
+	createdAt: DateTime!
+}
+
+type Listing implements Entity {
+	# basic
+	id: UuidV4!
+	slug: NonEmptyString!
+	owner: User!
+	online: Boolean!
+	status: ListingStatusEnum!
+
+	# textual content
+	title: NonEmptyString!
+	desc: NonEmptyString!
+	publicationTitle: NonEmptyString!
+	publicationDesc: NonEmptyString!
+
+	# pricing
+	price: NonEmptyString!
+	offersAccepted: Boolean
+	# Bizz user only
+	vatEnabled: Boolean
+	# relationships
+	category: Category!
+	primaryImage: Image
+	images: [Image!]
+	# (categoryFields should be a connection on the Category entity)
+
+	# misc
+	type: ListingTypeEnum! #TODO: rename to something that makes sense (in the context of: selling, buying, trading, giving away for free)
+	# Bizz user only
+	homepage: NonEmptyString
+	# contact - (might be inherited from owner or listing specific)
+	phone: NonEmptyString
+
+	# location - (might be inherited from owner or defined for the listing specifically)
+	location: Location!
+
+	# Product - package, addons, publications
+	productPackage: ProductPackage!
+}
+
+extend type Query {
+	listing(id: UuidV4!): Listing
+	listings(cursor: CursorPaginationParams, sortBy: ListingOrderEnum = CREATED_AT, reverse: Boolean = false): [Listing!]!
+
+	# Custom query of listings for the Frontpage
+	frontPageListings(
+		cursor: CursorPaginationParams
+		ofGroup: FrontpageGroupTypeEnum = DEFAULT
+		sortBy: ListingOrderEnum = RANDOM
+		reverse: Boolean = false
+	): [Listing!]!
+}

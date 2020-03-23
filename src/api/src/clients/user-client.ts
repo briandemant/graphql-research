@@ -1,16 +1,20 @@
-import { UuidV4, NonEmptyString, SimpleID, sleep } from '@demo/lib'
+import { UuidV4, NonEmptyString, SimpleID, sleep, ValidDate } from '@demo/lib'
 import * as faker from 'faker'
 
 faker.seed(321)
 
 export interface DataUser {
 	id: SimpleID
-	name: NonEmptyString
+	name?: NonEmptyString
+	userName?: NonEmptyString
+	createdAt: ValidDate
 }
 
 interface JsonUser {
 	id: string
 	name: string
+	userName: string
+	createdAt: Date
 }
 
 interface ResultOk<T> {
@@ -36,6 +40,8 @@ for (let i = 0; i < 10; i++) {
 	users.push({
 		id: SimpleID.generate('US'),
 		name: faker.name.findName(),
+		userName: faker.internet.userName(),
+		createdAt: faker.date.recent(7),
 	})
 }
 // console.log(users)
@@ -44,6 +50,8 @@ const fromJsonToUser = (user: JsonUser): Result<Readonly<DataUser>> => {
 		return ok({
 			id: new SimpleID(user.id),
 			name: new NonEmptyString(user.name),
+			userName: new NonEmptyString(user.userName),
+			createdAt: new ValidDate(user.createdAt),
 		} as Readonly<DataUser>)
 	} catch (e) {
 		return fail(e.message)

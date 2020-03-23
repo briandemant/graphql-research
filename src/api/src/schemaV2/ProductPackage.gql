@@ -1,0 +1,25 @@
+# A product package defines the general exposure rules/features of the Listing.
+type ProductPackage implements Entity {
+	id: UuidV4!
+	sku: NonEmptyString! # Composite, Revision id
+	name: NonEmptyString!
+	addons: [ProductAddon!]
+	publications: [Publication!]
+}
+
+# Addons, for granular tweaking of the exposure rules/features.
+type ProductAddon implements Entity {
+	id: UuidV4!
+	sku: NonEmptyString! # Composite, Revision id
+	name: NonEmptyString!
+}
+
+# Offline exposure (print) of the Listing.
+# Which publication/newspaper will the Listing appear in.
+type Publication implements Entity {
+	id: UuidV4!
+	sku: NonEmptyString! # Composite, UUID and DateTime
+	name: NonEmptyString!
+	from: DateTime!
+	to: DateTime!
+}

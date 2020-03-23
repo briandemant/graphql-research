@@ -1,14 +1,13 @@
-import * as express from 'express'
-import { ApolloServer } from 'apollo-server-express'
 import { makeExecutableSchema } from 'apollo-server'
+import { ApolloServer } from 'apollo-server-express'
+import * as express from 'express'
 import { GraphQLResolveInfo } from 'graphql'
 import { applyMiddleware } from 'graphql-middleware'
+import { mocks } from './clients'
 import { DeprecatedDirective } from './directives'
-import { TracingPlugin } from './plugins/'
-import { default as resolvers } from './resolvers'
-import { default as typeDefs } from './schema'
-import { Context, contextFn } from './schema/context'
-import * as colors from 'colors/safe'
+// import { default as resolvers } from './resolvers'
+import { default as typeDefs } from './schemaV2'
+import { Context, contextFn } from './schemaV2/context'
 
 const options = { port: 2300 }
 
@@ -49,17 +48,25 @@ const logResult = async (resolve: any, parent: any, args: any, context: Context,
 
 const schema = makeExecutableSchema({
 	typeDefs,
-	// @ts-ignore
-	resolvers,
+	resolvers: {},
+	// ignore missing
+	allowUndefinedInResolve: true,
+	resolverValidationOptions: {
+		requireResolversForArgs: false,
+		requireResolversForNonScalar: false,
+		requireResolversForAllFields: false,
+		requireResolversForResolveType: false,
+		allowResolversNotInSchema: false,
+	},
 })
 
 const app = express()
 app.use((req, res, next) => {
 	// console.log(colors.cyan("url"),req.url)
 	next()
-});
+})
 
-let count = 0;
+let count = 0
 app.get('/metrics', (req, res) => {
 	res.send(`metrics_scrape_count ${++count}`)
 })
@@ -67,7 +74,8 @@ app.get('/metrics', (req, res) => {
 const server = new ApolloServer({
 	schema: applyMiddleware(schema, logInput, logResult),
 	typeDefs,
-	resolvers,
+	mocks,
+	resolvers: {},
 	schemaDirectives: {
 		deprecated: DeprecatedDirective,
 	},

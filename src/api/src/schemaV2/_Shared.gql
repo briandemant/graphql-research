@@ -1,0 +1,58 @@
+### All things that are shareable (without ownership)
+
+### Annotations / Directives
+directive @deprecated(reason: String = "No longer supported") on FIELD_DEFINITION | ENUM_VALUE
+
+### Interfaces
+interface Entity {
+	id: UuidV4!
+}
+
+# For Edges that have a timestamp,
+# documenting the time of the connection
+interface DatedEdge {
+	createdAt: DateTime!
+	# Can we guarantee all edges to have an `updatedAt` property
+	# updatedAt: DateTime!
+}
+
+enum GenericSortBy {
+	CREATED_AT
+	UPDATED_AT
+}
+
+# Bare minium mutation response
+enum ResponseCodeEnum {
+	OK
+	NOT_FOUND
+	ERROR
+	# TODO: Do we need more?
+}
+interface MutationResponse {
+	code: ResponseCodeEnum!
+	success: Boolean!
+	data: Entity! # anything?
+}
+
+### Generic (re-usable) types
+type Location {
+	address: NonEmptyString
+	zipCode: NonEmptyString
+	city: NonEmptyString
+	country: Country!
+	lat: NonEmptyString
+	long: NonEmptyString
+}
+
+enum ImageSizes {
+	THUMB
+	SMALL
+	MEDIUM
+	LARGE
+}
+
+type Image {
+	# Absolute URL for accessing an image
+	url(size: ImageSizes = SMALL): NonEmptyString!
+	size: ImageSizes!
+}

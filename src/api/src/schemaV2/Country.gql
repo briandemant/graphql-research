@@ -1,0 +1,12 @@
+type Country implements Entity {
+	id: UuidV4!
+	name: NonEmptyString!
+	# ISO 3166-1 alpha-2
+	code: NonEmptyString!
+	# Phone prefix (+45, +44, etc.)
+	callingCode: NonEmptyString!
+	callingCodeValidationRegex: NonEmptyString!
+	# meta
+	createdAt: DateTime!
+	updatedAt: DateTime!
+}

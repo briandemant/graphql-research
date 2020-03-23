@@ -1,0 +1,8 @@
+type Phone implements Entity {
+	id: UuidV4!
+	country: Country!
+	value: NonEmptyString!
+	# meta
+	createdAt: DateTime!
+	updatedAt: DateTime!
+}

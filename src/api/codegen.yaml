@@ -1,5 +1,5 @@
 # schema: ./server/schema.ts
-schema: ./src/schema/*.graphql
+schema: ./src/schemaV2/*.gql
 hooks:
   afterOneFileWrite:
     - prettier --config ../../.prettierrc.json --write
@@ -20,7 +20,7 @@ generates:
       showUnusedMappers: true
       noSchemaStitching: true
       # useIndexSignature: true
-      contextType: ../schema/context#Context
+      contextType: ../schemaV2/context#Context
       scalars:
         DateTime: ValidDate
         NonEmptyString: NonEmptyString
