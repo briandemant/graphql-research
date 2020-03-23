@@ -1,14 +1,13 @@
-import * as express from 'express'
-import { ApolloServer } from 'apollo-server-express'
 import { makeExecutableSchema } from 'apollo-server'
+import { ApolloServer } from 'apollo-server-express'
+import * as express from 'express'
 import { GraphQLResolveInfo } from 'graphql'
 import { applyMiddleware } from 'graphql-middleware'
+import { mocks } from './clients'
 import { DeprecatedDirective } from './directives'
-import { TracingPlugin } from './plugins/'
 // import { default as resolvers } from './resolvers'
 import { default as typeDefs } from './schemaV2'
 import { Context, contextFn } from './schemaV2/context'
-import * as colors from 'colors/safe'
 
 const options = { port: 2300 }
 
@@ -75,6 +74,7 @@ app.get('/metrics', (req, res) => {
 const server = new ApolloServer({
 	schema: applyMiddleware(schema, logInput, logResult),
 	typeDefs,
+	mocks,
 	resolvers: {},
 	schemaDirectives: {
 		deprecated: DeprecatedDirective,
