@@ -5,6 +5,9 @@ type User implements Entity {
 	userName: NonEmptyString
 	createdAt: DateTime!
 
+	# Formattable fields (fugly! but works)
+	forDisplayCreatedAt(format: DateFormatEnum): NonEmptyString!
+
 	listingConnection(
 		cursor: CursorPaginationParams
 		sortBy: ListingOrderEnum = CREATED_AT

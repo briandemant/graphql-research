@@ -3,6 +3,26 @@
 ### Annotations / Directives
 directive @deprecated(reason: String = "No longer supported") on FIELD_DEFINITION | ENUM_VALUE
 
+#enum RoleEnum {
+#	ADMIN
+#	USER
+#}
+#directive @auth(requires: RoleEnum = USER) on OBJECT | FIELD_DEFINITION
+
+enum DateFormatEnum {
+	RAW
+	FULL
+	SHORT
+	RELATIVE
+}
+
+enum PriceFormatEnum {
+	RAW
+	FULL
+	SHORT
+	RELATIVE
+}
+
 ### Interfaces
 interface Entity {
 	id: UuidV4!

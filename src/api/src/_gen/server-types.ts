@@ -90,6 +90,13 @@ export type GQLDatedEdge = {
 	readonly createdAt: Scalars['DateTime']
 }
 
+export enum GQLDateFormatEnum {
+	Raw = 'RAW',
+	Full = 'FULL',
+	Short = 'SHORT',
+	Relative = 'RELATIVE',
+}
+
 /** ## Interfaces */
 export type GQLEntity = {
 	readonly id: Scalars['UuidV4']
@@ -204,6 +211,8 @@ export type GQLListing = GQLEntity & {
 	readonly owner: GQLUser
 	readonly online: Scalars['Boolean']
 	readonly status: GQLListingStatusEnum
+	readonly createdAt: Scalars['DateTime']
+	readonly updatedAt: Scalars['DateTime']
 	/** textual content */
 	readonly title: Scalars['NonEmptyString']
 	readonly desc: Scalars['NonEmptyString']
@@ -218,6 +227,9 @@ export type GQLListing = GQLEntity & {
 	readonly category: GQLCategory
 	readonly primaryImage: Maybe<GQLImage>
 	readonly images: Maybe<ReadonlyArray<GQLImage>>
+	/** Formattable fields (fugly! but works) */
+	readonly forDisplayPrice: Scalars['NonEmptyString']
+	readonly forDisplayCreatedAt: Scalars['NonEmptyString']
 	/** misc */
 	readonly type: GQLListingTypeEnum
 	/** Bizz user only */
@@ -228,6 +240,14 @@ export type GQLListing = GQLEntity & {
 	readonly location: GQLLocation
 	/** Product - package, addons, publications */
 	readonly productPackage: GQLProductPackage
+}
+
+export type GQLListingForDisplayPriceArgs = {
+	format: Maybe<GQLPriceFormatEnum>
+}
+
+export type GQLListingForDisplayCreatedAtArgs = {
+	format: Maybe<GQLDateFormatEnum>
 }
 
 /** Listing connection, paginated */
@@ -370,6 +390,13 @@ export type GQLPhone = GQLEntity & {
 	readonly updatedAt: Scalars['DateTime']
 }
 
+export enum GQLPriceFormatEnum {
+	Raw = 'RAW',
+	Full = 'FULL',
+	Short = 'SHORT',
+	Relative = 'RELATIVE',
+}
+
 /** Addons, for granular tweaking of the exposure rules/features. */
 export type GQLProductAddon = GQLEntity & {
 	readonly id: Scalars['UuidV4']
@@ -469,12 +496,18 @@ export type GQLUser = GQLEntity & {
 	readonly email: Maybe<Scalars['NonEmptyString']>
 	readonly userName: Maybe<Scalars['NonEmptyString']>
 	readonly createdAt: Scalars['DateTime']
+	/** Formattable fields (fugly! but works) */
+	readonly forDisplayCreatedAt: Scalars['NonEmptyString']
 	readonly listingConnection: Maybe<GQLListingConnection>
 	readonly favoriteListingsConnection: Maybe<GQLFavoriteListingConnection>
 	readonly labelsConnection: Maybe<GQLLabelsConnection>
 	readonly receiptsConnection: Maybe<GQLReceiptsConnection>
 	/** TODO: Needs more args to separate type of messages (own, replies from others, etc.) */
 	readonly messagesConnection: Maybe<GQLMessagesConnection>
+}
+
+export type GQLUserForDisplayCreatedAtArgs = {
+	format: Maybe<GQLDateFormatEnum>
 }
 
 export type GQLUserListingConnectionArgs = {
@@ -583,6 +616,7 @@ export type GQLResolversTypes = {
 	UuidV4: ResolverTypeWrapper<UuidV4>
 	User: ResolverTypeWrapper<any>
 	DateTime: ResolverTypeWrapper<ValidDate>
+	DateFormatEnum: ResolverTypeWrapper<any>
 	ListingConnection: ResolverTypeWrapper<any>
 	PaginatedConnection: ResolverTypeWrapper<any>
 	PageInfo: ResolverTypeWrapper<any>
@@ -613,6 +647,7 @@ export type GQLResolversTypes = {
 	Category: ResolverTypeWrapper<any>
 	Image: ResolverTypeWrapper<any>
 	ImageSizes: ResolverTypeWrapper<any>
+	PriceFormatEnum: ResolverTypeWrapper<any>
 	ListingTypeEnum: ResolverTypeWrapper<any>
 	Location: ResolverTypeWrapper<any>
 	Country: ResolverTypeWrapper<any>
@@ -643,6 +678,7 @@ export type GQLResolversParentTypes = {
 	UuidV4: UuidV4
 	User: any
 	DateTime: ValidDate
+	DateFormatEnum: any
 	ListingConnection: any
 	PaginatedConnection: any
 	PageInfo: any
@@ -671,6 +707,7 @@ export type GQLResolversParentTypes = {
 	Category: any
 	Image: any
 	ImageSizes: any
+	PriceFormatEnum: any
 	ListingTypeEnum: any
 	Location: any
 	Country: any
@@ -893,6 +930,8 @@ export type GQLListingResolvers<
 	owner: Resolver<GQLResolversTypes['User'], ParentType, ContextType>
 	online: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>
 	status: Resolver<GQLResolversTypes['ListingStatusEnum'], ParentType, ContextType>
+	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
+	updatedAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
 	title: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
 	desc: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
 	publicationTitle: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
@@ -903,6 +942,13 @@ export type GQLListingResolvers<
 	category: Resolver<GQLResolversTypes['Category'], ParentType, ContextType>
 	primaryImage: Resolver<Maybe<GQLResolversTypes['Image']>, ParentType, ContextType>
 	images: Resolver<Maybe<ReadonlyArray<GQLResolversTypes['Image']>>, ParentType, ContextType>
+	forDisplayPrice: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType, GQLListingForDisplayPriceArgs>
+	forDisplayCreatedAt: Resolver<
+		GQLResolversTypes['NonEmptyString'],
+		ParentType,
+		ContextType,
+		GQLListingForDisplayCreatedAtArgs
+	>
 	type: Resolver<GQLResolversTypes['ListingTypeEnum'], ParentType, ContextType>
 	homepage: Resolver<Maybe<GQLResolversTypes['NonEmptyString']>, ParentType, ContextType>
 	phone: Resolver<Maybe<GQLResolversTypes['NonEmptyString']>, ParentType, ContextType>
@@ -1149,6 +1195,12 @@ export type GQLUserResolvers<
 	email: Resolver<Maybe<GQLResolversTypes['NonEmptyString']>, ParentType, ContextType>
 	userName: Resolver<Maybe<GQLResolversTypes['NonEmptyString']>, ParentType, ContextType>
 	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
+	forDisplayCreatedAt: Resolver<
+		GQLResolversTypes['NonEmptyString'],
+		ParentType,
+		ContextType,
+		GQLUserForDisplayCreatedAtArgs
+	>
 	listingConnection: Resolver<
 		Maybe<GQLResolversTypes['ListingConnection']>,
 		ParentType,

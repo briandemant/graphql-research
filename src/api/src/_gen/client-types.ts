@@ -82,6 +82,13 @@ export type DatedEdge = {
 	readonly createdAt: Scalars['DateTime']
 }
 
+export enum DateFormatEnum {
+	Raw = 'RAW',
+	Full = 'FULL',
+	Short = 'SHORT',
+	Relative = 'RELATIVE',
+}
+
 /** ## Interfaces */
 export type Entity = {
 	readonly id: Scalars['UuidV4']
@@ -196,6 +203,8 @@ export type Listing = Entity & {
 	readonly owner: User
 	readonly online: Scalars['Boolean']
 	readonly status: ListingStatusEnum
+	readonly createdAt: Scalars['DateTime']
+	readonly updatedAt: Scalars['DateTime']
 	/** textual content */
 	readonly title: Scalars['NonEmptyString']
 	readonly desc: Scalars['NonEmptyString']
@@ -210,6 +219,9 @@ export type Listing = Entity & {
 	readonly category: Category
 	readonly primaryImage: Maybe<Image>
 	readonly images: Maybe<ReadonlyArray<Image>>
+	/** Formattable fields (fugly! but works) */
+	readonly forDisplayPrice: Scalars['NonEmptyString']
+	readonly forDisplayCreatedAt: Scalars['NonEmptyString']
 	/** misc */
 	readonly type: ListingTypeEnum
 	/** Bizz user only */
@@ -220,6 +232,14 @@ export type Listing = Entity & {
 	readonly location: Location
 	/** Product - package, addons, publications */
 	readonly productPackage: ProductPackage
+}
+
+export type ListingForDisplayPriceArgs = {
+	format: Maybe<PriceFormatEnum>
+}
+
+export type ListingForDisplayCreatedAtArgs = {
+	format: Maybe<DateFormatEnum>
 }
 
 /** Listing connection, paginated */
@@ -362,6 +382,13 @@ export type Phone = Entity & {
 	readonly updatedAt: Scalars['DateTime']
 }
 
+export enum PriceFormatEnum {
+	Raw = 'RAW',
+	Full = 'FULL',
+	Short = 'SHORT',
+	Relative = 'RELATIVE',
+}
+
 /** Addons, for granular tweaking of the exposure rules/features. */
 export type ProductAddon = Entity & {
 	readonly id: Scalars['UuidV4']
@@ -461,12 +488,18 @@ export type User = Entity & {
 	readonly email: Maybe<Scalars['NonEmptyString']>
 	readonly userName: Maybe<Scalars['NonEmptyString']>
 	readonly createdAt: Scalars['DateTime']
+	/** Formattable fields (fugly! but works) */
+	readonly forDisplayCreatedAt: Scalars['NonEmptyString']
 	readonly listingConnection: Maybe<ListingConnection>
 	readonly favoriteListingsConnection: Maybe<FavoriteListingConnection>
 	readonly labelsConnection: Maybe<LabelsConnection>
 	readonly receiptsConnection: Maybe<ReceiptsConnection>
 	/** TODO: Needs more args to separate type of messages (own, replies from others, etc.) */
 	readonly messagesConnection: Maybe<MessagesConnection>
+}
+
+export type UserForDisplayCreatedAtArgs = {
+	format: Maybe<DateFormatEnum>
 }
 
 export type UserListingConnectionArgs = {

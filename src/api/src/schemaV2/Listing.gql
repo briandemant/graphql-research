@@ -55,6 +55,8 @@ type Listing implements Entity {
 	owner: User!
 	online: Boolean!
 	status: ListingStatusEnum!
+	createdAt: DateTime!
+	updatedAt: DateTime!
 
 	# textual content
 	title: NonEmptyString!
@@ -72,6 +74,10 @@ type Listing implements Entity {
 	primaryImage: Image
 	images: [Image!]
 	# (categoryFields should be a connection on the Category entity)
+
+	# Formattable fields (fugly! but works)
+	forDisplayPrice(format: PriceFormatEnum): NonEmptyString!
+	forDisplayCreatedAt(format: DateFormatEnum): NonEmptyString!
 
 	# misc
 	type: ListingTypeEnum! #TODO: rename to something that makes sense (in the context of: selling, buying, trading, giving away for free)
