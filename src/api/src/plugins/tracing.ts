@@ -1,6 +1,6 @@
 import { GraphQLRequestContext, GraphQLRequestListener, GraphQLServiceContext } from 'apollo-server-plugin-base'
 import { GraphQLResolveInfo, GraphQLType, ResponsePath, responsePathAsArray } from 'graphql'
-import { Context } from '../schema/context'
+import { Context } from '../schemaDemo/context'
 /*
 https://github.com/apollographql/apollo-server/tree/master/packages/apollo-engine-reporting
 

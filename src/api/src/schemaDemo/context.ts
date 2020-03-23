@@ -1,8 +1,8 @@
 import { isError, Version } from '@demo/lib'
 import { Meter } from '@opentelemetry/metrics'
 import express from 'express'
-import { ListingClient, UserClient } from './../clients/'
-
+import { ListingClient } from './../clients/'
+import { UserClient } from './../clients/'
 enum ClientType {
 	ANDROID,
 	IOS,
@@ -25,6 +25,12 @@ export interface Context {
 		userId?: string
 		sessionId?: string
 	}
+	trace: {
+		requestId: string
+		spanId?: string
+		path: string[]
+	}
+	meter: Meter
 }
 
 interface ExpressContext {
@@ -33,23 +39,16 @@ interface ExpressContext {
 }
 
 // TODO move into express area
-function getClient(clientString: string) {
-	// Format GG-[agent-ident] - [version]( - [what ever info you want])
-	if (clientString.startsWith('GG')) {
-		const clientInfo = /GG-(\S*) - (\S*)/.exec(clientString)
-		if (!clientInfo) {
-			console.error('Invalid client version', clientInfo)
-			throw new Error('Invalid client version')
-		}
-		let version = Version.parse(clientInfo[2])
+function getClient(useragent: string) {
+	if (useragent.startsWith('GG')) {
+		let version = Version.parse('1.0.0')
 		if (isError(version)) {
-			console.error('Invalid client version', clientInfo, version.error)
 			throw version.error
 		}
 
-		if (clientString.startsWith('GG-Android')) {
+		if (useragent.startsWith('GG-Android')) {
 			return { type: ClientType.ANDROID, version: version }
-		} else if (clientString.startsWith('GG-iOS')) {
+		} else if (useragent.startsWith('GG-iOS')) {
 			return { type: ClientType.IOS, version: version }
 		} else {
 			return { type: ClientType.WEB, version: version }
@@ -59,7 +58,7 @@ function getClient(clientString: string) {
 
 export let contextFn = async ({ req, res }: ExpressContext): Promise<Partial<Context>> => {
 	let requestId = req.header('x-request-id') ? req.header('x-request-id')! : 'UNTRACEABLE'
-	let something = {
+	let context = {
 		danger: {
 			'gg-user-segment': req.header('gg-user-segment'),
 			'gg-user-type': req.header('gg-user-type'),
@@ -81,5 +80,6 @@ export let contextFn = async ({ req, res }: ExpressContext): Promise<Partial<Con
 			authenticated: false,
 			roles: [],
 		},
+		trace: { requestId, path: [] },
 	}
 }

@@ -1,7 +1,7 @@
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus'
 import { MeterProvider } from '@opentelemetry/metrics'
 import { GraphQLResolveInfo } from 'graphql'
-import { Context } from '../schema/context'
+import { Context } from '../schemaDemo/context'
 
 let prometheusPort = 2302
 const promExporter = new PrometheusExporter({ port: prometheusPort, startServer: true }, () => {

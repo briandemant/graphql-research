@@ -2,7 +2,7 @@ import { UuidV4 } from '@demo/lib'
 import { IMocks } from 'apollo-server'
 import * as faker from 'faker'
 import { GraphQLResolveInfo } from 'graphql'
-import { Context } from '../schemaV2/context'
+import { Context } from '../schema/context'
 
 const { MockList } = require('apollo-server')
 

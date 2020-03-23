@@ -19,6 +19,7 @@ export class Version {
 		if (!semver.valid(version)) {
 			throw new Error(Version.ERR_INVALID_VERSION)
 		}
+		// console.log(semver.parse(version))
 	}
 
 	toString() {
