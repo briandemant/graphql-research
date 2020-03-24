@@ -1,7 +1,7 @@
 import { GraphQLRequestContext, GraphQLRequestListener, GraphQLServiceContext } from 'apollo-server-plugin-base'
 import * as colors from 'colors'
 import { GraphQLResolveInfo } from 'graphql'
-import { Context } from '../schemaDemo/context'
+import { Context } from '../schema/context'
 
 export const ExamplePlugin = {
 	requestDidStart(reqCtx: GraphQLRequestContext): GraphQLRequestListener {

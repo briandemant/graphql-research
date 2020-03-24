@@ -1,7 +1,7 @@
 import { isParseError } from '@demo/lib'
 import { UserInputError } from 'apollo-server'
 import { GraphQLResolveInfo } from 'graphql'
-import { Context } from '../schemaDemo/context'
+import { Context } from '../schema/context'
 
 export const scalarMiddleware = async (
 	resolve: any,
@@ -15,15 +15,22 @@ export const scalarMiddleware = async (
 		const arg = args[k]
 		if (isParseError(arg)) {
 			errors.push({ name: k, value: arg.value, error: arg.error })
+		} else {
+			// try {
+			// 	console.log('arg', arg)
+			// 	console.log('...', arg.toOldId())
+			// } catch (e) {
+			//
+			// }
 		}
 	})
-	let result
+
 	if (errors.length === 0) {
-		result = await resolve(parent, args, context, info)
+		return await resolve(parent, args, context, info)
 	} else {
+		// throw errors
 		throw new UserInputError(errors[0].error, {
 			invalidArgs: errors,
 		})
 	}
-	return result
 }

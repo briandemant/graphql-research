@@ -1,2 +1,8 @@
-export * from './user-client'
-export * from './listing-client'
+import { AuthInfo, ReqInfo } from '../schema/context'
+
+
+export const getDataLoaders = async (authInfo: AuthInfo, reqInfo: ReqInfo): Promise<DataLoaders> => {
+	return {}
+}
+
+export type DataLoaders = {}

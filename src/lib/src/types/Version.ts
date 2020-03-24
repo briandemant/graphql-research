@@ -1,8 +1,8 @@
 import { GraphQLScalarType } from 'graphql'
 import * as semver from 'semver'
 import SemVer from 'semver/classes/semver'
-import { fail, Maybe, ok, ParseError } from './Maybe'
-import { ValidDate } from './ValidDate'
+import { fail, Maybe, ok } from './Maybe'
+
 
 export class Version {
 	private static readonly ERR_INVALID_VERSION = 'Invalid Version'

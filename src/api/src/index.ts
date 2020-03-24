@@ -53,8 +53,8 @@ const server = new ApolloServer({
 	// plugins: [TracingPlugin],
 	formatError: (err) => {
 		// Don't give the specific errors to the client.
-		if (!err.message.match(/Invalid/)) {
-			return new Error('Internal server error')
+		if (err.message.match(/Invalid/)) {
+			return err
 		}
 
 		return new GraphQLError(err.message, err.nodes, null, err.positions, err.path)
@@ -65,7 +65,7 @@ const server = new ApolloServer({
 app.use((req, res, next) => {
 	if (`${req.headers['x-client-version']}`.match(/beta/)) {
 		console.log('BETA VERSION')
-		const serverA = new ApolloServer({
+		const fake = new ApolloServer({
 			typeDefs: gql`
           type Query {
               apiVersion: String
@@ -77,9 +77,9 @@ app.use((req, res, next) => {
 				}),
 			},
 		})
-		serverA.getMiddleware({ path: '/' })(req, res, next)
+		fake.getMiddleware({ path: '/' })(req, res, next)
 	} else {
-		console.log('VERSION', pkg.version)
+		console.log('\n\nVERSION', pkg.version)
 		server.getMiddleware({ path: '/' })(req, res, next)
 	}
 })
