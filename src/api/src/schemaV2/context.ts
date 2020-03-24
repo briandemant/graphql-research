@@ -35,6 +35,7 @@ export const contextFn = async ({ req, res }: ExpressContext): Promise<Context> 
 		auth: {
 			// TODO: validate token from `req.headers.authorization`
 			authenticated: !!req.header('gg-user-type') && req.header('gg-user-type') !== 'anon',
+			// TODO: extract the roles from headers
 			roles: [],
 		},
 		trace: { requestId, path: [] },

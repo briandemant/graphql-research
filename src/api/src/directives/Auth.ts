@@ -1,25 +1,25 @@
 import { SchemaDirectiveVisitor } from 'apollo-server'
 import { GraphQLField, GraphQLObjectType, defaultFieldResolver } from 'graphql'
+import { Context } from '../schemaV2/context'
 
-// Copy pasta from the apollo-server docs, typed
-// with custom logic resolving when a
+// Modified "copy-pasta" from the apollo-server docs
 export class AuthDirective extends SchemaDirectiveVisitor {
-	visitObject(type: GraphQLObjectType) {
-		this.ensureFieldsWrapped(type)
+	public visitObject(type: GraphQLObjectType) {
 		// @ts-ignore
 		type._requiredAuthRole = this.args.requires
+		this.ensureAuth(type)
 	}
 	// Visitor methods for nested types like fields and arguments
 	// also receive a details object that provides information about
 	// the parent and grandparent types.
-	visitFieldDefinition(field: GraphQLField<any, any>, details: any) {
-		this.ensureFieldsWrapped(details.objectType)
+	public visitFieldDefinition(field: GraphQLField<any, any>, details: any) {
 		// @ts-ignore
 		field._requiredAuthRole = this.args.requires
+		this.ensureAuth(details.objectType)
 	}
 
 	// Wrap object and nested fields
-	ensureFieldsWrapped(objectType: GraphQLObjectType) {
+	private ensureAuth(objectType: GraphQLObjectType) {
 		// Mark the GraphQLObjectType object to avoid re-wrapping:
 		// @ts-ignore
 		if (objectType._authFieldsWrapped) {
@@ -30,7 +30,6 @@ export class AuthDirective extends SchemaDirectiveVisitor {
 		objectType._authFieldsWrapped = true
 
 		const fields = objectType.getFields()
-
 		Object.keys(fields).forEach(fieldName => {
 			const field = fields[fieldName]
 			const { resolve = defaultFieldResolver } = field
@@ -46,8 +45,8 @@ export class AuthDirective extends SchemaDirectiveVisitor {
 				}
 
 				// see: src/api/src/schemaV2/context.ts
-				const context = args[2]
-				if (!context.auth.authenticated) {
+				const context: Context = args[2]
+				if (!context.auth.authenticated || !context.auth.roles.includes(requiredRole)) {
 					throw new Error('Not authorized')
 				}
 
