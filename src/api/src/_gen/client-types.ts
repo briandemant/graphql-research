@@ -199,11 +199,18 @@ export type LabelsConnection = PaginatedConnection & {
 	readonly totalCount: Scalars['Int']
 }
 
+/**
+ * This text will show up
+ * as the object's description
+ */
 export type Listing = Entity & {
-	/** basic */
+	/**
+	 * If no "string literals" (quoted text) precedes the field,
+	 * this comment will act as the field's description
+	 */
 	readonly id: Scalars['UuidV4']
 	readonly slug: Scalars['NonEmptyString']
-	/** NOTE: directives don't work when mocking is enabled */
+	/** Requires authorization! */
 	readonly owner: User
 	readonly online: Scalars['Boolean']
 	readonly status: ListingStatusEnum
@@ -223,7 +230,7 @@ export type Listing = Entity & {
 	readonly category: Category
 	readonly primaryImage: Maybe<Image>
 	readonly images: Maybe<ReadonlyArray<Image>>
-	/** Formattable fields (fugly! but works) */
+	/** Computed field */
 	readonly forDisplayPrice: Scalars['NonEmptyString']
 	readonly forDisplayCreatedAt: Scalars['NonEmptyString']
 	/** misc */
@@ -238,10 +245,18 @@ export type Listing = Entity & {
 	readonly productPackage: ProductPackage
 }
 
+/**
+ * This text will show up
+ * as the object's description
+ */
 export type ListingForDisplayPriceArgs = {
 	format: Maybe<PriceFormatEnum>
 }
 
+/**
+ * This text will show up
+ * as the object's description
+ */
 export type ListingForDisplayCreatedAtArgs = {
 	format: Maybe<DateFormatEnum>
 }

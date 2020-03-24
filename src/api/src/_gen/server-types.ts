@@ -207,11 +207,18 @@ export type GQLLabelsConnection = GQLPaginatedConnection & {
 	readonly totalCount: Scalars['Int']
 }
 
+/**
+ * This text will show up
+ * as the object's description
+ */
 export type GQLListing = GQLEntity & {
-	/** basic */
+	/**
+	 * If no "string literals" (quoted text) precedes the field,
+	 * this comment will act as the field's description
+	 */
 	readonly id: Scalars['UuidV4']
 	readonly slug: Scalars['NonEmptyString']
-	/** NOTE: directives don't work when mocking is enabled */
+	/** Requires authorization! */
 	readonly owner: GQLUser
 	readonly online: Scalars['Boolean']
 	readonly status: GQLListingStatusEnum
@@ -231,7 +238,7 @@ export type GQLListing = GQLEntity & {
 	readonly category: GQLCategory
 	readonly primaryImage: Maybe<GQLImage>
 	readonly images: Maybe<ReadonlyArray<GQLImage>>
-	/** Formattable fields (fugly! but works) */
+	/** Computed field */
 	readonly forDisplayPrice: Scalars['NonEmptyString']
 	readonly forDisplayCreatedAt: Scalars['NonEmptyString']
 	/** misc */
@@ -246,10 +253,18 @@ export type GQLListing = GQLEntity & {
 	readonly productPackage: GQLProductPackage
 }
 
+/**
+ * This text will show up
+ * as the object's description
+ */
 export type GQLListingForDisplayPriceArgs = {
 	format: Maybe<GQLPriceFormatEnum>
 }
 
+/**
+ * This text will show up
+ * as the object's description
+ */
 export type GQLListingForDisplayCreatedAtArgs = {
 	format: Maybe<GQLDateFormatEnum>
 }

@@ -48,11 +48,17 @@ type ListingEdge implements DatedEdge {
 	createdAt: DateTime!
 }
 
+# This text will act as a code comment
+"""
+This text will show up
+as the object's description
+"""
 type Listing implements Entity {
-	# basic
+	# If no "string literals" (quoted text) precedes the field,
+	# this comment will act as the field's description
 	id: UuidV4!
 	slug: NonEmptyString!
-	# NOTE: directives don't work when mocking is enabled
+	"Requires authorization!"
 	owner: User! @auth(requires: USER)
 	online: Boolean!
 	status: ListingStatusEnum!
@@ -77,6 +83,7 @@ type Listing implements Entity {
 	# (categoryFields should be a connection on the Category entity)
 
 	# Formattable fields (fugly! but works)
+	"Computed field"
 	forDisplayPrice(format: PriceFormatEnum): NonEmptyString!
 	forDisplayCreatedAt(format: DateFormatEnum): NonEmptyString!
 
