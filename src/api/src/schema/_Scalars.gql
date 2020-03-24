@@ -2,6 +2,7 @@ scalar DateTime
 scalar NonEmptyString
 scalar Slug
 scalar UuidV4
+scalar Version
 scalar Md5
 scalar Email
 scalar URL

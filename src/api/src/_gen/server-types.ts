@@ -22,6 +22,7 @@ export type Scalars = {
 	UuidV4: UuidV4
 	DateTime: ValidDate
 	Slug: NonEmptyString
+	Version: any
 	Md5: Md5
 	Email: NonEmptyString
 	URL: NonEmptyString
@@ -684,6 +685,7 @@ export type GQLResolversTypes = {
 	CategoryField: ResolverTypeWrapper<any>
 	Phone: ResolverTypeWrapper<any>
 	Slug: ResolverTypeWrapper<NonEmptyString>
+	Version: ResolverTypeWrapper<any>
 	Md5: ResolverTypeWrapper<Md5>
 	Email: ResolverTypeWrapper<NonEmptyString>
 	URL: ResolverTypeWrapper<NonEmptyString>
@@ -746,6 +748,7 @@ export type GQLResolversParentTypes = {
 	CategoryField: any
 	Phone: any
 	Slug: NonEmptyString
+	Version: any
 	Md5: Md5
 	Email: NonEmptyString
 	URL: NonEmptyString
@@ -1284,6 +1287,10 @@ export interface GQLUuidV4ScalarConfig extends GraphQLScalarTypeConfig<GQLResolv
 	name: 'UuidV4'
 }
 
+export interface GQLVersionScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['Version'], any> {
+	name: 'Version'
+}
+
 export type GQLResolvers<ContextType = Context> = {
 	Category: GQLCategoryResolvers<ContextType>
 	CategoryField: GQLCategoryFieldResolvers<ContextType>
@@ -1327,6 +1334,7 @@ export type GQLResolvers<ContextType = Context> = {
 	URL: GraphQLScalarType
 	User: GQLUserResolvers<ContextType>
 	UuidV4: GraphQLScalarType
+	Version: GraphQLScalarType
 }
 
 export type GQLDirectiveResolvers<ContextType = Context> = {

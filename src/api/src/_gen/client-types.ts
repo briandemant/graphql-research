@@ -14,6 +14,7 @@ export type Scalars = {
 	UuidV4: string
 	DateTime: Date
 	Slug: string
+	Version: any
 	Md5: string
 	Email: any
 	URL: any

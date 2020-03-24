@@ -2,12 +2,12 @@ import { makeExecutableSchema } from 'apollo-server'
 import { ApolloServer, gql } from 'apollo-server-express'
 import * as express from 'express'
 import { readFileSync } from 'fs'
-import { GraphQLResolveInfo } from 'graphql'
+import { GraphQLError, GraphQLResolveInfo } from 'graphql'
 import { applyMiddleware } from 'graphql-middleware'
-import { mocks } from './clients'
 import { DeprecatedDirective } from './directives'
-// import { default as resolvers } from './resolvers'
-import { default as typeDefs } from './schema'
+import { scalarMiddleware } from './plugins'
+import { mocks, resolvers } from './resolver'
+import { typeDefs } from './schema'
 import { Context, contextFn } from './schema/context'
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
@@ -16,11 +16,7 @@ const options = { port: 2300 }
 
 const schema = makeExecutableSchema({
 	typeDefs,
-	resolvers: {
-		Query: {
-			apiVersion: () => pkg.version,
-		},
-	},
+	resolvers: resolvers,
 	// ignore missing resolvers
 	allowUndefinedInResolve: true,
 	resolverValidationOptions: {
@@ -44,18 +40,25 @@ app.get('/something', (req, res) => {
 })
 
 const server = new ApolloServer({
-	schema: applyMiddleware(schema),
+	schema: applyMiddleware(schema, scalarMiddleware),
 	typeDefs,
 	// prefers resolvers but uses mock if not implemented
 	mockEntireSchema: false,
 	mocks,
-	resolvers: {},
 	schemaDirectives: {
 		deprecated: DeprecatedDirective,
 	},
 	tracing: true,
 	context: contextFn,
 	// plugins: [TracingPlugin],
+	formatError: (err) => {
+		// Don't give the specific errors to the client.
+		if (!err.message.match(/Invalid/)) {
+			return new Error('Internal server error')
+		}
+
+		return new GraphQLError(err.message, err.nodes, null, err.positions, err.path)
+	},
 })
 
 
