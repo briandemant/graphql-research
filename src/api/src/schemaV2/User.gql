@@ -4,6 +4,11 @@ type User implements Entity {
 	email: NonEmptyString # TODO: Implement a custom "Email" Scalar?
 	userName: NonEmptyString
 	createdAt: DateTime!
+	updatedAt: DateTime!
+
+	# Formattable fields (fugly! but works)
+	forDisplayCreatedAt(format: DateFormatEnum): NonEmptyString!
+	forDisplayUpdatedAt(format: DateFormatEnum): NonEmptyString!
 
 	listingConnection(
 		cursor: CursorPaginationParams

@@ -19,9 +19,9 @@ interface ExpressContext {
 	res: express.Response
 }
 
-export let contextFn = async ({ req, res }: ExpressContext): Promise<Context> => {
-	let requestId = req.header('x-request-id') ? req.header('x-request-id')! : 'UNTRACEABLE'
-	let context = {
+export const contextFn = async ({ req, res }: ExpressContext): Promise<Context> => {
+	const requestId = req.header('x-request-id') ? req.header('x-request-id')! : 'UNTRACEABLE'
+	const context = {
 		danger: {
 			'gg-user-segment': req.header('gg-user-segment'),
 			'gg-user-type': req.header('gg-user-type'),
@@ -33,7 +33,9 @@ export let contextFn = async ({ req, res }: ExpressContext): Promise<Context> =>
 	}
 	return {
 		auth: {
-			authenticated: false,
+			// TODO: validate token from `req.headers.authorization`
+			authenticated: !!req.header('gg-user-type') && req.header('gg-user-type') !== 'anon',
+			// TODO: extract the roles from headers
 			roles: [],
 		},
 		trace: { requestId, path: [] },

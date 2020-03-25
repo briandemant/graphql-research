@@ -1,10 +1,10 @@
-import { makeExecutableSchema } from 'apollo-server'
+import { makeExecutableSchema, SchemaDirectiveVisitor } from 'apollo-server'
 import { ApolloServer } from 'apollo-server-express'
 import * as express from 'express'
 import { GraphQLResolveInfo } from 'graphql'
 import { applyMiddleware } from 'graphql-middleware'
 import { mocks } from './clients'
-import { DeprecatedDirective } from './directives'
+import { DeprecatedDirective, AuthDirective } from './directives'
 // import { default as resolvers } from './resolvers'
 import { default as typeDefs } from './schemaV2'
 import { Context, contextFn } from './schemaV2/context'
@@ -60,6 +60,19 @@ const schema = makeExecutableSchema({
 	},
 })
 
+// This works!
+// NOTE 1: SchemaDirectives aren't applied when config.mocks is defined!
+// NOTE 2: `SchemaDirectiveVisitor.visitSchemaDirectives` alters an already defined schema
+// - @link https://www.apollographql.com/docs/apollo-server/schema/creating-directives/#implementing-schema-directives
+//   "...
+//   Alternatively, if you want to modify an existing schema object,
+//   you can use the SchemaDirectiveVisitor.visitSchemaDirectives interface directly:
+//   ..."
+SchemaDirectiveVisitor.visitSchemaDirectives(schema, {
+	deprecated: DeprecatedDirective,
+	auth: AuthDirective,
+})
+
 const app = express()
 app.use((req, res, next) => {
 	// console.log(colors.cyan("url"),req.url)
@@ -76,9 +89,9 @@ const server = new ApolloServer({
 	typeDefs,
 	mocks,
 	resolvers: {},
-	schemaDirectives: {
-		deprecated: DeprecatedDirective,
-	},
+	// See last paragraph in:
+	// @link https://www.apollographql.com/docs/apollo-server/schema/creating-directives/#enforcing-access-permissions
+	// schemaDirectives: {}, // this doesn't work, because race-condition issues!?
 	tracing: true,
 	context: contextFn,
 	// plugins: [TracingPlugin],
