@@ -4,12 +4,13 @@ hooks:
   afterOneFileWrite:
     - prettier --config ../../.prettierrc.json --write
 generates:
+  # base resolvers
+  ./src/_gen/base-resolvers.ts:
+    plugins:
+     -  "../codegen-plugin"
 
   # Server types
   ./src/_gen/server-types.ts:
-    # hooks:
-    #   afterOneFileWrite:
-    #     - prettier --config ../../.prettierrc.json --write
     config:
       defaultMapper: any
       typesPrefix: GQL
@@ -40,7 +41,6 @@ generates:
           /* eslint-disable */
           // PLEASE DO NOT EDIT
           export * from './manual-server-types'
-          // import { GQLRole } from './manual-server-types'
       - typescript
       - typescript-resolvers
 

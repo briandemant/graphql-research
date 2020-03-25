@@ -1,7 +1,6 @@
 /* eslint-disable */
 // PLEASE DO NOT EDIT
 export * from './manual-server-types'
-// import { GQLRole } from './manual-server-types'
 
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
 import { ValidDate, SimpleID, NonEmptyString, UuidV4, Md5 } from '@demo/lib'
