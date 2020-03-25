@@ -13,7 +13,7 @@
 		"pretty": "prettier --config ./.prettierrc.json --loglevel error --write **/src/**/*.{json,ts,tsx,js}",
 		"pretty-lint": "yarn pretty && yarn lint",
 		"clean": "rm -rf ./src/*/dist",
-		"clean:packages": "rm -rf node_modules/ ./*/*/node_modules ./*/*/dist"
+		"clean:packages": "rm -rf node_modules/ ./*/*/node_modules ./*/*/dist ./*/*/tsconfig.tsbuildinfo"
 	},
 	"engines": {
 		"node": "^10.16.0",
