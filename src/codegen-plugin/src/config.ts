@@ -1,4 +1,3 @@
-// TODO: Required by TypeScriptResolversVisitor (which doesn't work!)
 import { RawResolversConfig } from '@graphql-codegen/visitor-plugin-common';
 
 export interface TypeScriptResolversPluginConfig extends RawResolversConfig {

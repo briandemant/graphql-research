@@ -7,10 +7,7 @@ generates:
   # base resolvers
   ./src/_gen/base-resolvers.ts:
     config:
-      defaultMapper: any
       typesPrefix: GQL
-      enumPrefix: GQL
-      contextType: ../schema/context#Context
     plugins:
       - add: |
           /* eslint-disable */
