@@ -1,5 +1,5 @@
 /* eslint-disable */
-// PLEASE DO NOT EDIT
+// AUTO GENERATED! PLEASE DO NOT EDIT !!
 export * from './manual-server-types'
 import { Md5, NonEmptyString, UuidV4, ValidDate, ValidEmail, ValidURL } from '@demo/lib'
 

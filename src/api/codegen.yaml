@@ -6,7 +6,12 @@ hooks:
 generates:
   # base resolvers
   ./src/_gen/base-resolvers.ts:
+    config:
+      typesPrefix: GQL
     plugins:
+      - add: |
+          /* eslint-disable */
+          // AUTO GENERATED! PLEASE DO NOT EDIT !!
       - "../codegen-plugin"
 
   # Server types
@@ -46,7 +51,7 @@ generates:
     plugins:
       - add: |
           /* eslint-disable */
-          // PLEASE DO NOT EDIT
+          // AUTO GENERATED! PLEASE DO NOT EDIT !!
           export * from './manual-server-types'
           import {
             Md5, NonEmptyString, UuidV4, ValidDate,ValidEmail,ValidURL
@@ -70,5 +75,5 @@ generates:
     plugins:
       - add: |
           /* eslint-disable */
-          // PLEASE DO NOT EDIT !!
+          // AUTO GENERATED! PLEASE DO NOT EDIT !!
       - typescript

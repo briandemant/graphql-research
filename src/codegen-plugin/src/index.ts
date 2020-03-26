@@ -1,35 +1,38 @@
 import { printSchemaWithDirectives } from '@graphql-toolkit/common'
 import { Types, PluginFunction, addFederationReferencesToSchema } from '@graphql-codegen/plugin-helpers'
-import { parse, visit, GraphQLSchema, printSchema } from 'graphql' // funcs
-import { ObjectTypeDefinitionNode, TypeNode } from 'graphql' // types
+import { parse, GraphQLSchema, printSchema } from 'graphql' // funcs
+import { ObjectTypeDefinitionNode } from 'graphql' // types
+import { camelCase, upperFirst, flow } from 'lodash'
 
-// import { parseMapper } from '@graphql-codegen/visitor-plugin-common'
-// import { TypeScriptResolversVisitor } from '@graphql-codegen/typescript-resolvers'
-
-// based on '@graphql-codegen/typescript-resolvers'
+// depends on '@graphql-codegen/typescript-resolvers'
 export const plugin: PluginFunction<any> = (schema: GraphQLSchema, documents: Types.DocumentFile[], config: any) => {
 	const transformedSchema = config.federation ? addFederationReferencesToSchema(schema) : schema
-	// const visitor = new TypeScriptResolversVisitor(config, transformedSchema);
 
 	const printedSchema = config.federation
 		? printSchemaWithDirectives(transformedSchema)
 		: printSchema(transformedSchema)
 	const astNode = parse(printedSchema)
 
-	// does magic it seems
-	// const visitorResult = visit(astNode, { leave: visitor }); // DOESN'T WORK?!?, versions mismatch?
-	// console.log('### visitorResult ### ', visitorResult)
+	// utils
+	const pascalCase = flow(camelCase, upperFirst)
 
-	// type cast it
+	const imports: string[] = []
+	const resolverTypesImports: string[] = []
+	const fieldResolvers: string[] = []
+
+	imports.push(`import { GraphQLResolveInfo } from 'graphql'`)
+	resolverTypesImports.push(`${config.typesPrefix}ResolversTypes`)
+
+	// Map out all the objects and their fields
 	const objectTypes: ObjectTypeDefinitionNode[] = astNode.definitions
 		.filter(def => def.kind === 'ObjectTypeDefinition')
 		.map(node => node as ObjectTypeDefinitionNode)
 
-	// THIS might probably be easier if the F***ING! visitor stuff worked, but hey!
-	const fieldResolvers: string[] = []
+	// build a boilerplate resolver function
+	// for each object's fields
+	// and export the Type for the resolver
 	objectTypes.forEach(el => {
-		// console.log('### el', el.name)
-		const queryResolver = 'any' // TODO, resolve it somehow... maybe with a proper VISITOR!!
+		resolverTypesImports.push(`${config.typesPrefix}${el.name.value}Resolvers`)
 
 		fieldResolvers.push(`/**
 		**
@@ -38,15 +41,26 @@ export const plugin: PluginFunction<any> = (schema: GraphQLSchema, documents: Ty
 		**/`)
 
 		el.fields?.forEach(field => {
-			// console.log('### field', field)
-			const returnType = `null` // // TODO resolve return type from field.type as TypeNode
-			const fieldDesc = field.description ? `/** ${field.description.value} **/` : ''
-			const resolverArgs = `parent:any, args:any, context:any, info:any` // TODO: 'any' shouldn't be necessary if the queryResolver is correct
+			// field description, if any
+			const fieldDesc = field.description ? `/* ${field.description.value} */` : ''
 
+			const resolverName = camelCase([el.name.value, field.name.value].join('_'))
+			const resolverTypeName = pascalCase([el.name.value, field.name.value,'resolver','type'].join('_'))
+			const typeResolverString = `export type ${resolverTypeName} = ${config.typesPrefix}${el.name.value}Resolvers['${field.name.value}']`
+
+			// parse any field arguments
+			let parsedArgs = 'args'
+			if (field.arguments && field.arguments.length) {
+				const prettyArgs = field.arguments.map(arg => arg.name.value)
+				// need to keep the casing from `config.typesPrefix`, so `pascalCase`'ing the whole thing won't work
+				parsedArgs = `{ ${prettyArgs.join(', ')} }`
+			}
 			fieldResolvers.push(`
 			${fieldDesc}
-			const ${el.name.value}_${field.name.value}: ${queryResolver} = async (${resolverArgs}) => { 
-				return ${returnType}
+			${typeResolverString}
+			// @ts-ignore <-- !! REMOVE THIS, after you move below func and start adding logic to it
+			const ${resolverName}:${resolverTypeName} = async (parent, ${parsedArgs}, context, info) => { 
+				return null
 			}
 			`)
 		})
@@ -59,10 +73,26 @@ export const plugin: PluginFunction<any> = (schema: GraphQLSchema, documents: Ty
 	// with glorious logic
 	// 
 	// goodluckhavefun!
-	//`
+	//
+	`
+
+	// Huge dependency on other plugins and certain "codegen" settings
+	const prettyResolverTypes = `import { ${resolverTypesImports.join(', ')} } from './server-types'`
+
+	/*
+		fieldResolvers: SHOULD LOOK SOMETHING LIKE THIS:
+		...
+		export type CategoryListingConnectionResolverType = GQLCategoryResolvers['listingConnection']
+		// {DESCRIPTION}
+		// @ts-ignore
+		const categoryListingConnection:CategoryListingConnectionResolverType = async (parent, {some, specific, param}, context, info) => {
+			return null
+		}
+		...
+	*/
 
 	return {
-		content: [prelude, fieldResolvers.join('\n')].join('\n'),
+		content: [prelude, imports.join('\n'), prettyResolverTypes, fieldResolvers.join('\n')].join('\n'),
 	}
 }
 
