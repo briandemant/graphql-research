@@ -1,11 +1,11 @@
 /* eslint-disable */
 // PLEASE DO NOT EDIT
 export * from './manual-server-types'
-import { Md5, NonEmptyString, UuidV4, ValidDate, ValidEmail, ValidURL } from '@demo/lib'
 // import { GQLRole } from './manual-server-types'
 
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
-import { Context } from '../schema/context'
+import { ValidDate, SimpleID, NonEmptyString, UuidV4, Md5 } from '@demo/lib'
+import { Context } from '../schemaV2/context'
 export type Maybe<T> = T | null
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } &
@@ -19,13 +19,12 @@ export type Scalars = {
 	Int: number
 	Float: number
 	NonEmptyString: NonEmptyString
+	/** scalar Slug */
 	UuidV4: UuidV4
 	DateTime: ValidDate
-	Slug: NonEmptyString
-	Version: any
-	Md5: Md5
-	Email: NonEmptyString
-	URL: NonEmptyString
+	/** scalar Md5 */
+	Email: any
+	URL: any
 }
 
 export type GQLCategory = GQLEntity & {
@@ -632,13 +631,13 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type GQLResolversTypes = {
 	Query: ResolverTypeWrapper<{}>
-	String: ResolverTypeWrapper<String>
+	String: ResolverTypeWrapper<string>
 	CursorPaginationParams: ResolverTypeWrapper<any>
-	Int: ResolverTypeWrapper<Number>
+	Int: ResolverTypeWrapper<any>
 	NonEmptyString: ResolverTypeWrapper<NonEmptyString>
 	FrontpageGroupTypeEnum: ResolverTypeWrapper<any>
 	ListingOrderEnum: ResolverTypeWrapper<any>
-	Boolean: ResolverTypeWrapper<Boolean>
+	Boolean: ResolverTypeWrapper<any>
 	Listing: ResolverTypeWrapper<any>
 	Entity: ResolverTypeWrapper<Omit<ResolverTypeWrapper<any>, 'id'> & { id: GQLResolversTypes['UuidV4'] }>
 	UuidV4: ResolverTypeWrapper<UuidV4>
@@ -646,9 +645,7 @@ export type GQLResolversTypes = {
 	DateTime: ResolverTypeWrapper<ValidDate>
 	DateFormatEnum: ResolverTypeWrapper<any>
 	ListingConnection: ResolverTypeWrapper<any>
-	PaginatedConnection: ResolverTypeWrapper<
-		Omit<ResolverTypeWrapper<any>, 'totalCount'> & { totalCount: GQLResolversTypes['Int'] }
-	>
+	PaginatedConnection: ResolverTypeWrapper<any>
 	PageInfo: ResolverTypeWrapper<any>
 	ListingEdge: ResolverTypeWrapper<any>
 	DatedEdge: ResolverTypeWrapper<
@@ -686,28 +683,23 @@ export type GQLResolversTypes = {
 	Publication: ResolverTypeWrapper<any>
 	CategoryField: ResolverTypeWrapper<any>
 	Phone: ResolverTypeWrapper<any>
-	Slug: ResolverTypeWrapper<NonEmptyString>
-	Version: ResolverTypeWrapper<any>
-	Md5: ResolverTypeWrapper<Md5>
-	Email: ResolverTypeWrapper<ValidEmail>
-	URL: ResolverTypeWrapper<ValidURL>
+	Email: ResolverTypeWrapper<any>
+	URL: ResolverTypeWrapper<any>
 	RoleEnum: ResolverTypeWrapper<any>
 	ResponseCodeEnum: ResolverTypeWrapper<any>
-	MutationResponse: ResolverTypeWrapper<
-		Omit<ResolverTypeWrapper<any>, 'success'> & { success: GQLResolversTypes['Boolean'] }
-	>
+	MutationResponse: ResolverTypeWrapper<any>
 }
 
 /** Mapping between all available schema types and the resolvers parents */
 export type GQLResolversParentTypes = {
 	Query: {}
-	String: String
+	String: string
 	CursorPaginationParams: any
-	Int: Number
+	Int: any
 	NonEmptyString: NonEmptyString
 	FrontpageGroupTypeEnum: any
 	ListingOrderEnum: any
-	Boolean: Boolean
+	Boolean: any
 	Listing: any
 	Entity: Omit<any, 'id'> & { id: GQLResolversParentTypes['UuidV4'] }
 	UuidV4: UuidV4
@@ -715,7 +707,7 @@ export type GQLResolversParentTypes = {
 	DateTime: ValidDate
 	DateFormatEnum: any
 	ListingConnection: any
-	PaginatedConnection: Omit<any, 'totalCount'> & { totalCount: GQLResolversParentTypes['Int'] }
+	PaginatedConnection: any
 	PageInfo: any
 	ListingEdge: any
 	DatedEdge: Omit<any, 'createdAt'> & { createdAt: GQLResolversParentTypes['DateTime'] }
@@ -751,14 +743,11 @@ export type GQLResolversParentTypes = {
 	Publication: any
 	CategoryField: any
 	Phone: any
-	Slug: NonEmptyString
-	Version: any
-	Md5: Md5
-	Email: ValidEmail
-	URL: ValidURL
+	Email: any
+	URL: any
 	RoleEnum: any
 	ResponseCodeEnum: any
-	MutationResponse: Omit<any, 'success'> & { success: GQLResolversParentTypes['Boolean'] }
+	MutationResponse: any
 }
 
 export type GQLAuthDirectiveArgs = { requires?: Maybe<GQLRoleEnum> }
@@ -1040,10 +1029,6 @@ export type GQLLocationResolvers<
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
-export interface GQLMd5ScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['Md5'], any> {
-	name: 'Md5'
-}
-
 export type GQLMessageResolvers<
 	ContextType = Context,
 	ParentType extends GQLResolversParentTypes['Message'] = GQLResolversParentTypes['Message']
@@ -1224,10 +1209,6 @@ export type GQLReceiptsConnectionResolvers<
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
-export interface GQLSlugScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['Slug'], any> {
-	name: 'Slug'
-}
-
 export interface GQLUrlScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['URL'], any> {
 	name: 'URL'
 }
@@ -1291,10 +1272,6 @@ export interface GQLUuidV4ScalarConfig extends GraphQLScalarTypeConfig<GQLResolv
 	name: 'UuidV4'
 }
 
-export interface GQLVersionScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['Version'], any> {
-	name: 'Version'
-}
-
 export type GQLResolvers<ContextType = Context> = {
 	Category: GQLCategoryResolvers<ContextType>
 	CategoryField: GQLCategoryFieldResolvers<ContextType>
@@ -1317,7 +1294,6 @@ export type GQLResolvers<ContextType = Context> = {
 	ListingEdge: GQLListingEdgeResolvers<ContextType>
 	ListingReceipt: GQLListingReceiptResolvers<ContextType>
 	Location: GQLLocationResolvers<ContextType>
-	Md5: GraphQLScalarType
 	Message: GQLMessageResolvers<ContextType>
 	MessageEdge: GQLMessageEdgeResolvers<ContextType>
 	MessagesConnection: GQLMessagesConnectionResolvers<ContextType>
@@ -1334,11 +1310,9 @@ export type GQLResolvers<ContextType = Context> = {
 	Receipt: GQLReceiptResolvers
 	ReceiptEdge: GQLReceiptEdgeResolvers<ContextType>
 	ReceiptsConnection: GQLReceiptsConnectionResolvers<ContextType>
-	Slug: GraphQLScalarType
 	URL: GraphQLScalarType
 	User: GQLUserResolvers<ContextType>
 	UuidV4: GraphQLScalarType
-	Version: GraphQLScalarType
 }
 
 export type GQLDirectiveResolvers<ContextType = Context> = {
