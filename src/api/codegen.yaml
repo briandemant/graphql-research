@@ -51,7 +51,6 @@ generates:
           import {
             Md5, NonEmptyString, UuidV4, ValidDate,ValidEmail,ValidURL
           } from '@demo/lib'
-          // import { GQLRole } from './manual-server-types'
       - typescript
       - typescript-resolvers
 
