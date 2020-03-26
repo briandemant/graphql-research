@@ -28,7 +28,7 @@ export class ValidURL {
 	}
 }
 
-export const URLStringType = new GraphQLScalarType({
+export const ValidURLStringType = new GraphQLScalarType({
 	name: 'URL',
 	description: 'A string represents a valid web URL',
 	serialize(value) {

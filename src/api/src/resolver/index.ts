@@ -2,9 +2,9 @@ import {
 	EmailStringType,
 	Md5StringType,
 	NonEmptyStringType,
-	URLStringType,
 	UuidV4ScalarType,
 	ValidDateScalarType,
+	ValidURLStringType,
 	VersionStringType,
 } from '@demo/lib'
 
@@ -44,7 +44,7 @@ let scalars = {
 	UuidV4: UuidV4ScalarType,
 	DateTime: ValidDateScalarType,
 	Version: VersionStringType,
-	URL: URLStringType,
+	URL: ValidURLStringType,
 	Email: EmailStringType,
 	Md5: Md5StringType,
 }

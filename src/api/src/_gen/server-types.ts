@@ -1,7 +1,7 @@
 /* eslint-disable */
 // PLEASE DO NOT EDIT
 export * from './manual-server-types'
-import { Md5, NonEmptyString, UuidV4, ValidDate } from '@demo/lib'
+import { Md5, NonEmptyString, UuidV4, ValidDate, ValidEmail, ValidURL } from '@demo/lib'
 // import { GQLRole } from './manual-server-types'
 
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
@@ -632,13 +632,13 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type GQLResolversTypes = {
 	Query: ResolverTypeWrapper<{}>
-	String: ResolverTypeWrapper<any>
+	String: ResolverTypeWrapper<String>
 	CursorPaginationParams: ResolverTypeWrapper<any>
-	Int: ResolverTypeWrapper<any>
+	Int: ResolverTypeWrapper<Number>
 	NonEmptyString: ResolverTypeWrapper<NonEmptyString>
 	FrontpageGroupTypeEnum: ResolverTypeWrapper<any>
 	ListingOrderEnum: ResolverTypeWrapper<any>
-	Boolean: ResolverTypeWrapper<any>
+	Boolean: ResolverTypeWrapper<Boolean>
 	Listing: ResolverTypeWrapper<any>
 	Entity: ResolverTypeWrapper<Omit<ResolverTypeWrapper<any>, 'id'> & { id: GQLResolversTypes['UuidV4'] }>
 	UuidV4: ResolverTypeWrapper<UuidV4>
@@ -646,7 +646,9 @@ export type GQLResolversTypes = {
 	DateTime: ResolverTypeWrapper<ValidDate>
 	DateFormatEnum: ResolverTypeWrapper<any>
 	ListingConnection: ResolverTypeWrapper<any>
-	PaginatedConnection: ResolverTypeWrapper<any>
+	PaginatedConnection: ResolverTypeWrapper<
+		Omit<ResolverTypeWrapper<any>, 'totalCount'> & { totalCount: GQLResolversTypes['Int'] }
+	>
 	PageInfo: ResolverTypeWrapper<any>
 	ListingEdge: ResolverTypeWrapper<any>
 	DatedEdge: ResolverTypeWrapper<
@@ -687,23 +689,25 @@ export type GQLResolversTypes = {
 	Slug: ResolverTypeWrapper<NonEmptyString>
 	Version: ResolverTypeWrapper<any>
 	Md5: ResolverTypeWrapper<Md5>
-	Email: ResolverTypeWrapper<NonEmptyString>
-	URL: ResolverTypeWrapper<NonEmptyString>
+	Email: ResolverTypeWrapper<ValidEmail>
+	URL: ResolverTypeWrapper<ValidURL>
 	RoleEnum: ResolverTypeWrapper<any>
 	ResponseCodeEnum: ResolverTypeWrapper<any>
-	MutationResponse: ResolverTypeWrapper<any>
+	MutationResponse: ResolverTypeWrapper<
+		Omit<ResolverTypeWrapper<any>, 'success'> & { success: GQLResolversTypes['Boolean'] }
+	>
 }
 
 /** Mapping between all available schema types and the resolvers parents */
 export type GQLResolversParentTypes = {
 	Query: {}
-	String: any
+	String: String
 	CursorPaginationParams: any
-	Int: any
+	Int: Number
 	NonEmptyString: NonEmptyString
 	FrontpageGroupTypeEnum: any
 	ListingOrderEnum: any
-	Boolean: any
+	Boolean: Boolean
 	Listing: any
 	Entity: Omit<any, 'id'> & { id: GQLResolversParentTypes['UuidV4'] }
 	UuidV4: UuidV4
@@ -711,7 +715,7 @@ export type GQLResolversParentTypes = {
 	DateTime: ValidDate
 	DateFormatEnum: any
 	ListingConnection: any
-	PaginatedConnection: any
+	PaginatedConnection: Omit<any, 'totalCount'> & { totalCount: GQLResolversParentTypes['Int'] }
 	PageInfo: any
 	ListingEdge: any
 	DatedEdge: Omit<any, 'createdAt'> & { createdAt: GQLResolversParentTypes['DateTime'] }
@@ -750,11 +754,11 @@ export type GQLResolversParentTypes = {
 	Slug: NonEmptyString
 	Version: any
 	Md5: Md5
-	Email: NonEmptyString
-	URL: NonEmptyString
+	Email: ValidEmail
+	URL: ValidURL
 	RoleEnum: any
 	ResponseCodeEnum: any
-	MutationResponse: any
+	MutationResponse: Omit<any, 'success'> & { success: GQLResolversParentTypes['Boolean'] }
 }
 
 export type GQLAuthDirectiveArgs = { requires?: Maybe<GQLRoleEnum> }

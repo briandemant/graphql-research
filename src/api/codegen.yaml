@@ -30,21 +30,24 @@ generates:
         UuidV4: UuidV4
         URL: NonEmptyString
       mappers:
+        String: String
+        Int: Number
+        Boolean: Boolean
         DateTime: ValidDate
-        Email: NonEmptyString
+        Email: ValidEmail
         ID: UuidV4
         Md5: Md5
         NonEmptyString: NonEmptyString
         Slug: NonEmptyString
         UuidV4: UuidV4
-        URL: NonEmptyString
+        URL: ValidURL
     plugins:
       - add: |
           /* eslint-disable */
           // PLEASE DO NOT EDIT
           export * from './manual-server-types'
           import {
-            Md5, NonEmptyString, UuidV4, ValidDate
+            Md5, NonEmptyString, UuidV4, ValidDate,ValidEmail,ValidURL
           } from '@demo/lib'
           // import { GQLRole } from './manual-server-types'
       - typescript
