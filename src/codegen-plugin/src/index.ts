@@ -45,7 +45,7 @@ export const plugin: PluginFunction<any> = (schema: GraphQLSchema, documents: Ty
 			const fieldDesc = field.description ? `/* ${field.description.value} */` : ''
 
 			const resolverName = camelCase([el.name.value, field.name.value].join('_'))
-			const resolverTypeName = pascalCase([el.name.value, field.name.value,'resolver','type'].join('_'))
+			const resolverTypeName = pascalCase([el.name.value, field.name.value, 'resolver', 'type'].join('_'))
 			const typeResolverString = `export type ${resolverTypeName} = ${config.typesPrefix}${el.name.value}Resolvers['${field.name.value}']`
 
 			// parse any field arguments

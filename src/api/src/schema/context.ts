@@ -12,16 +12,16 @@ enum ClientType {
 }
 
 enum LoginMethod {
-	Email = 'email'
+	Email = 'email',
 }
 
 export type AuthInfo = {
-	authenticated: boolean,
-	userSession: string,
-	userId: string | undefined,
-	roles: UserRoles[],
-	showErotic: boolean,
-	segment: string,
+	authenticated: boolean
+	userSession: string
+	userId: string | undefined
+	roles: UserRoles[]
+	showErotic: boolean
+	segment: string
 	// rememberMe: boolean,
 	// loginMethod: LoginMethod,
 	// ip: '193.163.97.225',
@@ -46,8 +46,8 @@ interface ExpressContext {
 }
 
 export type ReqInfo = {
-	requestId: string,
-	useragent: string,
+	requestId: string
+	useragent: string
 	debug: boolean
 }
 
@@ -85,16 +85,15 @@ const getAgent = async (clientAgent: string, reqInfo: ReqInfo) => {
 const jwtSecret = 'default JWT secret'
 
 const getUserInfo = async (req: express.Request): Promise<AuthInfo> => {
-
 	// console.log('req.headers',req.headers)
 	type VerifiedInfo = {
-		userSession: string,
-		userId?: string,
-		userRoles: string[],
-		rememberMe: boolean,
-		loginMethod: string,
-		ip: string,
-		userAgent: string,
+		userSession: string
+		userId?: string
+		userRoles: string[]
+		rememberMe: boolean
+		loginMethod: string
+		ip: string
+		userAgent: string
 		iat: number
 	}
 
@@ -126,7 +125,7 @@ const getUserInfo = async (req: express.Request): Promise<AuthInfo> => {
 		}
 
 		if (req.header('dev-roles')) {
-			result.roles = (req.header('dev-roles')!).split(',') as UserRoles[]
+			result.roles = req.header('dev-roles')!.split(',') as UserRoles[]
 		}
 
 		if (req.header('dev-erotic')) {

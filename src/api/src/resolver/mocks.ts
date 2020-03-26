@@ -22,7 +22,7 @@ const fakeUser = () => {
 			parent: any,
 			params: { sortBy: string; reverse: boolean },
 			ctx: Context,
-			info: GraphQLResolveInfo,
+			info: GraphQLResolveInfo
 		) => {
 			let nodes: any[] = []
 			let numberOFListings = faker.random.number({ min: 1, max: 10 })

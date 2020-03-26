@@ -11,7 +11,6 @@ export enum EntityTypes {
 
 const OLDID = /([a-z]{4,8})-id-([0-9]{1,12})/
 
-
 export const isOldId = (value: UuidV4 | string) => {
 	if (typeof value === 'string') {
 		return OLDID.test(value)
@@ -49,7 +48,7 @@ export class UuidV4 {
 		return `${type}-id-${id}`
 	}
 
-	toOldId(): { type: EntityTypes, id: number } {
+	toOldId(): { type: EntityTypes; id: number } {
 		const res = OLDID.exec(this.uuid)
 		if (res) {
 			const type: EntityTypes | undefined = (EntityTypes as any)[res[1]]
@@ -79,7 +78,7 @@ export class UuidV4 {
 
 export const UuidV4ScalarType = new GraphQLScalarType({
 	name: 'UuidV4',
-	description: 'UUID v4 scalar type (with support for legacy id\'s ([type]-id-[id])',
+	description: "UUID v4 scalar type (with support for legacy id's ([type]-id-[id])",
 	serialize(value) {
 		if (value instanceof UuidV4) {
 			return value.serialize()

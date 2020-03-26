@@ -14,7 +14,12 @@ export class ValidEmail {
 	}
 
 	constructor(private readonly email: string) {
-		if (!yup.string().required().email(email)) {
+		if (
+			!yup
+				.string()
+				.required()
+				.email(email)
+		) {
 			throw new Error(ValidEmail.ERR_INVALID_EMAIL)
 		}
 	}

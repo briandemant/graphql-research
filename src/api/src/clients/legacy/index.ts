@@ -1,11 +1,5 @@
-class LegacyAppApi {
+class LegacyAppApi {}
 
-}
+class LegacyIntegration {}
 
-class LegacyIntegration {
-
-}
-
-export const getClients = async () => {
-
-}
+export const getClients = async () => {}

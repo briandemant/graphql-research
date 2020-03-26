@@ -14,7 +14,12 @@ export class ValidURL {
 	}
 
 	constructor(private readonly url: string) {
-		if (!yup.string().required().url(url)) {
+		if (
+			!yup
+				.string()
+				.required()
+				.url(url)
+		) {
 			throw new Error(ValidURL.ERR_INVALID_URL)
 		}
 	}
