@@ -2,7 +2,6 @@
 // PLEASE DO NOT EDIT
 export * from './manual-server-types'
 import { Md5, NonEmptyString, UuidV4, ValidDate, ValidEmail, ValidURL } from '@demo/lib'
-// import { GQLRole } from './manual-server-types'
 
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
 import { Context } from '../schema/context'
@@ -24,8 +23,8 @@ export type Scalars = {
 	Slug: NonEmptyString
 	Version: any
 	Md5: Md5
-	Email: NonEmptyString
-	URL: NonEmptyString
+	Email: ValidEmail
+	URL: ValidURL
 }
 
 export type GQLCategory = GQLEntity & {

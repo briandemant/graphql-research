@@ -4,11 +4,13 @@ hooks:
   afterOneFileWrite:
     - prettier --config ../../.prettierrc.json --write
 generates:
+  # base resolvers
+  ./src/_gen/base-resolvers.ts:
+    plugins:
+      - "../codegen-plugin"
+
   # Server types
   ./src/_gen/server-types.ts:
-    # hooks:
-    #   afterOneFileWrite:
-    #     - prettier --config ../../.prettierrc.json --write
     config:
       defaultMapper: any
       typesPrefix: GQL
@@ -22,13 +24,13 @@ generates:
       contextType: ../schema/context#Context
       scalars:
         DateTime: ValidDate
-        Email: NonEmptyString
+        Email: ValidEmail
         ID: UuidV4
         Md5: Md5
         NonEmptyString: NonEmptyString
         Slug: NonEmptyString
         UuidV4: UuidV4
-        URL: NonEmptyString
+        URL: ValidURL
       mappers:
         String: String
         Int: Number
@@ -49,7 +51,6 @@ generates:
           import {
             Md5, NonEmptyString, UuidV4, ValidDate,ValidEmail,ValidURL
           } from '@demo/lib'
-          // import { GQLRole } from './manual-server-types'
       - typescript
       - typescript-resolvers
 
