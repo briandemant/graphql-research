@@ -5,9 +5,9 @@ hooks:
     - prettier --config ../../.prettierrc.json --write
 generates:
   # base resolvers
-#  ./src/_gen/base-resolvers.ts:
-#    plugins:
-#     -  "../codegen-plugin"
+  ./src/_gen/base-resolvers.ts:
+    plugins:
+      - "../codegen-plugin"
 
   # Server types
   ./src/_gen/server-types.ts:
