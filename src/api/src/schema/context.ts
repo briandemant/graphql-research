@@ -1,8 +1,7 @@
-import { isError, Version, ignoreFail, UuidV4 } from '@demo/lib'
+import { ignoreFail, isError, UuidV4, Version } from '@demo/lib'
+import { ValidationError } from 'apollo-server'
 import express from 'express'
 import * as jwt from 'jsonwebtoken'
-import { ValidationError } from 'yup'
-import { ValidationError } from 'apollo-server'
 import { DataLoaders, getDataLoaders } from './../clients/'
 
 enum ClientType {
