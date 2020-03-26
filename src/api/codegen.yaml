@@ -5,9 +5,9 @@ hooks:
     - prettier --config ../../.prettierrc.json --write
 generates:
   # base resolvers
-  ./src/_gen/base-resolvers.ts:
-    plugins:
-     -  "../codegen-plugin"
+#  ./src/_gen/base-resolvers.ts:
+#    plugins:
+#     -  "../codegen-plugin"
 
   # Server types
   ./src/_gen/server-types.ts:
@@ -24,13 +24,13 @@ generates:
       contextType: ../schema/context#Context
       scalars:
         DateTime: ValidDate
-        Email: Email
+        Email: ValidEmail
         ID: UuidV4
         Md5: Md5
         NonEmptyString: NonEmptyString
         Slug: NonEmptyString
         UuidV4: UuidV4
-        URL: URL
+        URL: ValidURL
       mappers:
         String: String
         Int: Number
