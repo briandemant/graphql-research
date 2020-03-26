@@ -1,55 +1,23 @@
-import { makeExecutableSchema, SchemaDirectiveVisitor } from 'apollo-server'
-import { ApolloServer } from 'apollo-server-express'
+import { makeExecutableSchema } from 'apollo-server'
+import { ApolloServer, gql } from 'apollo-server-express'
 import * as express from 'express'
-import { GraphQLResolveInfo } from 'graphql'
+import { readFileSync } from 'fs'
+import { GraphQLError, GraphQLResolveInfo } from 'graphql'
 import { applyMiddleware } from 'graphql-middleware'
-import { mocks } from './clients'
-import { DeprecatedDirective, AuthDirective } from './directives'
-// import { default as resolvers } from './resolvers'
-import { default as typeDefs } from './schemaV2'
-import { Context, contextFn } from './schemaV2/context'
+import { DeprecatedDirective } from './directives'
+import { scalarMiddleware } from './plugins'
+import { mocks, resolvers } from './resolver'
+import { typeDefs } from './schema'
+import { Context, contextFn } from './schema/context'
+
+const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
 
 const options = { port: 2300 }
 
-let counter = 0
-
-const logInput = async (resolve: any, parent: any, args: any, context: Context, info: GraphQLResolveInfo) => {
-	const id = `${context.trace.spanId ? context.trace.spanId : context.trace.requestId}/${++counter}`
-	const subTrace = {
-		requestId: context.trace.requestId,
-		spanId: id,
-		path: [...context.trace.path, id],
-	}
-
-	// console.log(`${id} -`)
-	const alias = info.path.key != info.fieldName ? ` as ${info.path.key}` : ''
-	if (!info.path.prev) {
-		console.log(`\n\n${id} start: ${info.parentType}.${info.fieldName}${alias}`)
-	} else {
-		console.log(`${id} resolver: ${info.parentType}.${info.fieldName}${alias}`)
-	}
-	// console.log(`${id} path`, info.path)
-	// console.log(`${id} tpath`, subTrace.path.join('/'))
-	// console.log(`${id} parent`, parent)
-	// console.log(`${id} args`, args)
-	// console.log(`${id} trace`, context.trace)
-	// console.log(`${id} info`, info)
-	const result = await resolve(parent, args, { ...context, trace: subTrace }, info)
-	// console.log(`${id} --`)
-	return result
-}
-
-const logResult = async (resolve: any, parent: any, args: any, context: Context, info: GraphQLResolveInfo) => {
-	const result = await resolve(parent, args, context, info)
-	console.log(`${context.trace.spanId} Result:`, result)
-
-	return result
-}
-
 const schema = makeExecutableSchema({
 	typeDefs,
-	resolvers: {},
-	// ignore missing
+	resolvers: resolvers,
+	// ignore missing resolvers
 	allowUndefinedInResolve: true,
 	resolverValidationOptions: {
 		requireResolversForArgs: false,
@@ -60,47 +28,61 @@ const schema = makeExecutableSchema({
 	},
 })
 
-// This works!
-// NOTE 1: SchemaDirectives aren't applied when config.mocks is defined!
-// NOTE 2: `SchemaDirectiveVisitor.visitSchemaDirectives` alters an already defined schema
-// - @link https://www.apollographql.com/docs/apollo-server/schema/creating-directives/#implementing-schema-directives
-//   "...
-//   Alternatively, if you want to modify an existing schema object,
-//   you can use the SchemaDirectiveVisitor.visitSchemaDirectives interface directly:
-//   ..."
-SchemaDirectiveVisitor.visitSchemaDirectives(schema, {
-	deprecated: DeprecatedDirective,
-	auth: AuthDirective,
-})
-
 const app = express()
 app.use((req, res, next) => {
 	// console.log(colors.cyan("url"),req.url)
 	next()
 })
 
-let count = 0
-app.get('/metrics', (req, res) => {
-	res.send(`metrics_scrape_count ${++count}`)
+
+app.get('/something', (req, res) => {
+	res.send(`hello world`)
 })
 
 const server = new ApolloServer({
-	schema: applyMiddleware(schema, logInput, logResult),
+	schema: applyMiddleware(schema, scalarMiddleware),
 	typeDefs,
+	// prefers resolvers but uses mock if not implemented
+	mockEntireSchema: false,
 	mocks,
-	resolvers: {},
-	// See last paragraph in:
-	// @link https://www.apollographql.com/docs/apollo-server/schema/creating-directives/#enforcing-access-permissions
-	// schemaDirectives: {}, // this doesn't work, because race-condition issues!?
+	schemaDirectives: {
+		deprecated: DeprecatedDirective,
+	},
 	tracing: true,
 	context: contextFn,
 	// plugins: [TracingPlugin],
+	formatError: (err) => {
+		// Don't give the specific errors to the client.
+		if (err.message.match(/Invalid/)) {
+			return err
+		}
+
+		return new GraphQLError(err.message, err.nodes, null, err.positions, err.path)
+	},
 })
 
-server.applyMiddleware({ app, path: '/' })
 
-// server.listen(options).then(({ url }: any) => {
-// 	console.log(`🚀 Server ready at ${url}`)
-// })
+app.use((req, res, next) => {
+	if (`${req.headers['x-client-version']}`.match(/beta/)) {
+		console.log('BETA VERSION')
+		const fake = new ApolloServer({
+			typeDefs: gql`
+          type Query {
+              apiVersion: String
+          }
+			`,
+			mocks: {
+				Query: (parent: any, params: any, ctx: Context, info: GraphQLResolveInfo) => ({
+					apiVersion: (parent: any, params: any, ctx: Context, info: GraphQLResolveInfo) => '2.0.0-beta',
+				}),
+			},
+		})
+		fake.getMiddleware({ path: '/' })(req, res, next)
+	} else {
+		console.log('\n\nVERSION', pkg.version)
+		server.getMiddleware({ path: '/' })(req, res, next)
+	}
+})
+
 
 app.listen(options, () => console.log(`🚀 Server ready at http://localhost:${options.port}`))

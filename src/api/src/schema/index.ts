@@ -1,7 +1,6 @@
-import * as path from 'path'
 import { fileLoader, mergeTypes } from 'merge-graphql-schemas'
+import * as path from 'path'
 
-const typesArray = fileLoader(path.join(__dirname, '../../src/schema/*.graphql'))
-const typesMerged = mergeTypes(typesArray)
+const typesArray = fileLoader(path.join(__dirname, '../../src/schema/*.gql'))
+export const typeDefs = mergeTypes(typesArray)
 
-export default typesMerged

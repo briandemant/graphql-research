@@ -1,6 +1,6 @@
 import { SchemaDirectiveVisitor } from 'apollo-server'
-import { GraphQLField, GraphQLObjectType, defaultFieldResolver } from 'graphql'
-import { Context } from '../schemaV2/context'
+import { defaultFieldResolver, GraphQLField, GraphQLObjectType } from 'graphql'
+import { Context } from '../schema/context'
 
 // Modified "copy-pasta" from the apollo-server docs
 export class AuthDirective extends SchemaDirectiveVisitor {
@@ -9,6 +9,7 @@ export class AuthDirective extends SchemaDirectiveVisitor {
 		type._requiredAuthRole = this.args.requires
 		this.ensureAuth(type)
 	}
+
 	// Visitor methods for nested types like fields and arguments
 	// also receive a details object that provides information about
 	// the parent and grandparent types.
@@ -46,7 +47,7 @@ export class AuthDirective extends SchemaDirectiveVisitor {
 
 				// see: src/api/src/schemaV2/context.ts
 				const context: Context = args[2]
-				if (!context.auth.authenticated || !context.auth.roles.includes(requiredRole)) {
+				if (!context.user.authenticated || !context.user.roles.includes(requiredRole)) {
 					throw new Error('Not authorized')
 				}
 

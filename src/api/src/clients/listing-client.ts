@@ -1,4 +1,4 @@
-import { NonEmptyString, SimpleID, sleep } from '@demo/lib'
+import { fail, isError, isOk, Maybe, NonEmptyString, ok, SimpleID, sleep } from '@demo/lib'
 import * as faker from 'faker'
 
 faker.seed(13)
@@ -17,30 +17,13 @@ interface JsonListing {
 	owner: string
 }
 
-interface ResultOk<T> {
-	ok: true
-	value: T
-}
-interface ResultError<E = string> {
-	ok: false
-	error: E
-}
-type Result<T, E = string> = ResultOk<T> | ResultError<E>
-
-function ok<T>(value: T): ResultOk<T> {
-	return { ok: true, value }
-}
-function fail<E>(error: E): ResultError<E> {
-	return { ok: false, error }
-}
-
 const listings: JsonListing[] = []
 
 for (let u = 0; u < 10; u++) {
 	let items = faker.random.number({ min: 1, max: 10 })
 	let owner = SimpleID.fromInt(u, 'US').toString()
 	for (let l = 0; l < items; l++) {
-		const id=SimpleID.generate('LI')
+		const id = SimpleID.generate('LI')
 		listings.push({
 			id,
 			owner,
@@ -50,7 +33,7 @@ for (let u = 0; u < 10; u++) {
 	}
 }
 // console.log(listings)
-const fromJsonToListing = (listing: JsonListing): Result<Readonly<DataListing>> => {
+const fromJsonToListing = (listing: JsonListing): Maybe<Readonly<DataListing>> => {
 	try {
 		return ok({
 			id: new SimpleID(listing.id),
@@ -69,16 +52,13 @@ export class ListingClient {
 		return fromJsonToListing(listings.filter(u => u.id == id.toString())[0])
 	}
 
-	async findAll(filter: (item: Readonly<DataListing>) => boolean): Promise<Result<Readonly<DataListing>[]>> {
+	async findAll(filter: (item: Readonly<DataListing>) => boolean): Promise<Maybe<Readonly<DataListing>[]>> {
 		await sleep(0.05)
 		const list = listings.map(fromJsonToListing)
-		// console.log('list', list)
 
-		const error = list.reduce((prev, i) => prev || !i.ok, false)
+		const error = list.reduce((prev, i) => prev || isError(i), false)
 		if (!error) {
-			const mapped = list.map(l => (l.ok ? l.value : null)) as Readonly<DataListing>[]
-			// console.log('mapped', mapped)
-			// console.log('filter', mapped.filter(filter))
+			const mapped = list.map(l => (isOk(l) ? l : null)) as Readonly<DataListing>[]
 			return ok(mapped.filter(filter))
 		}
 

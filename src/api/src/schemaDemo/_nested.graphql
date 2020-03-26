@@ -1,0 +1,11 @@
+#type Util {
+#    uuid: UuidV4
+#}
+#
+#type Query {
+#    utils: Util
+#}
+#
+#schema {
+#    query: Query
+#}

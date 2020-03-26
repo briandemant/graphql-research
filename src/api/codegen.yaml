@@ -1,15 +1,16 @@
 # schema: ./server/schema.ts
-schema: ./src/schemaV2/*.gql
+schema: ./src/schema/*.gql
 hooks:
   afterOneFileWrite:
     - prettier --config ../../.prettierrc.json --write
 generates:
+  # base resolvers
+  ./src/_gen/base-resolvers.ts:
+    plugins:
+      - "../codegen-plugin"
 
   # Server types
   ./src/_gen/server-types.ts:
-    # hooks:
-    #   afterOneFileWrite:
-    #     - prettier --config ../../.prettierrc.json --write
     config:
       defaultMapper: any
       typesPrefix: GQL
@@ -20,27 +21,36 @@ generates:
       showUnusedMappers: true
       noSchemaStitching: true
       # useIndexSignature: true
-      contextType: ../schemaV2/context#Context
+      contextType: ../schema/context#Context
       scalars:
         DateTime: ValidDate
-        NonEmptyString: NonEmptyString
+        Email: ValidEmail
+        ID: UuidV4
         Md5: Md5
-        SimpleID: SimpleID
+        NonEmptyString: NonEmptyString
+        Slug: NonEmptyString
         UuidV4: UuidV4
+        URL: ValidURL
       mappers:
-        DateTime: "@demo/lib#ValidDate"
-        ID: "@demo/lib#SimpleID"
-        NonEmptyString: "@demo/lib#NonEmptyString"
-        SimpleID: "@demo/lib#SimpleID"
-        UuidV4: "@demo/lib#UuidV4"
-        Md5: "@demo/lib#Md5"
-        String: string
+        String: String
+        Int: Number
+        Boolean: Boolean
+        DateTime: ValidDate
+        Email: ValidEmail
+        ID: UuidV4
+        Md5: Md5
+        NonEmptyString: NonEmptyString
+        Slug: NonEmptyString
+        UuidV4: UuidV4
+        URL: ValidURL
     plugins:
       - add: |
           /* eslint-disable */
           // PLEASE DO NOT EDIT
           export * from './manual-server-types'
-          // import { GQLRole } from './manual-server-types'
+          import {
+            Md5, NonEmptyString, UuidV4, ValidDate,ValidEmail,ValidURL
+          } from '@demo/lib'
       - typescript
       - typescript-resolvers
 

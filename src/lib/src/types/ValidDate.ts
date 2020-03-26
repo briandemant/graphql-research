@@ -1,5 +1,4 @@
-import { GraphQLScalarType, ValueNode } from 'graphql'
-import { UuidV4 } from './UuidV4'
+import { GraphQLScalarType } from 'graphql'
 
 export class ValidDate {
 	public static readonly ERR_INVALID_DATE = 'Invalid Date'
@@ -60,7 +59,7 @@ export class ValidDate {
 	}
 }
 
-export const DateTimeScalarType = new GraphQLScalarType({
+export const ValidDateScalarType = new GraphQLScalarType({
 	name: 'DateTime',
 	description: 'DateTime is a ISO8601 date',
 	serialize(value) {

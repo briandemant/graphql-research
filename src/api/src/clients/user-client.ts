@@ -1,4 +1,4 @@
-import { UuidV4, NonEmptyString, SimpleID, sleep, ValidDate } from '@demo/lib'
+import { fail, Maybe, NonEmptyString, ok, SimpleID, sleep, ValidDate } from '@demo/lib'
 import * as faker from 'faker'
 
 faker.seed(321)
@@ -17,23 +17,6 @@ interface JsonUser {
 	createdAt: Date
 }
 
-interface ResultOk<T> {
-	ok: true
-	value: T
-}
-interface ResultError<E = string> {
-	ok: false
-	error: E
-}
-type Result<T, E = string> = ResultOk<T> | ResultError<E>
-
-function ok<T>(value: T): ResultOk<T> {
-	return { ok: true, value }
-}
-function fail<E>(error: E): ResultError<E> {
-	return { ok: false, error }
-}
-
 const users: JsonUser[] = []
 
 for (let i = 0; i < 10; i++) {
@@ -45,7 +28,7 @@ for (let i = 0; i < 10; i++) {
 	})
 }
 // console.log(users)
-const fromJsonToUser = (user: JsonUser): Result<Readonly<DataUser>> => {
+const fromJsonToUser = (user: JsonUser): Maybe<Readonly<DataUser>> => {
 	try {
 		return ok({
 			id: new SimpleID(user.id),
