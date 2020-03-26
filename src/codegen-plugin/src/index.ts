@@ -32,8 +32,6 @@ export const plugin: PluginFunction<any> = (schema: GraphQLSchema, documents: Ty
 	// for each object's fields
 	// and export the Type for the resolver
 	objectTypes.forEach(el => {
-		if (el.name.value === 'CategoryField') console.log('### el', JSON.stringify(el))
-
 		resolverTypesImports.push(`${config.typesPrefix}${el.name.value}Resolvers`)
 
 		fieldResolvers.push(`/**
@@ -47,8 +45,7 @@ export const plugin: PluginFunction<any> = (schema: GraphQLSchema, documents: Ty
 			const fieldDesc = field.description ? `/* ${field.description.value} */` : ''
 
 			const resolverName = camelCase([el.name.value, field.name.value].join('_'))
-			const resolverTypeName = pascalCase(['type', el.name.value, field.name.value].join('_'))
-			// const typeResolverString = `export type TCategoryListingConnectionType = GQLCategoryResolvers['listingConnection']`
+			const resolverTypeName = pascalCase([el.name.value, field.name.value,'resolver','type'].join('_'))
 			const typeResolverString = `export type ${resolverTypeName} = ${config.typesPrefix}${el.name.value}Resolvers['${field.name.value}']`
 
 			// parse any field arguments
@@ -61,8 +58,8 @@ export const plugin: PluginFunction<any> = (schema: GraphQLSchema, documents: Ty
 			fieldResolvers.push(`
 			${fieldDesc}
 			${typeResolverString}
-			const ${resolverName} = async (parent, ${parsedArgs}, context, info) => { 
-				// @ts-ignore
+			// @ts-ignore <-- !! REMOVE THIS, after you move below func and start adding logic to it
+			const ${resolverName}:${resolverTypeName} = async (parent, ${parsedArgs}, context, info) => { 
 				return null
 			}
 			`)
@@ -85,9 +82,10 @@ export const plugin: PluginFunction<any> = (schema: GraphQLSchema, documents: Ty
 	/*
 		fieldResolvers: SHOULD LOOK SOMETHING LIKE THIS:
 		...
-		export type TypeCategoryListingConnection = GQLCategoryResolvers['listingConnection']
-		const categoryListingConnection:TCategoryListingConnectionType = async (parent, {some, specific, param}, context, info) => {
-			// @ts-ignore
+		export type CategoryListingConnectionResolverType = GQLCategoryResolvers['listingConnection']
+		// {DESCRIPTION}
+		// @ts-ignore
+		const categoryListingConnection:CategoryListingConnectionResolverType = async (parent, {some, specific, param}, context, info) => {
 			return null
 		}
 		...
