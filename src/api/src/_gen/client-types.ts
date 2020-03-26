@@ -1,5 +1,5 @@
 /* eslint-disable */
-// PLEASE DO NOT EDIT !!
+// AUTO GENERATED! PLEASE DO NOT EDIT !!
 
 export type Maybe<T> = T | null
 
