@@ -8,7 +8,7 @@ const { MockList } = require('apollo-server')
 
 faker.seed(13)
 
-const fakeUser = () => {
+export const fakeUser = () => {
 	let firstName = faker.name.firstName()
 	let lastName = faker.name.lastName()
 	return {
@@ -42,7 +42,7 @@ const fakeUser = () => {
 	}
 }
 
-const fakeListing = (owner: any) => {
+export const fakeListing = (owner: any) => {
 	owner = owner ? owner : fakeUser()
 	return {
 		id: UuidV4.generate().toString(),
@@ -56,9 +56,10 @@ const fakeListing = (owner: any) => {
 	}
 }
 
-const fakeImage = () => ({
+export const fakeImage = () => ({
 	url: faker.internet.avatar(),
 })
+
 export const mocks: IMocks = {
 	// basic types
 	UuidV4: (parent: any, params: any, ctx: Context, info: GraphQLResolveInfo) => UuidV4.generate().toString(),

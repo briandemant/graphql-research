@@ -14,7 +14,8 @@
 		"pretty-lint": "yarn pretty && yarn lint",
 		"clean": "rm -rf ./src/*/dist **/**/*.tsbuildinfo && yarn clean:unison",
 		"clean:unison": "rm -rf ./src/api/src/_gen/.unison.*",
-		"clean:packages": "rm -rf node_modules/ ./*/*/node_modules && yarn clean"
+		"clean:packages": "rm -rf node_modules/ ./*/*/node_modules && yarn clean",
+		"test": "NODE_ENV=test jest --colors --maxWorkers=4"
 	},
 	"engines": {
 		"node": "^10.16.0",
@@ -39,6 +40,10 @@
 		"typescript": "^3.8.3"
 	},
 	"devDependencies": {
+		"@types/jest": "^25.1.4",
+		"jest": "^25.2.3",
+		"ts-jest": "^25.2.1",
+		"ts-mockery": "^1.2.0",
 		"vrsource-tslint-rules": "^6.0.0"
 	}
 }
