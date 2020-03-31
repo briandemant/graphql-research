@@ -1,12 +1,13 @@
 import { GraphQLScalarType } from 'graphql'
 import { v4 } from 'uuid'
-import { fail, Maybe, MaybeError, ok, ParseError } from './Maybe'
+import { fail, Maybe, ok } from './Maybe'
 
 const isUUID = require('is-uuid')
 
-export enum EntityTypes {
+export enum OldIdTypes {
 	User = 'user',
 	Listing = 'listing',
+	Category = 'category',
 }
 
 const OLDID = /([a-z]{4,8})-id-([0-9]{1,12})/
@@ -35,7 +36,7 @@ export class UuidV4 {
 
 	constructor(private readonly uuid: string) {
 		// d3d3a8d7-a8ab-4f2b-b3a0-64adefc02b37
-		// 12345678-0000-0000-0000-123456789012
+		// user-id-12345
 
 		if (this.isOldId()) {
 			// this is a fake uuid
@@ -44,14 +45,14 @@ export class UuidV4 {
 		}
 	}
 
-	fromOldId(type: EntityTypes, id: number) {
-		return `${type}-id-${id}`
+	static fromOldId(type: OldIdTypes, id: number) {
+		return new UuidV4(`${type}-id-${id}`)
 	}
 
-	toOldId(): { type: EntityTypes; id: number } {
+	toOldId(): { type: OldIdTypes; id: number } {
 		const res = OLDID.exec(this.uuid)
 		if (res) {
-			const type: EntityTypes | undefined = (EntityTypes as any)[res[1]]
+			const type = res[1] as OldIdTypes
 			const id = parseInt(res[2], 10)
 			if (type && id > 0) {
 				return {
@@ -60,6 +61,7 @@ export class UuidV4 {
 				}
 			}
 		}
+
 		throw new Error(`Invalid old id '${this.uuid}'`)
 	}
 
@@ -78,7 +80,7 @@ export class UuidV4 {
 
 export const UuidV4ScalarType = new GraphQLScalarType({
 	name: 'UuidV4',
-	description: "UUID v4 scalar type (with support for legacy id's ([type]-id-[id])",
+	description: 'UUID v4 scalar type (with support for legacy id\'s ([type]-id-[id])',
 	serialize(value) {
 		if (value instanceof UuidV4) {
 			return value.serialize()
