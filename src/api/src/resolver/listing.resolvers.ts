@@ -1,17 +1,22 @@
-// import { isOk, NonEmptyString } from '@demo/lib'
-//
-// import { GQLListingResolvers, GQLQueryResolvers, GQLUserResolvers } from '../_gen/server-types'
-//
-// type ListingQueryResolver = GQLQueryResolvers['listing']
-//
-// const listing: ListingQueryResolver = async (parent, { id }, { sources }, info) => {
-// 	let listing = await sources.listing.findById(id)
-// 	if (isOk(listing)) {
-// 		return listing
-// 	}
-//
-// 	return null
-// }
+import { isOk, NonEmptyString, UuidV4 } from '@demo/lib'
+import { GQLListingResolvers, GQLQueryResolvers, GQLUserResolvers } from '../_gen/server-types'
+import { ListingIdResolverType } from '../_gen/base-resolvers'
+import { GQLListing } from '../_gen/server-types'
+
+export type ListingQueryResolverType = GQLQueryResolvers['listing'] 
+export const listing: ListingQueryResolverType = async (_, { id }, { sources }) => {
+	const res = await sources.listing.findById(id)
+	if (isOk(res)) {
+		return res
+	}
+
+	return null
+}
+
+export const listingIdResolver: ListingIdResolverType = async (parent: GQLListing) => {
+	return parent.id
+}
+
 //
 // const baseResolvers: GQLListingResolvers = {
 // 	id: async (parent, args, context, info) => {

@@ -16,7 +16,7 @@ const options = { port: 2300 }
 
 const schema = makeExecutableSchema({
 	typeDefs,
-	resolvers: resolvers,
+	resolvers,
 	// ignore missing resolvers
 	allowUndefinedInResolve: true,
 	resolverValidationOptions: {
