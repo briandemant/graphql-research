@@ -1,6 +1,7 @@
 import { ReqInfo, UserInfo } from '../schema/context'
 import { LegacyAppApi } from './legacy/legacy-app'
-
+import { GQLListing } from '../_gen/server-types'
+import { UuidV4 } from '@demo/lib'
 
 // export const getDataLoaders = async (userInfo: UserInfo, reqInfo: ReqInfo): Promise<DataLoaders> => {
 // 	const app = new LegacyAppApi({ userInfo, reqInfo })
@@ -14,17 +15,18 @@ import { LegacyAppApi } from './legacy/legacy-app'
 // 	return {}
 // }
 
-
 export const getDataLoaders = async (userInfo: UserInfo, reqInfo: ReqInfo): Promise<DataLoaders> => {
 	return {
 		listing: {
-			findById: (id: any) => id,
+			findById: async (id: UuidV4) => {
+				return { id }
+			},
 		},
 	}
 }
 
 export interface DataLoaders {
 	listing: {
-		findById: (id: any) => { id: any }
+		findById: (id: UuidV4) => Promise<Partial<GQLListing>>
 	}
 }

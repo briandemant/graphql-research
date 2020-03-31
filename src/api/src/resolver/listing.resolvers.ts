@@ -3,9 +3,12 @@ import { GQLListingResolvers, GQLQueryResolvers, GQLUserResolvers } from '../_ge
 import { ListingIdResolverType } from '../_gen/base-resolvers'
 import { GQLListing } from '../_gen/server-types'
 
-export type ListingQueryResolverType = GQLQueryResolvers['listing'] 
+export type ListingQueryResolverType = GQLQueryResolvers['listing']
 export const listing: ListingQueryResolverType = async (_, { id }, { sources }) => {
 	const res = await sources.listing.findById(id)
+	console.log('### res', res)
+
+	// WHY do you fail????!
 	if (isOk(res)) {
 		return res
 	}

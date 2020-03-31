@@ -5,21 +5,19 @@ import { URLSearchParams } from 'url'
 import { ReqInfo, UserInfo } from '../../schema/context'
 import { getAppUserToken, setAppUserToken } from './integration'
 
-type AuthOptions = { userInfo: UserInfo, reqInfo: ReqInfo }
-
-import * as LRU from 'lru-cache'
+type AuthOptions = { userInfo: UserInfo; reqInfo: ReqInfo }
 
 const categoryCache = new LRU({ maxAge: 1000 * 10 })
 
 interface SubCategory {
-	id: UuidV4,
-	title: string,
+	id: UuidV4
+	title: string
 	results: number
 }
 
 interface Category {
-	id: UuidV4,
-	title: string,
+	id: UuidV4
+	title: string
 	results: number
 	children: SubCategory[]
 }
@@ -31,7 +29,6 @@ async function get(path: string, options: AuthOptions & { params?: { [key: strin
 	urlParams.append('device', 'gg-integration')
 	console.log('options.params', options.params)
 	if (options.params) {
-
 		for (let key of Object.keys(options.params)) {
 			console.log('key', key)
 			urlParams.append(key, options.params[key])
@@ -45,7 +42,7 @@ async function get(path: string, options: AuthOptions & { params?: { [key: strin
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			'Authorization': Config.api.legacy.basicAuthCredentials,
+			Authorization: Config.api.legacy.basicAuthCredentials,
 		},
 	})
 	let result = await res.json()
@@ -56,17 +53,16 @@ async function get(path: string, options: AuthOptions & { params?: { [key: strin
 }
 
 export class LegacyAppApi {
-	constructor(private auth: AuthOptions) {
-	}
+	constructor(private auth: AuthOptions) {}
 
 	async getMyInfo() {
 		let raw: {
-			success: boolean,
-			uid: number,
+			success: boolean
+			uid: number
 			// user_nem_id_validate: boolean,
 			// email: string,
 			// name: string,
-			username: string,
+			username: string
 			// address: string,
 			// country: string,
 			// countryCode: string,
@@ -101,35 +97,35 @@ export class LegacyAppApi {
 			return ok<Category>(categoryCache.get(id.toString()) as Category)
 		} else {
 			let raw: {
-				success: boolean,
-				name: string,
-				results: number,
-				children: [{ id: number, name: string, results: number, }]
-				can_create: boolean,
-				payment_category: boolean,
+				success: boolean
+				name: string
+				results: number
+				children: [{ id: number; name: string; results: number }]
+				can_create: boolean
+				payment_category: boolean
 				// payment_category_info_text: string,
-				category_fields:
-					[{
-						field_id: number,
-						name: string,
-						type: string,
-						datatype: string,
-						is_required: boolean,
-						default_value:
-							string,
+				category_fields: [
+					{
+						field_id: number
+						name: string
+						type: string
+						datatype: string
+						is_required: boolean
+						default_value: string
 						unknown_enable: string
-					}],
+					}
+				]
 				facets: {
 					[idx: string]: {
-						type: 'checkbox',
-						name: 'region',
-						title?: string,
-						rows: any,
+						type: 'checkbox'
+						name: 'region'
+						title?: string
+						rows: any
 						weight: number
 					}
 				}
 
-				GAScreenValue: string,
+				GAScreenValue: string
 			} = await get('category/data', { params: { id: id.toOldId().id.toString() }, ...this.auth })
 
 			if (raw.success) {
@@ -137,7 +133,7 @@ export class LegacyAppApi {
 					id: id,
 					title: raw.name,
 					results: raw.results,
-					children: raw.children.map((x) => ({
+					children: raw.children.map(x => ({
 						id: UuidV4.fromOldId(OldIdTypes.Category, x.id),
 						title: x.name,
 						results: x.results,
@@ -157,14 +153,14 @@ export class LegacyAppApi {
 			return ok<SubCategory[]>(categoryCache.get('category-roots') as SubCategory[])
 		} else {
 			let raw: {
-				success: boolean,
-				children: [{ id: number, name: string, results: number, }]
+				success: boolean
+				children: [{ id: number; name: string; results: number }]
 			} = await get('category/root', this.auth)
 			// console.log(raw)
 
 			if (raw.success) {
-				const roots = raw.children.map((x) => ({
-					id: UuidV4.fromOldId(OldIdTypes.Category, x.id)
+				const roots = raw.children.map(x => ({
+					id: UuidV4.fromOldId(OldIdTypes.Category, x.id),
 				}))
 				categoryCache.set('category-roots', roots, 1000 * 60 * 60 * 24) // 24 hours .. almost never changes
 
