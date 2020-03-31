@@ -1,4 +1,4 @@
-import { OldIdTypes, UuidV4 } from '../index'
+import { OldIdTypes, UuidV4 } from '../'
 
 describe('UuidV4', () => {
 	describe('UuidV4 using OldID', () => {
