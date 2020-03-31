@@ -1,8 +1,3 @@
-
-// require('dotenv-flow').config({
-// 	purge_dotenv: true
-// });
-
 import { Config } from '../config'
 
 describe('Config', () => {
