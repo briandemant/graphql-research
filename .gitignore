@@ -15,6 +15,7 @@ tmp
 
 # JetBrains IDE
 .idea
+.env
 
 # Logs
 logs

@@ -35,7 +35,6 @@ export const telemetryMiddleware = async (
 	context: Context,
 	info: GraphQLResolveInfo
 ) => {
-
 	if (!info.path.prev) {
 		// add 1 to requests
 		boundReqCounter.add(1)

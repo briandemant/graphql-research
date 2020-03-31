@@ -11,9 +11,7 @@ const exporter = new PrometheusExporter(
 	}
 )
 
-const meter = new MeterProvider({
-
-}).getMeter('your-meter-name')
+const meter = new MeterProvider({}).getMeter('your-meter-name')
 
 const requestCount: Metric<BoundCounter> = meter.createCounter('requests', {
 	monotonic: true,

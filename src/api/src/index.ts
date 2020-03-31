@@ -16,7 +16,7 @@ const options = { port: 2300 }
 
 const schema = makeExecutableSchema({
 	typeDefs,
-	resolvers: resolvers,
+	resolvers,
 	// ignore missing resolvers
 	allowUndefinedInResolve: true,
 	resolverValidationOptions: {
@@ -34,7 +34,6 @@ app.use((req, res, next) => {
 	next()
 })
 
-
 app.get('/something', (req, res) => {
 	res.send(`hello world`)
 })
@@ -51,7 +50,7 @@ const server = new ApolloServer({
 	tracing: true,
 	context: contextFn,
 	// plugins: [TracingPlugin],
-	formatError: (err) => {
+	formatError: err => {
 		// Don't give the specific errors to the client.
 		if (err.message.match(/Invalid/)) {
 			return err
@@ -61,15 +60,14 @@ const server = new ApolloServer({
 	},
 })
 
-
 app.use((req, res, next) => {
 	if (`${req.headers['x-client-version']}`.match(/beta/)) {
 		console.log('BETA VERSION')
 		const fake = new ApolloServer({
 			typeDefs: gql`
-          type Query {
-              apiVersion: String
-          }
+				type Query {
+					apiVersion: String
+				}
 			`,
 			mocks: {
 				Query: (parent: any, params: any, ctx: Context, info: GraphQLResolveInfo) => ({
@@ -83,6 +81,5 @@ app.use((req, res, next) => {
 		server.getMiddleware({ path: '/' })(req, res, next)
 	}
 })
-
 
 app.listen(options, () => console.log(`🚀 Server ready at http://localhost:${options.port}`))

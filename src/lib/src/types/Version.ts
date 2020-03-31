@@ -3,7 +3,6 @@ import * as semver from 'semver'
 import SemVer from 'semver/classes/semver'
 import { fail, Maybe, ok } from './Maybe'
 
-
 export class Version {
 	private static readonly ERR_INVALID_VERSION = 'Invalid Version'
 
@@ -30,7 +29,6 @@ export class Version {
 		return this.version.version
 	}
 }
-
 
 export const VersionStringType = new GraphQLScalarType({
 	name: 'Version',

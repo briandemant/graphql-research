@@ -24,9 +24,8 @@
 		// mine
 		"alwaysStrict": true,
 
-
-		"lib": ["es5"],        // No need for "es5" if you have "es6"
-		"types": ["node"],      // When you code for nodejs
+		"lib": ["es5"], // No need for "es5" if you have "es6"
+		"types": ["node", "jest"], // When you code for nodejs
 		"target": "es5"
 	},
 	"files": [],
