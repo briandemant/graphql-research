@@ -7,6 +7,7 @@ export * from './types/SimpleID'
 export * from './types/Version'
 export * from './types/URL'
 export * from './types/Email'
+export * from './config'
 
 export const sleep = async (sec: number) =>
 	new Promise(res => {

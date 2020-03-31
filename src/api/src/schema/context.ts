@@ -12,16 +12,17 @@ enum ClientType {
 }
 
 enum LoginMethod {
-	Email = 'email'
+	Email = 'email',
 }
 
-export type AuthInfo = {
-	authenticated: boolean,
-	userSession: string,
-	userId: string | undefined,
-	roles: UserRoles[],
-	showErotic: boolean,
-	segment: string,
+export type UserInfo = {
+	authenticated: boolean
+	userSession: string
+	userId: string | undefined
+	roles: UserRoles[]
+	showErotic: boolean
+	segment: string
+	jwt: string
 	// rememberMe: boolean,
 	// loginMethod: LoginMethod,
 	// ip: '193.163.97.225',
@@ -37,7 +38,7 @@ export interface Context {
 		type: ClientType
 		version: Version
 	}
-	user: AuthInfo
+	user: UserInfo
 }
 
 interface ExpressContext {
@@ -46,8 +47,8 @@ interface ExpressContext {
 }
 
 export type ReqInfo = {
-	requestId: string,
-	useragent: string,
+	requestId: string
+	useragent: string
 	debug: boolean
 }
 
@@ -84,35 +85,48 @@ const getAgent = async (clientAgent: string, reqInfo: ReqInfo) => {
 
 const jwtSecret = 'default JWT secret'
 
-const getUserInfo = async (req: express.Request): Promise<AuthInfo> => {
-
+const getUserInfo = async (req: express.Request): Promise<UserInfo> => {
 	// console.log('req.headers',req.headers)
 	type VerifiedInfo = {
-		userSession: string,
-		userId?: string,
-		userRoles: string[],
-		rememberMe: boolean,
-		loginMethod: string,
-		ip: string,
-		userAgent: string,
+		userSession: string
+		userId?: string
+		userRoles: string[]
+		rememberMe: boolean
+		loginMethod: string
+		ip: string
+		userAgent: string
 		iat: number
 	}
 
-	let result: Partial<AuthInfo> = {}
+	let result: Partial<UserInfo> = {}
 
 	let verified: VerifiedInfo | false = false
 
 	if (req.headers.authorization) {
 		verified = jwt.verify(req.headers.authorization, jwtSecret) as VerifiedInfo
+		result.jwt = req.headers.authorization
 	}
 
 	result.showErotic = req.header('gg-erotic') === 'true'
 	result.segment = req.header('gg-user-segment') ? req.header('gg-user-segment')! : 'x'
 	if (verified) {
 		result.userSession = verified.userSession
-		result.userId = UuidV4.parse(verified.userId).toString()
-		result.authenticated = typeof result.userId !== 'undefined' && UuidV4.validate(result.userId)
-		result.roles = [...verified.userRoles] as UserRoles[]
+
+
+		if (typeof verified.userId !== 'undefined') {
+			result.userId = UuidV4.parse(verified.userId).toString()
+			result.authenticated = UuidV4.validate(result.userId)
+		} else {
+			result.userId = undefined
+			result.authenticated = false
+		}
+
+		if (verified.userRoles) {
+			result.roles = [...verified.userRoles] as UserRoles[]
+		} else {
+			result.roles = [] as UserRoles[]
+		}
+
 	} else {
 		result.userSession = UuidV4.generate().toString()
 		result.authenticated = false
@@ -126,7 +140,7 @@ const getUserInfo = async (req: express.Request): Promise<AuthInfo> => {
 		}
 
 		if (req.header('dev-roles')) {
-			result.roles = (req.header('dev-roles')!).split(',') as UserRoles[]
+			result.roles = req.header('dev-roles')!.split(',') as UserRoles[]
 		}
 
 		if (req.header('dev-erotic')) {
@@ -134,7 +148,7 @@ const getUserInfo = async (req: express.Request): Promise<AuthInfo> => {
 		}
 	}
 
-	return result as AuthInfo
+	return result as UserInfo
 }
 
 export enum UserRoles {
@@ -160,11 +174,13 @@ export let contextFn = async ({ req, res }: ExpressContext): Promise<Context> =>
 			request: reqInfo,
 			sources: await getDataLoaders(userInfo, reqInfo),
 		}
-		if (reqInfo.debug) {
-			console.log(result)
-		}
+		// if (reqInfo.debug) {
+		// 	console.log(result)
+		// }
 		return result
 	} catch (e) {
+		console.log(e)
+
 		throw new ValidationError(e.message)
 	}
 }

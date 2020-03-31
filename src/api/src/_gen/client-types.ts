@@ -347,12 +347,6 @@ export type MessagesConnection = PaginatedConnection & {
 	readonly totalCount: Scalars['Int']
 }
 
-export type MutationResponse = {
-	readonly code: ResponseCodeEnum
-	readonly success: Scalars['Boolean']
-	readonly data: Entity
-}
-
 export type Order = Entity & {
 	readonly id: Scalars['UuidV4']
 	/** OrderId */

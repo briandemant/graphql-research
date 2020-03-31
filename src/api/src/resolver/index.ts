@@ -22,11 +22,13 @@ export * from './mocks'
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
 
 // let combined = [welcomeResolvers, utilResolvers, nowResolvers, listingResolvers, userResolvers]
-let combined = [{
-	Query: {
-		apiVersion: () => pkg.version,
+let combined = [
+	{
+		Query: {
+			apiVersion: () => pkg.version,
+		},
 	},
-}]
+]
 
 uniq(flatMap(combined, x => Object.keys(x)))
 	.filter(x => x !== 'Query')
@@ -35,7 +37,7 @@ uniq(flatMap(combined, x => Object.keys(x)))
 			`${root} :`,
 			flatMap(combined, (x: any) => x[root] && Object.keys(x[root]))
 				.filter(x => x)
-				.join(', '),
+				.join(', ')
 		)
 	})
 

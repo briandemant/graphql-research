@@ -354,12 +354,6 @@ export type GQLMessagesConnection = GQLPaginatedConnection & {
 	readonly totalCount: Scalars['Int']
 }
 
-export type GQLMutationResponse = {
-	readonly code: GQLResponseCodeEnum
-	readonly success: Scalars['Boolean']
-	readonly data: GQLEntity
-}
-
 export type GQLOrder = GQLEntity & {
 	readonly id: Scalars['UuidV4']
 	/** OrderId */
@@ -692,9 +686,6 @@ export type GQLResolversTypes = {
 	URL: ResolverTypeWrapper<ValidURL>
 	RoleEnum: ResolverTypeWrapper<any>
 	ResponseCodeEnum: ResolverTypeWrapper<any>
-	MutationResponse: ResolverTypeWrapper<
-		Omit<ResolverTypeWrapper<any>, 'success'> & { success: GQLResolversTypes['Boolean'] }
-	>
 }
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -757,7 +748,6 @@ export type GQLResolversParentTypes = {
 	URL: ValidURL
 	RoleEnum: any
 	ResponseCodeEnum: any
-	MutationResponse: Omit<any, 'success'> & { success: GQLResolversParentTypes['Boolean'] }
 }
 
 export type GQLAuthDirectiveArgs = { requires?: Maybe<GQLRoleEnum> }
@@ -1071,16 +1061,6 @@ export type GQLMessagesConnectionResolvers<
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
-export type GQLMutationResponseResolvers<
-	ContextType = Context,
-	ParentType extends GQLResolversParentTypes['MutationResponse'] = GQLResolversParentTypes['MutationResponse']
-> = {
-	__resolveType: TypeResolveFn<null, ParentType, ContextType>
-	code: Resolver<GQLResolversTypes['ResponseCodeEnum'], ParentType, ContextType>
-	success: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>
-	data: Resolver<GQLResolversTypes['Entity'], ParentType, ContextType>
-}
-
 export interface GQLNonEmptyStringScalarConfig
 	extends GraphQLScalarTypeConfig<GQLResolversTypes['NonEmptyString'], any> {
 	name: 'NonEmptyString'
@@ -1320,7 +1300,6 @@ export type GQLResolvers<ContextType = Context> = {
 	Message: GQLMessageResolvers<ContextType>
 	MessageEdge: GQLMessageEdgeResolvers<ContextType>
 	MessagesConnection: GQLMessagesConnectionResolvers<ContextType>
-	MutationResponse: GQLMutationResponseResolvers
 	NonEmptyString: GraphQLScalarType
 	Order: GQLOrderResolvers<ContextType>
 	PageInfo: GQLPageInfoResolvers<ContextType>

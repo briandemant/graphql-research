@@ -11,7 +11,8 @@ export class ParseError<E, V = any> extends MaybeError<E> {
 export type Maybe<T, E = string> = T | MaybeError<E>
 
 export const isOk = <T, E>(value: Maybe<T, E>): value is T => isError(value)
-export const isError = <T, E>(value: Maybe<T, E>): value is MaybeError<E> => value instanceof MaybeError || value instanceof ParseError
+export const isError = <T, E>(value: Maybe<T, E>): value is MaybeError<E> =>
+	value instanceof MaybeError || value instanceof ParseError
 export const isParseError = <T, E, V>(value: Maybe<T, E>): value is ParseError<E, V> => value instanceof ParseError
 
 export const ok = <T>(value: T): T => value

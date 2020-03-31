@@ -8,10 +8,10 @@ export const scalarMiddleware = async (
 	parent: any,
 	args: { [key: string]: any },
 	context: Context,
-	info: GraphQLResolveInfo,
+	info: GraphQLResolveInfo
 ) => {
-	const errors: { name: string, value: any, error: any }[] = []
-	Object.keys(args).forEach((k) => {
+	const errors: { name: string; value: any; error: any }[] = []
+	Object.keys(args).forEach(k => {
 		const arg = args[k]
 		if (isParseError(arg)) {
 			errors.push({ name: k, value: arg.value, error: arg.error })

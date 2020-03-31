@@ -14,7 +14,7 @@ export const ExamplePlugin = {
 		console.log(colors.magenta('cache'), reqCtx.cache)
 		console.log(colors.magenta('debug'), reqCtx.debug)
 		console.log(colors.magenta('metrics'), reqCtx.metrics)
-		console.log(colors.magenta('keys'),Object.keys(reqCtx))
+		console.log(colors.magenta('keys'), Object.keys(reqCtx))
 		return {
 			parsingDidStart(reqCtx) {
 				// NOTE: skipped when query has been sent before
@@ -77,7 +77,7 @@ export const exampleMiddleware = async (
 	parent: any,
 	args: any,
 	context: Context,
-	info: GraphQLResolveInfo,
+	info: GraphQLResolveInfo
 ) => {
 	console.log(colors.yellow('8  willResolve 1'))
 	// console.log('					parent', parent)
