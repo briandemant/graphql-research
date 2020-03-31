@@ -8,9 +8,10 @@ export enum OldIdTypes {
 	User = 'user',
 	Listing = 'listing',
 	Category = 'category',
+	Message = 'message',
 }
 
-const OLDID = /([a-z]{4,8})-id-([0-9]{1,12})/
+const OLDID = /^([a-z]{4,8})-id-([0-9]{1,12})$/
 
 export const isOldId = (value: UuidV4 | string) => {
 	if (typeof value === 'string') {

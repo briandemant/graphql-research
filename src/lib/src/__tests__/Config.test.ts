@@ -1,7 +1,16 @@
-import { Config} from '../config'
+
+// require('dotenv-flow').config({
+// 	purge_dotenv: true
+// });
+
+import { Config } from '../config'
 
 describe('Config', () => {
-		it('should create oldid\'s that matches the types', async () => {
-			expect(Config.api.legacy.publicKey).toEqual('test-public-key')
-		})
+	it('should load .env.test for environment vars', async () => {
+		expect(Config.api.legacy.publicKey).toEqual('test-public-key')
+	})
+
+	it('should replace www to api for domains', async () => {
+		expect(Config.api.legacy.baseUrl).toEqual('https://api.test.gg-test.dk')
+	})
 })

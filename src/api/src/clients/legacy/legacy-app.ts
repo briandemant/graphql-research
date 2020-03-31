@@ -7,8 +7,6 @@ import { getAppUserToken, setAppUserToken } from './integration'
 
 type AuthOptions = { userInfo: UserInfo, reqInfo: ReqInfo }
 
-import * as LRU from 'lru-cache'
-
 const categoryCache = new LRU({ maxAge: 1000 * 10 })
 
 interface SubCategory {
@@ -164,7 +162,7 @@ export class LegacyAppApi {
 
 			if (raw.success) {
 				const roots = raw.children.map((x) => ({
-					id: UuidV4.fromOldId(OldIdTypes.Category, x.id)
+					id: UuidV4.fromOldId(OldIdTypes.Category, x.id),
 				}))
 				categoryCache.set('category-roots', roots, 1000 * 60 * 60 * 24) // 24 hours .. almost never changes
 
