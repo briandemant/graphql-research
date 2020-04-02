@@ -8,6 +8,7 @@ export * from './types/Version'
 export * from './types/URL'
 export * from './types/Email'
 export * from './config'
+export * from './cache'
 
 export const sleep = async (sec: number) =>
 	new Promise(res => {

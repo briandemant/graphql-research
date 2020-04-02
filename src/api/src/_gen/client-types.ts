@@ -224,6 +224,7 @@ export type Listing = Entity & {
 	readonly publicationDesc: Scalars['NonEmptyString']
 	/** pricing */
 	readonly price: Scalars['NonEmptyString']
+	readonly dispLayPrice: Price
 	readonly offersAccepted: Maybe<Scalars['Boolean']>
 	/** Bizz user only */
 	readonly vatEnabled: Maybe<Scalars['Boolean']>
@@ -394,6 +395,14 @@ export type Phone = Entity & {
 	/** meta */
 	readonly createdAt: Scalars['DateTime']
 	readonly updatedAt: Scalars['DateTime']
+}
+
+export type Price = {
+	readonly unit: Maybe<Scalars['String']>
+	readonly raw: Maybe<Scalars['String']>
+	readonly long: Maybe<Scalars['String']>
+	readonly short: Maybe<Scalars['String']>
+	readonly value: Maybe<Scalars['String']>
 }
 
 /** Available price formatting */

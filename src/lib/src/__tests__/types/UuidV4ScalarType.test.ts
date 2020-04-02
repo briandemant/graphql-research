@@ -1,8 +1,6 @@
+import { isParseError, ParseError, UuidV4, UuidV4ScalarType }  from '../../'
 import { GraphQLScalarType } from 'graphql'
 import { v4 } from 'uuid'
-import { isOldId, isParseError, OldIdTypes, ParseError, UuidV4, UuidV4ScalarType } from '../'
-
-const isUUID = require('is-uuid')
 
 const validUuid = v4()
 // seemingly correct uuid (but not)
@@ -12,7 +10,7 @@ const invalidIds = ['', notAUuid, 'user-id-73612a', 'qwe']
 describe('UuidV4ScalarType', () => {
 	describe('UuidV4 parse and serialize', () => {
 		it('should be GraphQLScalarType', async () => {
-	     expect(UuidV4ScalarType).toBeInstanceOf(GraphQLScalarType)
+			expect(UuidV4ScalarType).toBeInstanceOf(GraphQLScalarType)
 		})
 
 		it('should identify as UuidV4', async () => {

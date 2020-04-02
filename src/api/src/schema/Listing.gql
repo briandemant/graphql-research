@@ -29,6 +29,15 @@ enum ListingTypeEnum {
 	OTHER
 }
 
+type Price {
+	unit:String
+	raw:String
+	long:String
+	short:String
+	value:String
+}
+
+
 # Listing connection, paginated
 type ListingConnection implements PaginatedConnection {
 	# A list of edges (same as nodes but with cursor).
@@ -73,6 +82,7 @@ type Listing implements Entity {
 
 	# pricing
 	price: NonEmptyString!
+	dispLayPrice: Price!
 	offersAccepted: Boolean
 	# Bizz user only
 	vatEnabled: Boolean

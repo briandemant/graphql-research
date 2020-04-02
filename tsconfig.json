@@ -16,7 +16,6 @@
 		"experimentalDecorators": true,
 		"noFallthroughCasesInSwitch": true,
 		"allowSyntheticDefaultImports": true,
-		// https://github.com/Microsoft/TypeScript/issues/23659
 		"strictNullChecks": true,
 		"strictPropertyInitialization": true,
 		"moduleResolution": "node",
@@ -32,7 +31,6 @@
 	"references": [
 		{ "path": "./src/lib/tsconfig.json" },
 		{ "path": "./src/api/tsconfig.json" },
-		{ "path": "./src/codegen-plugin/tsconfig.json" },
-		{ "path": "./src/trace-test/tsconfig.json" }
+		{ "path": "./src/codegen-plugin/tsconfig.json" }
 	]
 }

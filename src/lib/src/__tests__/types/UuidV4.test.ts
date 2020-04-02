@@ -1,5 +1,5 @@
+import { isOldId, isParseError, OldIdTypes, ParseError, UuidV4 } from '../../'
 import { v4 } from 'uuid'
-import { isOldId, isParseError, OldIdTypes, ParseError, UuidV4 } from '../'
 
 const isUUID = require('is-uuid')
 

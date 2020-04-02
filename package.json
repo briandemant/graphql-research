@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "concurrently --raw -n src,gen,api \"yarn build:src -w\" \"yarn build:gen --watch\" \"yarn dev:api\"",
+    "dev": "concurrently --raw -n src,gen,api \"yarn build:src -w\" \"yarn build:gen --watch -i\" \"yarn dev:api\"",
     "dev:api": "cd src/api;NODE_END=dev yarn dev",
     "build:src": "tsc --build tsconfig.json  --pretty",
     "build:gen": "cd src/api;graphql-codegen --config codegen.yaml",

@@ -1,4 +1,4 @@
-import { Config } from '../config'
+import { Config } from '../'
 
 describe('Config', () => {
 	it('should load .env.test for environment vars', async () => {
@@ -7,5 +7,6 @@ describe('Config', () => {
 
 	it('should replace www to api for domains', async () => {
 		expect(Config.api.legacy.baseUrl).toEqual('https://api.test.gg-test.dk')
+
 	})
 })
