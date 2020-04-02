@@ -1,49 +1,52 @@
 {
-	"name": "gg-demo-template",
-	"version": "1.0.0",
-	"author": "Brian Demant <brian.demant@gmail.com>",
-	"license": "MIT",
-	"private": true,
-	"scripts": {
-		"dev": "concurrently --raw -n src,gen,api \"yarn build:src -w\" \"yarn build:gen --watch\" \"yarn dev:api\"",
-		"dev:api": "cd src/api;NODE_END=dev yarn dev",
-		"build:src": "tsc --build tsconfig.json  --pretty",
-		"build:gen": "cd src/api;graphql-codegen --config codegen.yaml",
-		"lint": "tslint -c ./tslint.json **/src/**/*.{ts,tsx}",
-		"pretty": "prettier --config ./.prettierrc.json --loglevel error --write **/src/**/*.{json,ts,tsx,js}",
-		"pretty-lint": "yarn pretty && yarn lint",
-		"clean": "rm -rf ./src/*/dist **/**/*.tsbuildinfo && yarn clean:unison",
-		"clean:unison": "rm -rf ./src/api/src/_gen/.unison.*",
-		"clean:packages": "rm -rf node_modules/ ./*/*/node_modules && yarn clean",
-		"test": "NODE_ENV=test jest --colors --maxWorkers=4"
-	},
-	"engines": {
-		"node": "^10.16.0",
-		"yarn": "^1.15.2"
-	},
-	"workspaces": [
-		"src/**/*"
-	],
-	"dependencies": {
-		"@types/node": "^10.0.0",
-		"concurrently": "^5.1.0",
-		"esm": "^3.2.25",
-		"nodemon": "^2.0.2",
-		"prettier": "^1.17.1",
-		"source-map-support": "^0.5.16",
-		"ts-node": "8.5.4",
-		"tslint": "^5.12.1",
-		"tslint-config-prettier": "^1.18.0",
-		"tslint-loader": "^3.5.4",
-		"tslint-react": "^3.6.0",
-		"tslint-react-hooks": "^2.2.1",
-		"typescript": "^3.8.3"
-	},
-	"devDependencies": {
-		"@types/jest": "^25.1.4",
-		"jest": "^25.2.3",
-		"ts-jest": "^25.2.1",
-		"ts-mockery": "^1.2.0",
-		"vrsource-tslint-rules": "^6.0.0"
-	}
+  "name": "gg-demo-template",
+  "version": "1.0.0",
+  "author": "Brian Demant <brian.demant@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --raw -n src,gen,api \"yarn build:src -w\" \"yarn build:gen --watch -i\" \"yarn dev:api\"",
+    "dev:api": "cd src/api;NODE_END=dev yarn dev",
+    "build:src": "tsc --build tsconfig.json  --pretty",
+    "build:gen": "cd src/api;graphql-codegen --config codegen.yaml",
+    "lint": "tslint -c ./tslint.json **/src/**/*.{ts,tsx}",
+    "pretty": "prettier --config ./.prettierrc.json --loglevel error --write **/src/**/*.{json,ts,tsx,js}",
+    "pretty-lint": "yarn pretty && yarn lint",
+    "clean": "rm -rf ./src/*/dist **/**/*.tsbuildinfo && yarn clean:unison",
+    "clean:unison": "rm -rf ./src/api/src/_gen/.unison.*",
+    "clean:packages": "rm -rf node_modules/ ./*/*/node_modules && yarn clean",
+    "test": "NODE_ENV=test jest --colors --maxWorkers=4",
+    "test:watch": "yarn test --watchAll",
+    "test:coverage": "yarn test --coverage --collectCoverageFrom=src/lib/src/**/*.ts",
+    "test:watch:changed": "yarn test --watch"
+  },
+  "engines": {
+    "node": "^10.16.0",
+    "yarn": "^1.15.2"
+  },
+  "workspaces": [
+    "src/**/*"
+  ],
+  "dependencies": {
+    "@types/node": "^10.0.0",
+    "concurrently": "^5.1.0",
+    "esm": "^3.2.25",
+    "nodemon": "^2.0.2",
+    "prettier": "^1.17.1",
+    "source-map-support": "^0.5.16",
+    "ts-node": "8.5.4",
+    "tslint": "^5.12.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-loader": "^3.5.4",
+    "tslint-react": "^3.6.0",
+    "tslint-react-hooks": "^2.2.1",
+    "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "jest": "^25.2.3",
+    "ts-jest": "^25.2.1",
+    "ts-mockery": "^1.2.0",
+    "vrsource-tslint-rules": "^6.0.0"
+  }
 }

@@ -15,7 +15,10 @@ tmp
 
 # JetBrains IDE
 .idea
-.env
+
+# .env file to ignore
+.env.local
+.env.*.local
 
 # Logs
 logs

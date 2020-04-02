@@ -231,6 +231,7 @@ export type GQLListing = GQLEntity & {
 	readonly publicationDesc: Scalars['NonEmptyString']
 	/** pricing */
 	readonly price: Scalars['NonEmptyString']
+	readonly dispLayPrice: GQLPrice
 	readonly offersAccepted: Maybe<Scalars['Boolean']>
 	/** Bizz user only */
 	readonly vatEnabled: Maybe<Scalars['Boolean']>
@@ -401,6 +402,14 @@ export type GQLPhone = GQLEntity & {
 	/** meta */
 	readonly createdAt: Scalars['DateTime']
 	readonly updatedAt: Scalars['DateTime']
+}
+
+export type GQLPrice = {
+	readonly unit: Maybe<Scalars['String']>
+	readonly raw: Maybe<Scalars['String']>
+	readonly long: Maybe<Scalars['String']>
+	readonly short: Maybe<Scalars['String']>
+	readonly value: Maybe<Scalars['String']>
 }
 
 /** Available price formatting */
@@ -667,6 +676,7 @@ export type GQLResolversTypes = {
 	MessageEdge: ResolverTypeWrapper<any>
 	Message: ResolverTypeWrapper<any>
 	ListingStatusEnum: ResolverTypeWrapper<any>
+	Price: ResolverTypeWrapper<any>
 	Category: ResolverTypeWrapper<any>
 	Image: ResolverTypeWrapper<any>
 	ImageSizes: ResolverTypeWrapper<any>
@@ -729,6 +739,7 @@ export type GQLResolversParentTypes = {
 	MessageEdge: any
 	Message: any
 	ListingStatusEnum: any
+	Price: any
 	Category: any
 	Image: any
 	ImageSizes: any
@@ -964,6 +975,7 @@ export type GQLListingResolvers<
 	publicationTitle: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
 	publicationDesc: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
 	price: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
+	dispLayPrice: Resolver<GQLResolversTypes['Price'], ParentType, ContextType>
 	offersAccepted: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>
 	vatEnabled: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>
 	category: Resolver<GQLResolversTypes['Category'], ParentType, ContextType>
@@ -1113,6 +1125,18 @@ export type GQLPhoneResolvers<
 	value: Resolver<GQLResolversTypes['NonEmptyString'], ParentType, ContextType>
 	createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
 	updatedAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>
+	__isTypeOf?: isTypeOfResolverFn<ParentType>
+}
+
+export type GQLPriceResolvers<
+	ContextType = Context,
+	ParentType extends GQLResolversParentTypes['Price'] = GQLResolversParentTypes['Price']
+> = {
+	unit: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
+	raw: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
+	long: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
+	short: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
+	value: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>
 	__isTypeOf?: isTypeOfResolverFn<ParentType>
 }
 
@@ -1305,6 +1329,7 @@ export type GQLResolvers<ContextType = Context> = {
 	PageInfo: GQLPageInfoResolvers<ContextType>
 	PaginatedConnection: GQLPaginatedConnectionResolvers
 	Phone: GQLPhoneResolvers<ContextType>
+	Price: GQLPriceResolvers<ContextType>
 	ProductAddon: GQLProductAddonResolvers<ContextType>
 	ProductPackage: GQLProductPackageResolvers<ContextType>
 	Publication: GQLPublicationResolvers<ContextType>

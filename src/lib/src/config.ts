@@ -1,13 +1,24 @@
 import { Buffer } from 'buffer'
+import * as dotenv from 'dotenv-flow'
 
-require('dotenv-flow').config({
+dotenv.config({
 	path: __dirname + '/../../../',
 })
 
-//console.log(Object.keys(process.env).filter((key) => key.startsWith('DEV')).map((key) => [key, process.env[key]]))
+if (process.env.NODE_ENV === 'test') {
+	// dot env preserves real env vars over .env
+	const fs = require('fs')
+	const dotenv = require('dotenv')
+	const envConfig = dotenv.parse(fs.readFileSync(__dirname + '/../../../.env.test.overrides'))
+	for (let k in envConfig) {
+		process.env[k] = envConfig[k]
+	}
+}
 
-let missing = ['DEV_PUBLIC_KEY', 'LEGACY_BASIC_AUTH_CREDENTIALS'].filter(key => typeof process.env[key] !== 'string')
+let missing = ['DEV_PUBLIC_KEY', 'LEGACY_BASIC_AUTH_CREDENTIALS']
+	.filter(key => typeof process.env[key] !== 'string')
 
+/* istanbul ignore next */
 if (missing.length > 0) {
 	throw new Error(`
 .env file is missing the following keys	
@@ -17,6 +28,7 @@ ${missing.join('\n')}
 see .env.example for examples / docs
 	`)
 }
+
 export const Config = {
 	api: {
 		legacy: {

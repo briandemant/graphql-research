@@ -36,3 +36,8 @@ export const Md5StringType = new GraphQLScalarType({
 		return new Md5(value)
 	},
 })
+
+"https://api.brde.gg-dev.dk/modules/gg_blah/user/user_ads?fromDate=2002012312"
+{
+	toal:123
+}
